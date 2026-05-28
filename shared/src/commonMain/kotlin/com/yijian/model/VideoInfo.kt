@@ -19,7 +19,13 @@ data class VideoInfo(
             val totalSeconds = duration / 1000
             val minutes = totalSeconds / 60
             val seconds = totalSeconds % 60
-            return String.format("%02d:%02d", minutes, seconds)
+            return buildString {
+                if (minutes < 10) append('0')
+                append(minutes)
+                append(':')
+                if (seconds < 10) append('0')
+                append(seconds)
+            }
         }
 }
 

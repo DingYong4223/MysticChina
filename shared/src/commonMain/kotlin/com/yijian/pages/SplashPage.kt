@@ -2,6 +2,7 @@ package com.yijian.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
+import com.tencent.kuikly.core.timer.setTimeout
 import com.tencent.kuikly.core.views.*
 import com.yijian.base.BasePager
 import com.yijian.theme.YijianColors

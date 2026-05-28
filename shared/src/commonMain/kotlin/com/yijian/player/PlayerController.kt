@@ -3,6 +3,8 @@ package com.yijian.player
 import com.tencent.kuikly.core.reactive.handler.observable
 import com.yijian.util.FormatUtil
 
+@Suppress("DEPRECATION") // standalone controller: observable delegates require PagerScope
+
 /**
  * 播放器控制器 — 状态管理 + 命令封装
  * 作为 UI 层与 IVideoPlayer 之间的中介

@@ -1,6 +1,8 @@
 package com.yijian.components
 
 import com.tencent.kuikly.core.base.*
+import com.tencent.kuikly.core.module.ModuleConst
+import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.views.*
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
@@ -50,7 +52,7 @@ internal class TopBarView : ComposeView<TopBarAttr, TopBarEvent>() {
                         }
                         event {
                             click {
-                                ctx.getPager().closeCurrentPage()
+                                ctx.getPager().acquireModule<RouterModule>(ModuleConst.ROUTER).closePage()
                             }
                         }
                         // 返回箭头 (使用Unicode字符或自定义绘制)

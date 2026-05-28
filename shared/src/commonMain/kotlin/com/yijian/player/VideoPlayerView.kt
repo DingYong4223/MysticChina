@@ -54,7 +54,7 @@ internal class VideoPlayerView : ComposeView<VideoPlayerAttr, VideoPlayerEvent>(
                     attr {
                         size(pagerData.pageViewWidth, pagerData.pageViewHeight)
                         backgroundColor(YijianColors.background)
-                        viewId("video_surface")
+                        // video surface (native layer placeholder)
                     }
                 }
 
@@ -187,7 +187,7 @@ internal class VideoPlayerView : ComposeView<VideoPlayerAttr, VideoPlayerEvent>(
                                 attr {
                                     flexDirectionRow()
                                     alignItemsCenter()
-                                    paddingHorizontal(YijianTheme.Spacing.lg)
+                                    padding(left = YijianTheme.Spacing.lg, right = YijianTheme.Spacing.lg)
                                     marginBottom(YijianTheme.Spacing.sm)
                                 }
 

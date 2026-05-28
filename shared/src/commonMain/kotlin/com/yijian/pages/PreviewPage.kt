@@ -75,8 +75,8 @@ internal class PreviewPage : BasePager() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun viewDestroyed() {
+        super.viewDestroyed()
         controller.release()
     }
 }

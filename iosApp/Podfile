@@ -1,8 +1,9 @@
-platform :ios, '14.1'
-use_frameworks!
+source 'https://cdn.cocoapods.org/'
 
 target 'iosApp' do
-  pod 'KuiklyIOSRender', :podspec => '../shared/KuiklyIOSRender.podspec'
+  platform :ios, '14.1'
+  pod 'OpenKuiklyIOSRender'
+  pod 'shared', :path => '../shared'
 end
 
 post_install do |installer|

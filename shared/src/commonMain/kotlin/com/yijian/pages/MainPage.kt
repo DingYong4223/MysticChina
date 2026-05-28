@@ -2,12 +2,11 @@ package com.yijian.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
+import com.tencent.kuikly.core.directives.vfor
 import com.tencent.kuikly.core.reactive.handler.observableList
 import com.tencent.kuikly.core.views.*
 import com.yijian.base.BasePager
 import com.yijian.components.TopBar
-import com.yijian.components.VideoThumbnail
-import com.yijian.model.MediaItem
 import com.yijian.model.VideoInfo
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
@@ -78,7 +77,7 @@ internal class MainPage : BasePager() {
                             width(pagerData.pageViewWidth / 2 - YijianTheme.Spacing.lg)
                             backgroundColor(YijianColors.surface)
                             borderRadius(YijianTheme.Radius.md)
-                            overflowHidden()
+                            overflow(true)
                         }
                         event {
                             click {
@@ -89,12 +88,12 @@ internal class MainPage : BasePager() {
                         }
 
                         // 缩略图区域
-                        View {
-                            attr {
-                                width(pagerData.pageViewWidth / 2 - YijianTheme.Spacing.lg)
-                                aspectRatio(16f / 9f)
-                                backgroundColor(YijianColors.backgroundLight)
-                            }
+                            View {
+                                attr {
+                                    width(pagerData.pageViewWidth / 2 - YijianTheme.Spacing.lg)
+                                    height((pagerData.pageViewWidth / 2 - YijianTheme.Spacing.lg) * 9f / 16f)
+                                    backgroundColor(YijianColors.backgroundLight)
+                                }
 
                             Image {
                                 attr {
@@ -132,8 +131,8 @@ internal class MainPage : BasePager() {
                             View {
                                 attr {
                                     absolutePosition(bottom = YijianTheme.Spacing.xs, right = YijianTheme.Spacing.xs)
-                                    paddingHorizontal(YijianTheme.Spacing.sm)
-                                    paddingVertical(YijianTheme.Spacing.xxs)
+                                    padding(left = YijianTheme.Spacing.sm, right = YijianTheme.Spacing.sm)
+                                    padding(top = YijianTheme.Spacing.xxs, bottom = YijianTheme.Spacing.xxs)
                                     backgroundColor(Color(0xCC000000))
                                     borderRadius(YijianTheme.Radius.sm)
                                 }
@@ -148,14 +147,21 @@ internal class MainPage : BasePager() {
                         }
 
                         // 标题
-                        Text {
+                        View {
                             attr {
-                                padding(YijianTheme.Spacing.sm)
-                                text(video.title)
-                                fontSize(YijianTheme.FontSize.small)
-                                color(YijianColors.textPrimary)
-                                maxLines(1)
-                                lineLimit(1)
+                                padding(
+                                    top = YijianTheme.Spacing.sm,
+                                    left = YijianTheme.Spacing.sm,
+                                    bottom = YijianTheme.Spacing.sm,
+                                    right = YijianTheme.Spacing.sm
+                                )
+                            }
+                            Text {
+                                attr {
+                                    text(video.title)
+                                    fontSize(YijianTheme.FontSize.small)
+                                    color(YijianColors.textPrimary)
+                                }
                             }
                         }
                     }

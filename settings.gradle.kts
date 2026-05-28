@@ -1,13 +1,13 @@
 pluginManagement {
+    plugins {
+        id("com.tencent.kuikly-open.kuikly") version "2.4.0-1.9.22"
+    }
     repositories {
         google()
         gradlePluginPortal()
         mavenCentral()
         maven {
-            url = uri("https://mirrors.tencent.com/repository/maven/thirdparty")
-        }
-        maven {
-            url = uri("https://mirrors.tencent.com/repository/maven/kuikly")
+            url = uri("https://mirrors.tencent.com/nexus/repository/maven-tencent/")
         }
     }
 }
@@ -17,10 +17,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
-            url = uri("https://mirrors.tencent.com/repository/maven/thirdparty")
-        }
-        maven {
-            url = uri("https://mirrors.tencent.com/repository/maven/kuikly")
+            url = uri("https://mirrors.tencent.com/nexus/repository/maven-tencent/")
         }
         maven {
             url = uri("https://jitpack.io")

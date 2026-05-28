@@ -37,7 +37,7 @@ internal class IconButtonView : ComposeView<IconButtonAttr, ComposeEvent>() {
                     allCenter()
                 }
                 event {
-                    click { clickParams ->
+                    click {
                         // 点击事件由外部监听
                     }
                 }
@@ -70,12 +70,11 @@ internal class VideoThumbnailView : ComposeView<ComposeAttr, ComposeEvent>() {
     override fun createEvent(): ComposeEvent = ComposeEvent()
 
     override fun body(): ViewBuilder {
-        val ctx = this
         return {
             View {
                 attr {
                     width(pagerData.pageViewWidth / 2 - 20f)
-                    aspectRatio(9f / 16f)
+                    height((pagerData.pageViewWidth / 2 - 20f) * 16f / 9f)
                     backgroundColor(YijianColors.surface)
                     borderRadius(YijianTheme.Radius.md)
                 }

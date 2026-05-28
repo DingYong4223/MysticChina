@@ -3,24 +3,21 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("com.google.devtools.ksp")
-    id("kuikly")
+    id("com.tencent.kuikly-open.kuikly")
 }
 
-val kuikly_version = "1.1.0.2"
+val kuikly_version = "2.4.0-1.9.22"
 
 repositories {
     google()
     mavenCentral()
     maven {
-        url = uri("https://mirrors.tencent.com/repository/maven/thirdparty")
-    }
-    maven {
-        url = uri("https://mirrors.tencent.com/repository/maven/kuikly")
+        url = uri("https://mirrors.tencent.com/nexus/repository/maven-tencent/")
     }
 }
 
 kotlin {
-    android {
+    androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
@@ -37,7 +34,7 @@ kotlin {
         homepage = "https://github.com/yijian"
         version = "1.0"
         ios.deploymentTarget = "14.1"
-        podfile = project.file("../iosApp/Podfile")
+        // podfile = project.file("../iosApp/Podfile") // Use :path reference in iosApp/Podfile instead
         framework {
             baseName = "shared"
         }
@@ -47,8 +44,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.tencent.kuikly:core:${kuikly_version}")
-                implementation("com.tencent.kuikly:core-annotations:${kuikly_version}")
+                implementation("com.tencent.kuikly-open:core:${kuikly_version}")
+                implementation("com.tencent.kuikly-open:core-annotations:${kuikly_version}")
             }
         }
         val commonTest by getting {
@@ -58,7 +55,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("com.tencent.kuikly:core-render-android:${kuikly_version}")
+                api("com.tencent.kuikly-open:core-render-android:${kuikly_version}")
             }
         }
 
@@ -87,7 +84,7 @@ group = "com.yijian"
 version = "1.0.0"
 
 dependencies {
-    compileOnly("com.tencent.kuikly:core-ksp:${kuikly_version}") {
+    compileOnly("com.tencent.kuikly-open:core-ksp:${kuikly_version}") {
         add("kspAndroid", this)
         add("kspIosArm64", this)
         add("kspIosX64", this)
@@ -95,12 +92,21 @@ dependencies {
     }
 }
 
+// KSP generates KuiklyCoreEntry.kt in commonMain metadata referencing android-only IKuiklyCoreEntry.
+// This file is not needed (platform-specific compilations generate their own entry files).
+tasks.matching { it.name == "compileCommonMainKotlinMetadata" }.configureEach {
+    doFirst {
+        layout.buildDirectory.dir("generated/ksp/metadata/commonMain/kotlin").get().asFile
+            .deleteRecursively()
+    }
+}
+
 android {
     namespace = "com.yijian"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
     }
     sourceSets {
         named("main") {
