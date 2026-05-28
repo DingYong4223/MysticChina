@@ -1,4 +1,5 @@
 # ─── 一剪 (yijian) 项目 ───────────────────────────
+# KMM + Kuikly + Android + iOS 跨端视频剪辑应用
 
 # ===================== 操作系统 =====================
 .DS_Store
@@ -15,7 +16,7 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # ===================== IDE / 编辑器 =====================
-# IDEA
+# IntelliJ IDEA / Android Studio
 .idea/
 .idea_modules/
 *.iml
@@ -26,51 +27,40 @@ out/
 # VS Code
 .vscode/
 
-# Vim / Neovim
+# JetBrains Fleet
+.fleet/
+
+# Vim / Neovim / Emacs
 *.swp
 *.swo
 *~
 *.orig
-
-# Emacs
 \#*\#
 .\#*
-
-# ===================== macOS =====================
-*.swp
-*.swo
-*~
-*.orig
 
 # ===================== Gradle =====================
 .gradle/
 .gradletasknamecache
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+!buildSrc/build/
 *.class
 *.jar
 *.war
 *.nar
 *.ear
-*.zip
-*.tar.gz
-local.properties
 
-# ===================== Kotlin =====================
+# ===================== Kotlin / KMP =====================
 *.kotlin_module
 .kotlin/
 kotlin-js-store/
 .kotlin_gradle/
-
-# ===================== KMP / KMM =====================
 cinterop/
 kotlin-hierarchy/
 .kotlin_native/
 .kotlin_jvm/
-.kotlin/
 native/
+kotlin-js-store/yarn.lock
 
 # ===================== Android =====================
 captures/
@@ -80,53 +70,53 @@ captures/
 *.aab
 *.ap_
 *.dex
-*.class
 bin/
 gen/
 obj/
-*.hprof
-*.keystore
-!debug.keystore
 renderscript/
+*.hprof
+local.properties
 *.logcat
 *.metadata
 *.sourceInfo
 *.testembedded
+*.keystore
+*.jks
+!debug.keystore
+lint/intermediates/
+lint/reports/
+lint/tmp/
 
 # ===================== iOS / Xcode =====================
 xcuserdata/
-**/xcuserdata/
 DerivedData/
 *.ipa
 *.dSYM.zip
 *.dSYM
 *.app
-*.framework
-*.dylib
+*.dSYM
 *.bundle
 *.hmap
-*.xcworkspace
-!**/*.xcworkspace/contents.xcworkspacedata
-
-# CocoaPods
 Pods/
 !Podfile
 !Podfile.lock
-
-# Swift Package Manager
 .swiftpm/
 .build/
 *.resolved
 Package.resolved
+*.p8
+*.p12
+*.mobileprovision
 
-# ===================== Kuikly =====================
+# ===================== Kuikly 产物 =====================
 *.so
 *.jsbundle
-*.d.ts
 kuikly_output/
 kuikly_temp/
+core-render-android/build/
+core-render-ios/build/
 
-# ===================== Node / npm =====================
+# ===================== Node / npm / yarn =====================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -135,8 +125,10 @@ yarn-error.log*
 .yarn-integrity
 .pnp/
 .pnp.js
+package-lock.json
+# 保留 yarn.lock，去掉默认生成的 package-lock
 
-# ===================== 测试 =====================
+# ===================== 测试报告 =====================
 test-results/
 test-output/
 *.test.log
@@ -144,20 +136,20 @@ test-output/
 test-reports/
 allure-results/
 
-# ===================== 日志 / 临时文件 =====================
+# ===================== 日志 / 缓存 / 临时文件 =====================
 *.log
 *.tmp
-*.swp
-*.swo
-*~
 *.bak
-*.orig
 *.patch
 *.diff
 *.local
 .history
 
-# ===================== 环境 / 密钥 =====================
+# ===================== Python 缓存（构建脚本用）
+__pycache__/
+*.pyc
+
+# ===================== 环境变量 / 密钥文件 =====================
 .env
 .env.local
 .env.*.local
@@ -167,9 +159,12 @@ secrets.*
 config.*.local
 gradle.properties.local
 signing.properties
+keystore/
+!keystore/README.md
 
-# ===================== 临时工具 =====================
+# ===================== 项目本地工具脚本 =====================
 check_git.sh
 temp.txt
-*.tmp
 test_*.sh
+*.tool
+/scripts/local/
