@@ -1,0 +1,175 @@
+# ─── 一剪 (yijian) 项目 ───────────────────────────
+
+# ===================== 操作系统 =====================
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===================== IDE / 编辑器 =====================
+# IDEA
+.idea/
+.idea_modules/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+*.orig
+
+# Emacs
+\#*\#
+.\#*
+
+# ===================== macOS =====================
+*.swp
+*.swo
+*~
+*.orig
+
+# ===================== Gradle =====================
+.gradle/
+.gradletasknamecache
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+local.properties
+
+# ===================== Kotlin =====================
+*.kotlin_module
+.kotlin/
+kotlin-js-store/
+.kotlin_gradle/
+
+# ===================== KMP / KMM =====================
+cinterop/
+kotlin-hierarchy/
+.kotlin_native/
+.kotlin_jvm/
+.kotlin/
+native/
+
+# ===================== Android =====================
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+obj/
+*.hprof
+*.keystore
+!debug.keystore
+renderscript/
+*.logcat
+*.metadata
+*.sourceInfo
+*.testembedded
+
+# ===================== iOS / Xcode =====================
+xcuserdata/
+**/xcuserdata/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.app
+*.framework
+*.dylib
+*.bundle
+*.hmap
+*.xcworkspace
+!**/*.xcworkspace/contents.xcworkspacedata
+
+# CocoaPods
+Pods/
+!Podfile
+!Podfile.lock
+
+# Swift Package Manager
+.swiftpm/
+.build/
+*.resolved
+Package.resolved
+
+# ===================== Kuikly =====================
+*.so
+*.jsbundle
+*.d.ts
+kuikly_output/
+kuikly_temp/
+
+# ===================== Node / npm =====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.yarn/
+.yarn-integrity
+.pnp/
+.pnp.js
+
+# ===================== 测试 =====================
+test-results/
+test-output/
+*.test.log
+*.test_failures
+test-reports/
+allure-results/
+
+# ===================== 日志 / 临时文件 =====================
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.patch
+*.diff
+*.local
+.history
+
+# ===================== 环境 / 密钥 =====================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.*
+config.*.local
+gradle.properties.local
+signing.properties
+
+# ===================== 临时工具 =====================
+check_git.sh
+temp.txt
+*.tmp
+test_*.sh
