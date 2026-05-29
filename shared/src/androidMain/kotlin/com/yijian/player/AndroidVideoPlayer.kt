@@ -1,18 +1,25 @@
 package com.yijian.player
 
-import com.yijian.player.PlayerState
+import android.media.MediaPlayer
+import java.io.File
+import java.util.Timer
+import kotlin.concurrent.timer
 
 /**
- * Android 平台视频播放器实现
- * 使用 Kotlin/Android 原生 MediaPlayer API
- * 注意：此文件通过 Kotlin Multiplatform expect/actual 或
- * Kuikly expand-native-api 桥接到原生层
+ * Android 平台视频播放器 — 基于系统 MediaPlayer 实现 IVideoPlayer 接口。
+ *
+ * 生命周期管理：
+ *   IDLE → loadVideo() → LOADING → onPrepared → READY
+ *   READY → play() → PLAYING → pause() → PAUSED → play() → PLAYING
+ *   PLAYING → onCompletion → COMPLETED → play() → PLAYING
+ *   COMPLETED → seekTo(0)+play() → PLAYING (loop)
  */
 class AndroidVideoPlayer : IVideoPlayer {
 
+    private var mediaPlayer: MediaPlayer? = null
     private var state = PlayerState.IDLE
-    private var _currentPosition: Long = 0L
-    private var _duration: Long = 0L
+    private var progressTimer: Timer? = null
+    private var _looping = false
 
     override var onPrepared: (() -> Unit)? = null
     override var onProgress: ((Long, Long) -> Unit)? = null
@@ -21,54 +28,112 @@ class AndroidVideoPlayer : IVideoPlayer {
     override var onStateChanged: ((PlayerState) -> Unit)? = null
 
     override fun loadVideo(path: String) {
-        state = PlayerState.LOADING
-        onStateChanged?.invoke(state)
-        // 实际实现中，这里创建 Android MediaPlayer/ExoPlayer
-        // 并设置 SurfaceView 进行渲染
-        // 模拟准备完成
-        _duration = 10000L // 10s mock
-        state = PlayerState.READY
-        onPrepared?.invoke()
-        onStateChanged?.invoke(state)
+        releaseInternal()
+        if (!File(path).exists()) {
+            onError?.invoke("文件不存在: $path")
+            return
+        }
+        setState(PlayerState.LOADING)
+        try {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(path)
+                setOnPreparedListener { mp ->
+                    setState(PlayerState.READY)
+                    onPrepared?.invoke()
+                }
+                setOnCompletionListener {
+                    if (_looping) {
+                        seekTo(0)
+                        start()
+                    } else {
+                        setState(PlayerState.COMPLETED)
+                        onCompletion?.invoke()
+                    }
+                }
+                setOnErrorListener { _, what, extra ->
+                    setState(PlayerState.ERROR)
+                    onError?.invoke("播放错误: what=$what extra=$extra")
+                    true
+                }
+                setOnVideoSizeChangedListener { _, width, height ->
+                    // 视频尺寸变化（可在此处理渲染区域适配）
+                }
+                prepareAsync()
+            }
+        } catch (e: Exception) {
+            setState(PlayerState.ERROR)
+            onError?.invoke("加载失败: ${e.message}")
+        }
     }
 
     override fun play() {
-        if (state == PlayerState.READY || state == PlayerState.PAUSED || state == PlayerState.COMPLETED) {
-            state = PlayerState.PLAYING
-            onStateChanged?.invoke(state)
-            // 启动进度更新定时器
+        mediaPlayer?.takeIf { !it.isPlaying }?.let {
+            it.start()
+            setState(PlayerState.PLAYING)
+            startProgressTimer()
         }
     }
 
     override fun pause() {
-        if (state == PlayerState.PLAYING) {
-            state = PlayerState.PAUSED
-            onStateChanged?.invoke(state)
+        mediaPlayer?.takeIf { it.isPlaying }?.let {
+            it.pause()
+            setState(PlayerState.PAUSED)
+            stopProgressTimer()
         }
     }
 
     override fun seekTo(positionMs: Long) {
-        _currentPosition = positionMs.coerceAtLeast(0L)
-        onProgress?.invoke(_currentPosition, _duration)
+        mediaPlayer?.seekTo(positionMs.toInt())
     }
 
     override fun setVolume(volume: Float) {
-        // Android MediaPlayer.setVolume
+        val vol = volume.coerceIn(0f, 1f)
+        mediaPlayer?.setVolume(vol, vol)
     }
 
     override fun setLooping(looping: Boolean) {
-        // Android MediaPlayer.isLooping
+        _looping = looping
     }
 
-    override fun getCurrentPosition(): Long = _currentPosition
+    override fun getCurrentPosition(): Long =
+        try { mediaPlayer?.currentPosition?.toLong() ?: 0L } catch (e: Exception) { 0L }
 
-    override fun getDuration(): Long = _duration
+    override fun getDuration(): Long =
+        try { mediaPlayer?.duration?.toLong() ?: 0L } catch (e: Exception) { 0L }
 
     override fun getState(): PlayerState = state
 
     override fun release() {
-        state = PlayerState.RELEASED
-        onStateChanged?.invoke(state)
-        // 释放 MediaPlayer 实例
+        releaseInternal()
+        setState(PlayerState.RELEASED)
+    }
+
+    private fun setState(newState: PlayerState) {
+        state = newState
+        onStateChanged?.invoke(newState)
+    }
+
+    private fun startProgressTimer() {
+        stopProgressTimer()
+        progressTimer = timer("player-progress", false, 0, 250) {
+            val pos = getCurrentPosition()
+            val dur = getDuration()
+            onProgress?.invoke(pos, dur)
+        }
+    }
+
+    private fun stopProgressTimer() {
+        progressTimer?.cancel()
+        progressTimer = null
+    }
+
+    private fun releaseInternal() {
+        stopProgressTimer()
+        mediaPlayer?.apply {
+            if (isPlaying) stop()
+            reset()
+            release()
+        }
+        mediaPlayer = null
     }
 }

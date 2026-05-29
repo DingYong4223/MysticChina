@@ -6,6 +6,7 @@ import com.tencent.kuikly.core.module.ModuleConst
 import com.tencent.kuikly.core.module.RouterModule
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import com.tencent.kuikly.core.pager.Pager
+import com.yijian.module.GalleryModule
 
 /**
  * 一剪基础 Pager — 所有页面继承此类
@@ -15,7 +16,9 @@ internal abstract class BasePager : Pager() {
     private val router by lazy { acquireModule<RouterModule>(ModuleConst.ROUTER) }
 
     override fun createExternalModules(): Map<String, Module>? {
-        return null
+        return mapOf(
+            GalleryModule.MODULE_NAME to GalleryModule()
+        )
     }
 
     override fun created() {

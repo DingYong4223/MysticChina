@@ -59,13 +59,19 @@ class PlayerController {
     fun togglePlayPause() {
         when (playerState) {
             PlayerState.PLAYING -> pause()
-            PlayerState.PAUSED, PlayerState.READY -> play()
-            PlayerState.COMPLETED -> {
-                seekTo(0L)
-                play()
-            }
-            else -> { /* 忽略其他状态 */ }
+            PlayerState.PAUSED, PlayerState.READY, PlayerState.LOADING -> play()
+            PlayerState.COMPLETED -> replay()
+            PlayerState.ERROR -> { errorMessage = ""; playerState = PlayerState.IDLE }
+            else -> { /* IDLE / RELEASED — no-op */ }
         }
+    }
+
+    /**
+     * 重新播放 (从头开始)
+     */
+    fun replay() {
+        seekTo(0L)
+        play()
     }
 
     /**
