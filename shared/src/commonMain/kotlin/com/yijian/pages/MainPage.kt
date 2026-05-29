@@ -70,9 +70,9 @@ internal class MainPage : BasePager() {
     }
 
     private fun onVideoClick(video: VideoInfo) {
-        KLog.i(TAG, "点击视频: ${video.title} → 跳转 PreviewPage")
+        KLog.i(TAG, "点击视频: ${video.title} → 跳转 EditorPage")
         val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
-        jumpPage("PreviewPage", params)
+        jumpPage("EditorPage", params)
     }
 
     override fun body(): ViewBuilder {
