@@ -17,6 +17,11 @@ repositories {
     }
 }
 
+// ── 检测是否使用 KuiklyUI 源码构建 ──
+// settings.full.gradle.kts 中 include 了 KuiklyUI 源码项目 (:core-annotations 等)，
+// 此时可用本地源码替代已发布 AAR/Framework，支持 macOS 等未发布平台
+val isSourceBuild = rootProject.findProject(":core-annotations") != null
+
 kotlin {
     // ── Android ──────────────────────────────────────────
     androidTarget {
@@ -32,13 +37,16 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    // ── macOS ────────────────────────────────────────────
-    macosX64()
-    macosArm64()
+    // ── macOS — 仅在源码构建模式下启用 ──────────────────
+    // 已发布的 com.tencent.kuikly-open:* 不含 macOS artifact，
+    // 必须使用 KuiklyUI 源码构建 (settings.full.gradle.kts)
+    if (isSourceBuild) {
+        macosX64()
+        macosArm64()
 
-    // ── Web / JS ─────────────────────────────────────────
-    // js(IR) { ... }  — disabled: webpack clean task conflict with AGP 8.x.
-    // Enable when AGP upgraded or using separate JS subproject.
+        // ── JS / Web — 源码构建时可选启用 ──────────────────
+        // js(IR) { browser(); binaries.executable() }
+    }
 
     // ── CocoaPods ────────────────────────────────────────
     cocoapods {
@@ -46,7 +54,9 @@ kotlin {
         homepage = "https://github.com/yijian"
         version = "1.0"
         ios.deploymentTarget = "14.1"
-        osx.deploymentTarget = "10.13"
+        if (isSourceBuild) {
+            osx.deploymentTarget = "10.13"
+        }
         framework {
             baseName = "shared"
             isStatic = true
@@ -59,8 +69,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // 版本号可任意填写 — root build 中的 dependencySubstitution
-                // 会将 Maven 依赖替换为本地 KuiklyUI 源码 project 模块
                 implementation("com.tencent.kuikly-open:core:2.0.0")
                 implementation("com.tencent.kuikly-open:core-annotations:2.0.0")
             }
@@ -78,7 +86,7 @@ kotlin {
             }
         }
 
-        // iOS source sets
+        // iOS source sets (always included)
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -89,16 +97,20 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
         }
 
-        // macOS source sets
-        val macosX64Main by getting
-        val macosArm64Main by getting
-
-        // appleMain: shared between iOS & macOS
+        // appleMain: shared between iOS & macOS (always declared, used by targets that exist)
         val appleMain by creating {
             dependsOn(commonMain)
             iosMain.dependsOn(this)
-            macosX64Main.dependsOn(this)
-            macosArm64Main.dependsOn(this)
+        }
+
+        // macOS source sets — 仅源码构建模式下存在
+        if (isSourceBuild) {
+            val macosX64Main by getting {
+                dependsOn(appleMain)
+            }
+            val macosArm64Main by getting {
+                dependsOn(appleMain)
+            }
         }
 
         // JS / Web source set — 需启用 js(IR) target 后取消注释
@@ -114,29 +126,27 @@ kotlin {
             iosArm64Test.dependsOn(this)
             iosSimulatorArm64Test.dependsOn(this)
         }
-        val macosX64Test by getting
-        val macosArm64Test by getting
-        val macosTest by creating {
-            dependsOn(commonTest)
-            macosX64Test.dependsOn(this)
-            macosArm64Test.dependsOn(this)
+        if (isSourceBuild) {
+            val macosX64Test by getting
+            val macosArm64Test by getting
+            val macosTest by creating {
+                dependsOn(commonTest)
+                macosX64Test.dependsOn(this)
+                macosArm64Test.dependsOn(this)
+            }
         }
     }
 
     // ── Native 平台编译器参数 ─────────────────────────────
     targets.withType<KotlinNativeTarget> {
         val mainSourceSets = this.compilations.getByName("main").defaultSourceSet
-        when (konanTarget.family) {
-            Family.OSX -> mainSourceSets.dependsOn(sourceSets.getByName("appleMain"))
-            else -> if (konanTarget.family.isAppleFamily) {
+        when {
+            konanTarget.family.isAppleFamily -> {
                 mainSourceSets.dependsOn(sourceSets.getByName("appleMain"))
             }
         }
     }
 }
-
-group = "com.yijian"
-version = "1.0.0"
 
 // ── KSP 配置 ─────────────────────────────────────────────
 dependencies {
@@ -145,13 +155,15 @@ dependencies {
         add("kspIosArm64", this)
         add("kspIosX64", this)
         add("kspIosSimulatorArm64", this)
-        add("kspMacosArm64", this)
-        add("kspMacosX64", this)
-        // add("kspJs", this)  // JS target 需先启用
+        if (isSourceBuild) {
+            add("kspMacosArm64", this)
+            add("kspMacosX64", this)
+        }
     }
 }
 
-// KSP metadata workaround — see https://github.com/Tencent-TDS/KuiklyUI
+// KSP metadata workaround — Kuikly KSP 生成 Android 风格入口类到 commonMain metadata
+// 但 metadata 源集不可见 IKuiklyCoreEntry (仅 Android 已提供)
 tasks.matching { it.name == "compileCommonMainKotlinMetadata" }.configureEach {
     doFirst {
         layout.buildDirectory.dir("generated/ksp/metadata/commonMain/kotlin").get().asFile
