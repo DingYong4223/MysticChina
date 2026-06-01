@@ -19,10 +19,10 @@ internal class SplashPage : BasePager() {
 
     override fun created() {
         super.created()
-        KLog.i(TAG, "SplashPage created — 1.8s 后跳转 MainPage")
+        KLog.i(TAG, "SplashPage created — 1.8s 后跳转 HomePage")
         setTimeout(1800) {
-            KLog.i(TAG, "跳转 → MainPage")
-            jumpPage("MainPage")
+            KLog.i(TAG, "跳转 → HomePage")
+            jumpPage("HomePage")
         }
     }
 
