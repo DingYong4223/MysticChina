@@ -2,6 +2,7 @@ package com.yijian.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
+import com.tencent.kuikly.core.directives.velse
 import com.tencent.kuikly.core.directives.vif
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
@@ -108,7 +109,7 @@ internal class HomePage : BasePager() {
             BottomTabBar(ctx)
 
             // ─── 编辑昵称弹层 ───
-            if (ctx.showEditNickname) {
+            vif({ ctx.showEditNickname }) {
                 EditOverlay(
                     ctx = ctx,
                     title = "修改昵称",
@@ -119,7 +120,7 @@ internal class HomePage : BasePager() {
             }
 
             // ─── 编辑简介弹层 ───
-            if (ctx.showEditBio) {
+            vif({ ctx.showEditBio }) {
                 EditOverlay(
                     ctx = ctx,
                     title = "修改简介",
@@ -348,14 +349,15 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
         }
 
         // 草稿列表 / 空态
-        if (ctx.draftList.isEmpty()) {
+        vif({ ctx.draftList.isEmpty() }) {
             View {
                 attr { flex(1f); allCenter(); flexDirectionColumn() }
                 Text { attr { text("📂"); fontSize(48f); marginBottom(12f) } }
                 Text { attr { text("暂无草稿"); fontSize(16f); color(YijianColors.textSecondary); marginBottom(6f) } }
                 Text { attr { text("点击「新建剪辑」开始创作吧"); fontSize(12f); color(YijianColors.textTertiary) } }
             }
-        } else {
+        }
+        velse {
             Scroller {
                 attr { flex(1f); flexDirectionColumn() }
                 View {
