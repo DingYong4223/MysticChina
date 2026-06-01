@@ -1,0 +1,539 @@
+package com.yijian.pages
+
+import com.tencent.kuikly.core.annotations.Page
+import com.tencent.kuikly.core.base.*
+import com.tencent.kuikly.core.directives.vif
+import com.tencent.kuikly.core.module.SharedPreferencesModule
+import com.tencent.kuikly.core.reactive.handler.observable
+import com.tencent.kuikly.core.reactive.handler.observableList
+import com.tencent.kuikly.core.views.*
+import com.yijian.base.BasePager
+import com.yijian.model.UserProfile
+import com.yijian.model.VideoInfo
+import com.yijian.theme.YijianColors
+import com.yijian.theme.YijianTheme
+
+// ─── SP 键名常量 ───
+private const val SP_NICKNAME = "yijian_nickname"
+private const val SP_BIO = "yijian_bio"
+private const val SP_AVATAR = "yijian_avatar"
+
+// ─── Tab 枚举 ───
+private enum class HomeTab(val label: String, val icon: String) {
+    CLIP("剪辑", "✂"),
+    LEARN("学习", "🎓"),
+    PROFILE("我的", "👤")
+}
+
+@Page("HomePage", supportInLocal = true)
+internal class HomePage : BasePager() {
+
+    // ─── 导航状态 ───
+    var selectedTab by observable(0)                    // 0=剪辑 1=学习 2=我的
+
+    // ─── 剪辑 Tab 状态 ───
+    var draftList by observableList<VideoInfo>()        // observableList 不支持初始值
+
+    // ─── 我的 Tab 状态 ───
+    var userProfile by observable(UserProfile())
+    var showEditNickname by observable(false)
+    var showEditBio by observable(false)
+    var editingText by observable("")
+
+    private val sp by lazy {
+        acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
+    }
+
+    override fun created() {
+        super.created()
+        // 从 SharedPreferences 加载用户资料
+        userProfile = UserProfile(
+            nickname = sp.getString(SP_NICKNAME) ?: "创作者",
+            bio = sp.getString(SP_BIO) ?: "记录生活的每一刻",
+            avatarEmoji = sp.getString(SP_AVATAR) ?: "🎬"
+        )
+        // 加载草稿（mock 数据）
+        draftList.addAll(listOf(
+            VideoInfo("1", "午后阳光.mp4", "test1", duration = 15200L,
+                createTime = System.currentTimeMillis() - 7200000L),
+            VideoInfo("2", "城市街景.mp4", "test2", duration = 45000L,
+                createTime = System.currentTimeMillis() - 86400000L),
+            VideoInfo("3", "旅行记录.mp4", "test3", duration = 120000L,
+                createTime = System.currentTimeMillis() - 172800000L),
+            VideoInfo("4", "美食制作.mp4", "test4", duration = 32000L,
+                createTime = System.currentTimeMillis() - 3600000L),
+        ))
+    }
+
+    private fun saveNickname() {
+        val newVal = editingText.trim()
+        if (newVal.isNotEmpty()) {
+            userProfile = userProfile.copy(nickname = newVal)
+            sp.setString(SP_NICKNAME, newVal)
+        }
+        showEditNickname = false
+        editingText = ""
+    }
+
+    private fun saveBio() {
+        val newVal = editingText.trim()
+        if (newVal.isNotEmpty()) {
+            userProfile = userProfile.copy(bio = newVal)
+            sp.setString(SP_BIO, newVal)
+        }
+        showEditBio = false
+        editingText = ""
+    }
+
+    override fun body(): ViewBuilder {
+        val ctx = this
+        return {
+            attr {
+                backgroundColor(YijianColors.background)
+                flexDirectionColumn()
+            }
+
+            // ─── 内容区 ───
+            View {
+                attr { flex(1f); flexDirectionColumn() }
+                vif({ ctx.selectedTab == 0 }) { ClipTabContent(ctx) }
+                vif({ ctx.selectedTab == 1 }) { LearnTabContent() }
+                vif({ ctx.selectedTab == 2 }) { ProfileTabContent(ctx) }
+            }
+
+            // ─── 分割线 ───
+            View { attr { height(1f); backgroundColor(YijianColors.surfaceLight) } }
+
+            // ─── 底部 Tab Bar ───
+            BottomTabBar(ctx)
+
+            // ─── 编辑昵称弹层 ───
+            if (ctx.showEditNickname) {
+                EditOverlay(
+                    ctx = ctx,
+                    title = "修改昵称",
+                    placeholder = ctx.userProfile.nickname,
+                    onConfirm = { ctx.saveNickname() },
+                    onDismiss = { ctx.showEditNickname = false; ctx.editingText = "" }
+                )
+            }
+
+            // ─── 编辑简介弹层 ───
+            if (ctx.showEditBio) {
+                EditOverlay(
+                    ctx = ctx,
+                    title = "修改简介",
+                    placeholder = ctx.userProfile.bio,
+                    onConfirm = { ctx.saveBio() },
+                    onDismiss = { ctx.showEditBio = false; ctx.editingText = "" }
+                )
+            }
+        }
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// 底部 Tab Bar
+// ──────────────────────────────────────────────────────────
+private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
+    View {
+        attr {
+            height(56f + ctx.pagerData.safeAreaInsets.bottom)
+            backgroundColor(YijianColors.background)
+            flexDirectionRow()
+            alignItemsCenter()
+            paddingBottom(ctx.pagerData.safeAreaInsets.bottom)
+        }
+
+        HomeTab.values().forEachIndexed { index, tab ->
+            val selected = ctx.selectedTab == index
+            View {
+                attr {
+                    flex(1f)
+                    height(56f)
+                    flexDirectionColumn()
+                    alignItemsCenter()
+                    justifyContentCenter()
+                }
+                event { click { ctx.selectedTab = index } }
+
+                // 选中指示点（占位保持对齐）
+                View {
+                    attr {
+                        size(4f, 4f)
+                        borderRadius(2f)
+                        backgroundColor(if (selected) YijianColors.primary else Color(0x00000000))
+                        marginBottom(2f)
+                    }
+                }
+
+                // 图标
+                Text {
+                    attr {
+                        text(tab.icon)
+                        fontSize(22f)
+                        color(if (selected) YijianColors.primary else YijianColors.textTertiary)
+                        marginBottom(2f)
+                    }
+                }
+
+                // 标签
+                Text {
+                    attr {
+                        text(tab.label)
+                        fontSize(10f)
+                        color(if (selected) YijianColors.primary else YijianColors.textTertiary)
+                        if (selected) fontWeightSemiBold() else fontWeightNormal()
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// 编辑覆盖层（昵称 / 简介）
+// ──────────────────────────────────────────────────────────
+private fun ViewContainer<*, *>.EditOverlay(
+    ctx: HomePage,
+    title: String,
+    placeholder: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    View {
+        attr {
+            absolutePositionAllZero()
+            backgroundColor(Color(0xCC000000))
+            allCenter()
+        }
+        event { click { onDismiss() } }
+
+        View {
+            attr {
+                width(ctx.pagerData.pageViewWidth - 48f)
+                backgroundColor(YijianColors.surface)
+                borderRadius(16f)
+                padding(all = YijianTheme.Spacing.lg)
+                flexDirectionColumn()
+            }
+            event { click { /* 阻止点击穿透 */ } }
+
+            // 标题
+            Text {
+                attr {
+                    text(title)
+                    fontSize(16f)
+                    fontWeightBold()
+                    color(YijianColors.textPrimary)
+                    marginBottom(YijianTheme.Spacing.md)
+                }
+            }
+
+            // 输入框（Input.textDidChange 来源：input.md）
+            Input {
+                attr {
+                    width(ctx.pagerData.pageViewWidth - 48f - YijianTheme.Spacing.lg * 2)
+                    height(44f)
+                    backgroundColor(YijianColors.backgroundLight)
+                    borderRadius(8f)
+                    fontSize(14f)
+                    color(YijianColors.textPrimary)
+                    placeholder(placeholder)
+                    text(ctx.editingText)
+                }
+                event {
+                    textDidChange { ctx.editingText = it.text }
+                }
+            }
+
+            // 按钮行
+            View {
+                attr {
+                    flexDirectionRow()
+                    justifyContentFlexEnd()
+                    marginTop(YijianTheme.Spacing.md)
+                }
+
+                // 取消
+                View {
+                    attr {
+                        height(36f); paddingLeft(16f); paddingRight(16f)
+                        borderRadius(18f)
+                        backgroundColor(YijianColors.surfaceLight)
+                        allCenter(); marginRight(8f)
+                    }
+                    event { click { onDismiss() } }
+                    Text { attr { text("取消"); fontSize(14f); color(YijianColors.textSecondary) } }
+                }
+
+                // 确认
+                View {
+                    attr {
+                        height(36f); paddingLeft(16f); paddingRight(16f)
+                        borderRadius(18f)
+                        backgroundLinearGradient(
+                            Direction.TO_RIGHT,
+                            ColorStop(YijianColors.gradientStart, 0f),
+                            ColorStop(YijianColors.gradientEnd, 1f)
+                        )
+                        allCenter()
+                    }
+                    event { click { onConfirm() } }
+                    Text { attr { text("确认"); fontSize(14f); color(YijianColors.textPrimary); fontWeightBold() } }
+                }
+            }
+        }
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// Tab 1：剪辑
+// ──────────────────────────────────────────────────────────
+private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
+    View {
+        attr { flex(1f); flexDirectionColumn(); backgroundColor(YijianColors.background) }
+
+        // TopBar
+        View {
+            attr {
+                height(YijianTheme.BarHeight.topBar + ctx.pagerData.statusBarHeight)
+                paddingTop(ctx.pagerData.statusBarHeight)
+                paddingLeft(YijianTheme.Spacing.lg); paddingRight(YijianTheme.Spacing.lg)
+                flexDirectionRow(); alignItemsCenter()
+            }
+            Text {
+                attr {
+                    text("一剪"); fontSize(YijianTheme.FontSize.title)
+                    fontWeightBold(); color(YijianColors.textPrimary); flex(1f)
+                }
+            }
+        }
+
+        // 新建剪辑按钮
+        View {
+            attr {
+                marginLeft(YijianTheme.Spacing.lg); marginRight(YijianTheme.Spacing.lg)
+                marginBottom(YijianTheme.Spacing.lg)
+                height(56f); borderRadius(12f)
+                backgroundLinearGradient(
+                    Direction.TO_RIGHT,
+                    ColorStop(YijianColors.gradientStart, 0f),
+                    ColorStop(YijianColors.gradientEnd, 1f)
+                )
+                flexDirectionRow(); alignItemsCenter(); justifyContentCenter()
+            }
+            event { click { ctx.jumpPage("MainPage") } }
+
+            Text { attr { text("🎬"); fontSize(20f); marginRight(8f) } }
+            Text {
+                attr {
+                    text("新建剪辑"); fontSize(16f)
+                    fontWeightBold(); color(YijianColors.textPrimary)
+                }
+            }
+        }
+
+        // 草稿箱标题行
+        View {
+            attr {
+                flexDirectionRow(); alignItemsCenter()
+                paddingLeft(YijianTheme.Spacing.lg); paddingRight(YijianTheme.Spacing.lg)
+                marginBottom(YijianTheme.Spacing.sm)
+            }
+            Text {
+                attr { text("草稿箱"); fontSize(14f); fontWeightBold(); color(YijianColors.textPrimary); flex(1f) }
+            }
+            Text { attr { text("全部 >"); fontSize(12f); color(YijianColors.textTertiary) } }
+        }
+
+        // 草稿列表 / 空态
+        if (ctx.draftList.isEmpty()) {
+            View {
+                attr { flex(1f); allCenter(); flexDirectionColumn() }
+                Text { attr { text("📂"); fontSize(48f); marginBottom(12f) } }
+                Text { attr { text("暂无草稿"); fontSize(16f); color(YijianColors.textSecondary); marginBottom(6f) } }
+                Text { attr { text("点击「新建剪辑」开始创作吧"); fontSize(12f); color(YijianColors.textTertiary) } }
+            }
+        } else {
+            Scroller {
+                attr { flex(1f); flexDirectionColumn() }
+                View {
+                    attr {
+                        flexDirectionRow(); flexWrapWrap()
+                        paddingLeft(YijianTheme.Spacing.sm); paddingRight(YijianTheme.Spacing.sm)
+                    }
+                    val cardWidth = ctx.pagerData.pageViewWidth / 2 - YijianTheme.Spacing.md
+                    for (draft in ctx.draftList) {
+                        DraftCard(ctx, draft, cardWidth)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, video: VideoInfo, cardWidth: Float) {
+    View {
+        attr {
+            size(cardWidth, cardWidth * 9f / 16f + 52f)
+            flexDirectionColumn()
+            margin(YijianTheme.Spacing.xs)
+            backgroundColor(YijianColors.surface)
+            borderRadius(YijianTheme.Radius.md)
+            overflow(true)
+        }
+        event {
+            click {
+                val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
+                ctx.jumpPage("EditorPage", params)
+            }
+        }
+
+        // 缩略图
+        View {
+            attr {
+                size(cardWidth, cardWidth * 9f / 16f)
+                backgroundColor(YijianColors.backgroundLight); allCenter()
+            }
+            Text { attr { text("🎞"); fontSize(32f) } }
+
+            if (video.duration > 0) {
+                View {
+                    attr {
+                        absolutePosition(bottom = 6f, right = 6f)
+                        paddingLeft(5f); paddingRight(5f); paddingTop(2f); paddingBottom(2f)
+                        backgroundColor(Color(0xCC000000)); borderRadius(4f)
+                    }
+                    Text { attr { text(video.formattedDuration); fontSize(10f); color(YijianColors.textPrimary) } }
+                }
+            }
+        }
+
+        // 信息行
+        View {
+            attr { flex(1f); padding(all = 6f); justifyContentCenter() }
+            Text {
+                attr { text(video.title); fontSize(12f); color(YijianColors.textPrimary); lines(1); marginBottom(3f) }
+            }
+            Text {
+                attr { text(formatRelativeTime(video.createTime)); fontSize(10f); color(YijianColors.textTertiary) }
+            }
+        }
+    }
+}
+
+private fun formatRelativeTime(createTime: Long): String {
+    if (createTime == 0L) return "刚刚"
+    val diff = System.currentTimeMillis() - createTime
+    return when {
+        diff < 60_000L -> "刚刚"
+        diff < 3_600_000L -> "${diff / 60_000}分钟前"
+        diff < 86_400_000L -> "${diff / 3_600_000}小时前"
+        else -> "${diff / 86_400_000}天前"
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// Tab 2：学习（空占位）
+// ──────────────────────────────────────────────────────────
+private fun ViewContainer<*, *>.LearnTabContent() {
+    View {
+        attr { flex(1f); backgroundColor(YijianColors.background); allCenter(); flexDirectionColumn() }
+        Text { attr { text("🎓"); fontSize(48f); marginBottom(16f) } }
+        Text { attr { text("即将上线"); fontSize(16f); color(YijianColors.textPrimary); marginBottom(8f) } }
+        Text { attr { text("学习内容正在精心准备中..."); fontSize(12f); color(YijianColors.textSecondary) } }
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// Tab 3：我的
+// ──────────────────────────────────────────────────────────
+private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
+    Scroller {
+        attr { flex(1f); flexDirectionColumn(); backgroundColor(YijianColors.background) }
+
+        // 顶部安全区
+        View { attr { height(ctx.pagerData.statusBarHeight + YijianTheme.Spacing.xl) } }
+
+        // 头像
+        View {
+            attr { allCenter(); marginBottom(12f) }
+            View {
+                attr { size(80f, 80f); borderRadius(40f); backgroundColor(YijianColors.surface); allCenter() }
+                Text { attr { text(ctx.userProfile.avatarEmoji); fontSize(36f) } }
+            }
+        }
+
+        // 昵称（可编辑）
+        View {
+            attr { allCenter(); marginBottom(8f); flexDirectionRow(); justifyContentCenter(); alignItemsCenter() }
+            event { click { ctx.editingText = ctx.userProfile.nickname; ctx.showEditNickname = true } }
+            Text {
+                attr { text(ctx.userProfile.nickname); fontSize(20f); fontWeightBold(); color(YijianColors.textPrimary) }
+            }
+            Text { attr { text(" ✏"); fontSize(14f); color(YijianColors.textTertiary) } }
+        }
+
+        // 简介（可编辑）
+        View {
+            attr { allCenter(); marginBottom(YijianTheme.Spacing.xl); paddingLeft(32f); paddingRight(32f) }
+            event { click { ctx.editingText = ctx.userProfile.bio; ctx.showEditBio = true } }
+            Text {
+                attr { text(ctx.userProfile.bio); fontSize(14f); color(YijianColors.textSecondary); textAlignCenter(); lines(3) }
+            }
+        }
+
+        // 分割线
+        View {
+            attr {
+                height(1f); backgroundColor(YijianColors.surfaceLight)
+                marginLeft(YijianTheme.Spacing.lg); marginRight(YijianTheme.Spacing.lg); marginBottom(YijianTheme.Spacing.lg)
+            }
+        }
+
+        // 统计
+        View {
+            attr { paddingLeft(YijianTheme.Spacing.lg); paddingRight(YijianTheme.Spacing.lg); marginBottom(YijianTheme.Spacing.lg) }
+            Text { attr { text("我的统计"); fontSize(14f); fontWeightBold(); color(YijianColors.textPrimary); marginBottom(YijianTheme.Spacing.md) } }
+            View {
+                attr { flexDirectionRow() }
+                listOf(Triple("4", "项目", "📁"), Triple("1", "本月", "📅"), Triple("3m12s", "时长", "⏱")).forEach { (value, label, icon) ->
+                    View {
+                        attr {
+                            flex(1f); backgroundColor(YijianColors.surface); borderRadius(YijianTheme.Radius.md)
+                            padding(all = YijianTheme.Spacing.md); allCenter(); flexDirectionColumn()
+                            marginLeft(4f); marginRight(4f)
+                        }
+                        Text { attr { text(icon); fontSize(20f); marginBottom(4f) } }
+                        Text { attr { text(value); fontSize(18f); fontWeightBold(); color(YijianColors.textPrimary); marginBottom(2f) } }
+                        Text { attr { text(label); fontSize(11f); color(YijianColors.textTertiary) } }
+                    }
+                }
+            }
+        }
+
+        // 分割线
+        View { attr { height(1f); backgroundColor(YijianColors.surfaceLight); marginBottom(YijianTheme.Spacing.sm) } }
+
+        // 设置列表项
+        listOf("⚙  设置", "📱  关于一剪").forEach { label ->
+            View {
+                attr {
+                    height(52f); paddingLeft(YijianTheme.Spacing.lg); paddingRight(YijianTheme.Spacing.lg)
+                    flexDirectionRow(); alignItemsCenter(); backgroundColor(YijianColors.background)
+                }
+                Text { attr { text(label); fontSize(14f); color(YijianColors.textPrimary); flex(1f) } }
+                Text { attr { text(">"); fontSize(14f); color(YijianColors.textTertiary) } }
+                View {
+                    attr {
+                        absolutePosition(bottom = 0f, left = YijianTheme.Spacing.lg, right = 0f)
+                        height(1f); backgroundColor(YijianColors.surfaceLight)
+                    }
+                }
+            }
+        }
+
+        View { attr { height(YijianTheme.Spacing.xxxl) } }
+    }
+}
