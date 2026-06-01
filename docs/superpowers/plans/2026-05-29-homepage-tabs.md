@@ -1,8 +1,93 @@
+# 首页三 Tab 框架实现计划
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** 搭建由「剪辑 / 学习 / 我的」三个 Tab 组成的首页，替换 MainPage 在导航中的位置，并实现可本地持久化的用户资料页。
+
+**Architecture:** 单 Pager（`HomePage`）内部通过 `selectedTab: Int` observable 状态切换三段内容区域，底部固定 Tab Bar 不发生页面跳转。用户资料通过 KuiklyUI 内置的 `SharedPreferencesModule` 持久化（无需 `expect/actual`，跨平台开箱即用）。
+
+**Tech Stack:** KuiklyUI DSL, `observable`/`observableList`, `vif`, `SharedPreferencesModule`, `Input.textDidChange`
+
+> **API 来源：** 经 KuiklyUI-AI (`skills/kuikly-ui-framework`) 文档验证，所有 API 均来自官方文档。
+
+---
+
+## 文件映射
+
+| 操作 | 文件路径 | 职责 |
+|------|---------|------|
+| 新建 | `commonMain/kotlin/com/yijian/model/UserProfile.kt` | 用户资料数据类 |
+| 新建 | `commonMain/kotlin/com/yijian/pages/HomePage.kt` | 3-Tab 首页完整实现 |
+| 修改 | `commonMain/kotlin/com/yijian/pages/SplashPage.kt` | 跳转目标 `"MainPage"` → `"HomePage"` |
+
+---
+
+## Task 1：UserProfile 数据类
+
+**Files:**
+- Create: `shared/src/commonMain/kotlin/com/yijian/model/UserProfile.kt`
+
+- [ ] **Step 1：创建数据类文件**
+
+```kotlin
+// shared/src/commonMain/kotlin/com/yijian/model/UserProfile.kt
+package com.yijian.model
+
+/**
+ * 用户资料数据模型。
+ * 存储使用 KuiklyUI 内置 SharedPreferencesModule（跨平台，无需 expect/actual）。
+ *
+ * 存储键：
+ *   yijian_nickname   → String
+ *   yijian_bio        → String
+ *   yijian_avatar     → String
+ */
+data class UserProfile(
+    val nickname: String = "创作者",
+    val bio: String = "记录生活的每一刻",
+    val avatarEmoji: String = "🎬"
+)
+```
+
+- [ ] **Step 2：验证编译**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+./gradlew :shared:compileDebugKotlinAndroid 2>&1 | tail -4
+```
+
+预期：`BUILD SUCCESSFUL`
+
+- [ ] **Step 3：提交**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+git add shared/src/commonMain/kotlin/com/yijian/model/UserProfile.kt
+git commit -m "feat: add UserProfile data class"
+```
+
+---
+
+## Task 2：HomePage 完整实现
+
+**Files:**
+- Create: `shared/src/commonMain/kotlin/com/yijian/pages/HomePage.kt`
+
+> **API 说明：**
+> - `acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)` — KuiklyUI 内置持久化，跨平台，来源：`modules.md`
+> - `sp.getString(key)` / `sp.setString(key, value)` — 字符串读写，来源：`modules.md`
+> - `textDidChange { it.text }` — Input 文本变化事件，来源：`input.md`
+> - `vif({ condition }) { ... }` — 条件渲染，来源：`reactive.md`
+> - `observableList<T>()` — 不支持初始值，在 `created()` 中添加数据，来源：`reactive.md`
+
+- [ ] **Step 1：创建 HomePage.kt**
+
+```kotlin
+// shared/src/commonMain/kotlin/com/yijian/pages/HomePage.kt
 package com.yijian.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
-import com.tencent.kuikly.core.directives.velse
 import com.tencent.kuikly.core.directives.vif
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
@@ -13,7 +98,6 @@ import com.yijian.model.UserProfile
 import com.yijian.model.VideoInfo
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
-import com.yijian.util.currentTimeMs
 
 // ─── SP 键名常量 ───
 private const val SP_NICKNAME = "yijian_nickname"
@@ -57,13 +141,13 @@ internal class HomePage : BasePager() {
         // 加载草稿（mock 数据）
         draftList.addAll(listOf(
             VideoInfo("1", "午后阳光.mp4", "test1", duration = 15200L,
-                createTime = currentTimeMs() - 7200000L),
+                createTime = System.currentTimeMillis() - 7200000L),
             VideoInfo("2", "城市街景.mp4", "test2", duration = 45000L,
-                createTime = currentTimeMs() - 86400000L),
+                createTime = System.currentTimeMillis() - 86400000L),
             VideoInfo("3", "旅行记录.mp4", "test3", duration = 120000L,
-                createTime = currentTimeMs() - 172800000L),
+                createTime = System.currentTimeMillis() - 172800000L),
             VideoInfo("4", "美食制作.mp4", "test4", duration = 32000L,
-                createTime = currentTimeMs() - 3600000L),
+                createTime = System.currentTimeMillis() - 3600000L),
         ))
     }
 
@@ -110,7 +194,7 @@ internal class HomePage : BasePager() {
             BottomTabBar(ctx)
 
             // ─── 编辑昵称弹层 ───
-            vif({ ctx.showEditNickname }) {
+            if (ctx.showEditNickname) {
                 EditOverlay(
                     ctx = ctx,
                     title = "修改昵称",
@@ -121,7 +205,7 @@ internal class HomePage : BasePager() {
             }
 
             // ─── 编辑简介弹层 ───
-            vif({ ctx.showEditBio }) {
+            if (ctx.showEditBio) {
                 EditOverlay(
                     ctx = ctx,
                     title = "修改简介",
@@ -239,6 +323,7 @@ private fun ViewContainer<*, *>.EditOverlay(
                     height(44f)
                     backgroundColor(YijianColors.backgroundLight)
                     borderRadius(8f)
+                    paddingLeft(12f); paddingRight(12f)
                     fontSize(14f)
                     color(YijianColors.textPrimary)
                     placeholder(placeholder)
@@ -350,15 +435,14 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
         }
 
         // 草稿列表 / 空态
-        vif({ ctx.draftList.isEmpty() }) {
+        if (ctx.draftList.isEmpty()) {
             View {
                 attr { flex(1f); allCenter(); flexDirectionColumn() }
                 Text { attr { text("📂"); fontSize(48f); marginBottom(12f) } }
                 Text { attr { text("暂无草稿"); fontSize(16f); color(YijianColors.textSecondary); marginBottom(6f) } }
                 Text { attr { text("点击「新建剪辑」开始创作吧"); fontSize(12f); color(YijianColors.textTertiary) } }
             }
-        }
-        velse {
+        } else {
             Scroller {
                 attr { flex(1f); flexDirectionColumn() }
                 View {
@@ -428,12 +512,12 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, video: VideoInfo, cardW
 
 private fun formatRelativeTime(createTime: Long): String {
     if (createTime == 0L) return "刚刚"
-    val diff = currentTimeMs() - createTime
+    val diff = System.currentTimeMillis() - createTime
     return when {
         diff < 60_000L -> "刚刚"
-        diff < 3_600_000L -> "${diff / 60_000L}分钟前"
-        diff < 86_400_000L -> "${diff / 3_600_000L}小时前"
-        else -> "${diff / 86_400_000L}天前"
+        diff < 3_600_000L -> "${diff / 60_000}分钟前"
+        diff < 86_400_000L -> "${diff / 3_600_000}小时前"
+        else -> "${diff / 86_400_000}天前"
     }
 }
 
@@ -540,3 +624,152 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
         View { attr { height(YijianTheme.Spacing.xxxl) } }
     }
 }
+```
+
+- [ ] **Step 2：验证编译**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+./gradlew :shared:compileDebugKotlinAndroid 2>&1 | grep -E "error:|Error:|BUILD" | tail -10
+```
+
+预期：`BUILD SUCCESSFUL`（无 error）
+
+- [ ] **Step 3：提交**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+git add shared/src/commonMain/kotlin/com/yijian/pages/HomePage.kt
+git commit -m "feat: add HomePage with 3-tab layout, SharedPreferencesModule storage"
+```
+
+---
+
+## Task 3：更新 SplashPage 跳转目标
+
+**Files:**
+- Modify: `shared/src/commonMain/kotlin/com/yijian/pages/SplashPage.kt`
+
+- [ ] **Step 1：修改两处日志和跳转**
+
+找到文件中：
+```kotlin
+KLog.i(TAG, "SplashPage created — 1.8s 后跳转 MainPage")
+```
+改为：
+```kotlin
+KLog.i(TAG, "SplashPage created — 1.8s 后跳转 HomePage")
+```
+
+找到：
+```kotlin
+KLog.i(TAG, "跳转 → MainPage")
+jumpPage("MainPage")
+```
+改为：
+```kotlin
+KLog.i(TAG, "跳转 → HomePage")
+jumpPage("HomePage")
+```
+
+- [ ] **Step 2：验证编译**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+./gradlew :shared:compileDebugKotlinAndroid 2>&1 | tail -4
+```
+
+预期：`BUILD SUCCESSFUL`
+
+- [ ] **Step 3：提交**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+git add shared/src/commonMain/kotlin/com/yijian/pages/SplashPage.kt
+git commit -m "feat: route SplashPage → HomePage"
+```
+
+---
+
+## Task 4：构建 APK、安装、冒烟测试
+
+- [ ] **Step 1：构建 Debug APK**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+./gradlew :androidApp:assembleDebug 2>&1 | tail -5
+```
+
+预期：`BUILD SUCCESSFUL`
+
+- [ ] **Step 2：安装**
+
+```bash
+APK=$(find /Users/delanding/ProjDoing/TDF/yijian/androidApp/build/outputs/apk/debug -name "*.apk" | head -1)
+adb install -r "$APK" && echo "installed"
+```
+
+- [ ] **Step 3：启动并截图验证**
+
+```bash
+adb shell am force-stop com.yijian.android
+sleep 1
+adb shell am start -n "com.yijian.android/com.yijian.android.MainActivity"
+sleep 7
+adb shell screencap -p /sdcard/homepage.png
+adb pull /sdcard/homepage.png /tmp/homepage.png
+echo "screenshot saved"
+```
+
+**验收清单：**
+- [ ] SplashPage 正常显示 → 1.8s 后进入 HomePage
+- [ ] 底部 Tab Bar：✂ 剪辑 / 🎓 学习 / 👤 我的，默认选中「剪辑」（青色）
+- [ ] 剪辑 Tab：渐变「新建剪辑」按钮可见 + 4 条草稿卡片
+- [ ] 点击「学习」Tab → 空占位页（🎓 即将上线）
+- [ ] 点击「我的」Tab → 用户资料页（默认昵称「创作者」）
+- [ ] 点击昵称区域 → 弹出编辑框 → 输入新昵称 → 确认 → UI 更新
+- [ ] 重启 App → 昵称持久化（SharedPreferences 生效）
+- [ ] 点击草稿卡片 → 进入 EditorPage
+
+- [ ] **Step 4：验证持久化**
+
+```bash
+# 在 App 中把昵称改为「测试用户」后执行
+adb shell am force-stop com.yijian.android && sleep 2
+adb shell am start -n "com.yijian.android/com.yijian.android.MainActivity"
+sleep 6
+adb shell screencap -p /sdcard/profile_persist.png
+adb pull /sdcard/profile_persist.png /tmp/profile_persist.png
+# 检查截图中「我的」Tab 显示「测试用户」
+```
+
+- [ ] **Step 5：最终提交**
+
+```bash
+cd /Users/delanding/ProjDoing/TDF/yijian
+git tag -a "v0.2-homepage-tabs" -m "feat: 3-tab homepage with persistent user profile"
+```
+
+---
+
+## 自查结果
+
+**Spec 覆盖：**
+- ✅ 路由 SplashPage → HomePage（Task 3）
+- ✅ 底部 Tab Bar + 选中指示（Task 2，`BottomTabBar`）
+- ✅ 剪辑 Tab：新建按钮 + 草稿列表 + 空态（`ClipTabContent`）
+- ✅ 学习 Tab：空占位（`LearnTabContent`）
+- ✅ 我的 Tab：头像 + 可编辑昵称/简介 + 统计 + 设置列表（`ProfileTabContent`）
+- ✅ 持久化：`SharedPreferencesModule`（无 expect/actual，KuiklyUI 内置）
+
+**API 正确性（经 KuiklyUI-AI 验证）：**
+- `SharedPreferencesModule.getString/setString` ✅（来源：`modules.md`）
+- `textDidChange { it.text }` ✅（来源：`input.md`）
+- `observableList<T>()` 无初始值 ✅（来源：`reactive.md`）
+- `vif({ condition })` ✅
+- `justifyContentFlexEnd` / `justifyContentCenter` ✅（来源：`layout.md`）
+
+**与 Task 1 类型一致：**
+- `UserProfile` 数据类在 Task 1 定义，在 Task 2 `HomePage` 中使用 ✅
+- `VideoInfo` 复用现有 model ✅
+- `HomeTab` 枚举在文件顶部定义，`BottomTabBar` 中通过 `HomeTab.values()` 使用 ✅
