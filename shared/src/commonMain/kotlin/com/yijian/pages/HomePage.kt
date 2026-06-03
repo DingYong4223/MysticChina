@@ -3,6 +3,7 @@ package com.yijian.pages
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.directives.velse
+import com.tencent.kuikly.core.directives.vfor
 import com.tencent.kuikly.core.directives.vif
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
@@ -42,8 +43,8 @@ internal class HomePage : BasePager() {
     var showEditNickname by observable(false)
     var showEditBio by observable(false)
     var editingText by observable("")
-    var errorMessage by observable("")
-    fun showError(msg: String) { errorMessage = msg }
+    var errorMessages by observableList<String>()
+    fun showError(msg: String) { errorMessages.add(msg) }
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
     }
@@ -94,23 +95,6 @@ internal class HomePage : BasePager() {
         return {
             attr { backgroundColor(YijianColors.background); flexDirectionColumn() }
 
-            // —— 错误 Toast ——
-            if (ctx.errorMessage.isNotEmpty()) {
-                View {
-                    attr {
-                        absolutePosition(top = 80f, left = 20f, right = 20f); zIndex(100)
-                        padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
-                        backgroundColor(Color(0xE8FF3B30)); borderRadius(10f)
-                        flexDirectionRow(); alignItemsCenter()
-                    }
-                    event { click { ctx.errorMessage = "" } }
-                    View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
-                        Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
-                    Text { attr { text(ctx.errorMessage); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
-                    View { attr { size(24f, 24f); allCenter() }
-                        Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
-                }
-            }
 
             // ─── 内容区 ───
             View {
@@ -147,6 +131,25 @@ internal class HomePage : BasePager() {
                     onDismiss = { ctx.showEditBio = false; ctx.editingText = "" }
                 )
             }
+
+            // —— 错误提示栏 ——
+            vfor({ ctx.errorMessages }) { msg ->
+                View {
+                    attr {
+                        height(44f)
+                        padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
+                        backgroundColor(Color(0xE8FF3B30))
+                        flexDirectionRow(); alignItemsCenter()
+                    }
+                    event { click { ctx.errorMessages.clear() } }
+                    View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
+                        Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
+                    Text { attr { text(msg); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
+                    View { attr { size(24f, 24f); allCenter() }
+                        Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
+                }
+            }
+
         }
     }
 }
