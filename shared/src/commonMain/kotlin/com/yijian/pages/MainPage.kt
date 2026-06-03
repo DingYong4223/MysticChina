@@ -37,10 +37,8 @@ internal class MainPage : BasePager() {
 
     private fun addTestVideos() {
         videoList.addAll(listOf(
-            VideoInfo("1", "午后阳光.mp4", "test1", duration = 15200L),
-            VideoInfo("2", "城市街景.mp4", "test2", duration = 45000L),
-            VideoInfo("3", "旅行记录.mp4", "test3", duration = 120000L),
-            VideoInfo("4", "美食制作.mp4", "test4", duration = 32000L),
+            VideoInfo("real1", "test.mp4", "/data/data/com.yijian.android/files/screen_test.mp4", duration = 3000L),
+            VideoInfo("fake1", "不存在的视频.mp4", "nonexistent_path", duration = 15000L),
         ))
     }
 

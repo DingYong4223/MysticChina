@@ -13,36 +13,35 @@ class VideoRenderViewImpl(context: Context) : TextureView(context), IKuiklyRende
 
     companion object {
         private const val TAG = "VideoRenderView"
-        const val KV_SURFACE_CREATED = "surfaceCreated"
-        const val KV_SURFACE_DESTROYED = "surfaceDestroyed"
-        const val KV_SURFACE_SIZE_CHANGED = "surfaceSizeChanged"
+        const val EV_SURFACE_READY = "surfaceReady"
+        const val EV_SURFACE_DESTROYED = "surfaceDestroyed"
+        const val EV_SURFACE_SIZE_CHANGED = "surfaceSizeChanged"
     }
 
     private var surfaceId: Long = 0L
-    private val registeredEvents = mutableMapOf<String, KuiklyRenderCallback?>()
+    private val callbacks = mutableMapOf<String, KuiklyRenderCallback?>()
+    private val pendingData = mutableMapOf<String, Any>()
 
     init {
         isOpaque = false
         isFocusable = false
         surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(st: SurfaceTexture, width: Int, height: Int) {
-                Log.d(TAG, "onSurfaceTextureAvailable: ${width}x${height}")
+            override fun onSurfaceTextureAvailable(st: SurfaceTexture, w: Int, h: Int) {
+                Log.d(TAG, "onSurfaceTextureAvailable: ${w}x${h}")
                 surfaceId = SurfaceRegistry.register(Surface(st))
-                fireEvent(KV_SURFACE_CREATED, mapOf(
-                    "surfaceId" to surfaceId, "width" to width, "height" to height,
-                ))
+                val data = mapOf("surfaceId" to surfaceId, "width" to w, "height" to h)
+                deliverOrBuffer(EV_SURFACE_READY, data)
             }
 
-            override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, width: Int, height: Int) {
-                Log.d(TAG, "onSurfaceTextureSizeChanged: ${width}x${height}")
-                fireEvent(KV_SURFACE_SIZE_CHANGED, mapOf(
-                    "surfaceId" to surfaceId, "width" to width, "height" to height,
-                ))
+            override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, w: Int, h: Int) {
+                Log.d(TAG, "onSurfaceTextureSizeChanged: ${w}x${h}")
+                val data = mapOf("surfaceId" to surfaceId, "width" to w, "height" to h)
+                deliverOrBuffer(EV_SURFACE_SIZE_CHANGED, data)
             }
 
             override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
                 Log.d(TAG, "onSurfaceTextureDestroyed: surfaceId=$surfaceId")
-                fireEvent(KV_SURFACE_DESTROYED, mapOf("surfaceId" to surfaceId))
+                deliverOrBuffer(EV_SURFACE_DESTROYED, mapOf("surfaceId" to surfaceId))
                 SurfaceRegistry.remove(surfaceId)
                 return true
             }
@@ -51,15 +50,28 @@ class VideoRenderViewImpl(context: Context) : TextureView(context), IKuiklyRende
         }
     }
 
-    private fun fireEvent(eventName: String, data: Map<String, Any>) {
-        registeredEvents[eventName]?.invoke(data)
+    private fun deliverOrBuffer(eventName: String, data: Any) {
+        val cb = callbacks[eventName]
+        if (cb != null) {
+            Log.d(TAG, "deliver $eventName: invoking callback")
+            cb.invoke(data)
+        } else {
+            Log.d(TAG, "buffer $eventName: callback not registered yet")
+            pendingData[eventName] = data
+        }
     }
 
     override fun setProp(propKey: String, propValue: Any): Boolean {
         return when (propKey) {
-            KV_SURFACE_CREATED -> { registeredEvents[KV_SURFACE_CREATED] = propValue as? KuiklyRenderCallback; true }
-            KV_SURFACE_DESTROYED -> { registeredEvents[KV_SURFACE_DESTROYED] = propValue as? KuiklyRenderCallback; true }
-            KV_SURFACE_SIZE_CHANGED -> { registeredEvents[KV_SURFACE_SIZE_CHANGED] = propValue as? KuiklyRenderCallback; true }
+            EV_SURFACE_READY, EV_SURFACE_DESTROYED, EV_SURFACE_SIZE_CHANGED -> {
+                callbacks[propKey] = propValue as? KuiklyRenderCallback
+                // Replay any buffered event
+                pendingData.remove(propKey)?.let { data ->
+                    Log.d(TAG, "setProp $propKey: replaying buffered data")
+                    (propValue as? KuiklyRenderCallback)?.invoke(data)
+                }
+                true
+            }
             else -> super.setProp(propKey, propValue)
         }
     }

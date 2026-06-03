@@ -160,15 +160,14 @@ private fun ViewContainer<*, *>.EditorPreview(ctx: EditorPage) {
             event { click { ctrl.togglePlayPause() } }
         }
 
-        // 中央按钮（不在播放时）
-        if (ctrl.playerState != PlayerState.PLAYING) {
+        vif({ ctrl.playerState != PlayerState.PLAYING }) {
             View { attr { absolutePositionAllZero(); allCenter() }
                 View { attr { size(60f, 60f); borderRadius(30f); backgroundColor(Color(0xCC000000)); allCenter() }
                     Text { attr { text(if (ctrl.playerState == PlayerState.COMPLETED) "↻" else "▶"); fontSize(26f); color(YijianColors.textPrimary) } } } }
         }
 
         // 加载中
-        if (ctrl.playerState == PlayerState.LOADING) {
+        vif({ ctrl.playerState == PlayerState.LOADING }) {
             View { attr { absolutePositionAllZero(); allCenter() }
                 Text { attr { text("加载中..."); fontSize(14f); color(YijianColors.textSecondary) } } }
         }

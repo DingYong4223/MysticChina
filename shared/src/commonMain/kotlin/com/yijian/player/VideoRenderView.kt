@@ -57,8 +57,11 @@ class VideoRenderEvent : Event() {
 
     fun surfaceReady(handler: (surfaceId: Long) -> Unit) {
         register(SURFACE_READY) { params ->
-            // params: { surfaceId: Long }
-            val id = (params as? Map<*, *>)?.get("surfaceId") as? Long ?: 0L
+            val id = when (params) {
+                is Map<*, *> -> (params["surfaceId"] as? Number)?.toLong() ?: 0L
+                is String -> extractJsonLong(params, "surfaceId")
+                else -> extractJsonLong(params.toString(), "surfaceId")
+            }
             handler(id)
         }
     }
@@ -69,12 +72,26 @@ class VideoRenderEvent : Event() {
 
     fun surfaceSizeChanged(handler: (width: Int, height: Int) -> Unit) {
         register(SURFACE_SIZE_CHANGED) { params ->
-            val map = params as? Map<*, *> ?: return@register
-            val w = (map["width"] as? Number)?.toInt() ?: 0
-            val h = (map["height"] as? Number)?.toInt() ?: 0
+            val json = params as? String ?: ""
+            val w = extractJsonLong(json, "width").toInt()
+            val h = extractJsonLong(json, "height").toInt()
             handler(w, h)
         }
     }
+}
+
+/** 从简单 JSON 字符串中提取整数键值 */
+private fun extractJsonLong(json: String, key: String): Long {
+    val idx = json.indexOf("\"$key\"")
+    if (idx < 0) return 0L
+    val colon = json.indexOf(':', idx)
+    if (colon < 0) return 0L
+    var start = colon + 1
+    while (start < json.length && !json[start].isDigit() && json[start] != '-') start++
+    var end = start
+    while (end < json.length && (json[end].isDigit() || json[end] == '-')) end++
+    val value = json.substring(start, end).trim()
+    return value.toLongOrNull() ?: 0L
 }
 
 fun ViewContainer<*, *>.VideoRender(init: VideoRenderView.() -> Unit) {
