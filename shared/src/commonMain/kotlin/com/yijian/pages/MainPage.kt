@@ -5,6 +5,7 @@ import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.directives.vfor
 import com.tencent.kuikly.core.log.KLog
 import com.tencent.kuikly.core.reactive.handler.observableList
+import com.tencent.kuikly.core.reactive.handler.observable
 import com.tencent.kuikly.core.views.*
 import com.tencent.kuikly.core.views.compose.Button
 import com.yijian.base.BasePager
@@ -12,6 +13,7 @@ import com.yijian.model.VideoInfo
 import com.yijian.module.GalleryModule
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
+import com.yijian.util.fileExists
 
 private const val TAG = "MainPage"
 
@@ -20,6 +22,9 @@ private const val TAG = "MainPage"
  */
 @Page("MainPage", supportInLocal = true)
 internal class MainPage : BasePager() {
+
+    private var errorMessage by observable("")
+
 
     private var videoList by observableList<VideoInfo>()
     private var _nextId = 0L
@@ -70,6 +75,11 @@ internal class MainPage : BasePager() {
     }
 
     private fun onVideoClick(video: VideoInfo) {
+        if (!fileExists(video.path)) {
+            KLog.e(TAG, "视频不存在: ${video.path}")
+            errorMessage = "视频不存在: ${video.title}"
+            return
+        }
         KLog.i(TAG, "点击视频: ${video.title} → 跳转 EditorPage")
         val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
         jumpPage("EditorPage", params)
@@ -78,10 +88,25 @@ internal class MainPage : BasePager() {
     override fun body(): ViewBuilder {
         val ctx = this
         return {
-            attr {
-                backgroundColor(YijianColors.background)
-            }
+            attr { backgroundColor(YijianColors.background) }
 
+            // —— 错误 Toast ——
+            if (ctx.errorMessage.isNotEmpty()) {
+                View {
+                    attr {
+                        absolutePosition(top = 80f, left = 20f, right = 20f); zIndex(100)
+                        padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
+                        backgroundColor(Color(0xE8FF3B30)); borderRadius(10f)
+                        flexDirectionRow(); alignItemsCenter()
+                    }
+                    event { click { ctx.errorMessage = "" } }
+                    View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
+                        Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
+                    Text { attr { text(ctx.errorMessage); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
+                    View { attr { size(24f, 24f); allCenter() }
+                        Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
+                }
+            }
             // 顶部导航
             View {
                 attr {
@@ -214,5 +239,29 @@ internal class MainPage : BasePager() {
                 }
             }
         }
+    }
+}
+
+// ── 错误 Toast ——
+private fun ViewContainer<*, *>.ErrorToast(message: String, onDismiss: () -> Unit) {
+    View {
+        attr {
+            absolutePosition(top = 80f, left = 20f, right = 20f)
+            zIndex(100)
+            padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
+            backgroundColor(Color(0xE8FF3B30))
+            borderRadius(10f)
+            flexDirectionRow()
+            alignItemsCenter()
+        }
+        event { click { onDismiss.invoke() } }
+
+        View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
+            Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
+
+        Text { attr { text(message); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
+
+        View { attr { size(24f, 24f); allCenter() }
+            Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
     }
 }

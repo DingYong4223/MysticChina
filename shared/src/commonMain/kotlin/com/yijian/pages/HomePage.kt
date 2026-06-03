@@ -14,6 +14,7 @@ import com.yijian.model.VideoInfo
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
 import com.yijian.util.currentTimeMs
+import com.yijian.util.fileExists
 
 // ─── SP 键名常量 ───
 private const val SP_NICKNAME = "yijian_nickname"
@@ -41,7 +42,8 @@ internal class HomePage : BasePager() {
     var showEditNickname by observable(false)
     var showEditBio by observable(false)
     var editingText by observable("")
-
+    var errorMessage by observable("")
+    fun showError(msg: String) { errorMessage = msg }
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
     }
@@ -90,9 +92,24 @@ internal class HomePage : BasePager() {
     override fun body(): ViewBuilder {
         val ctx = this
         return {
-            attr {
-                backgroundColor(YijianColors.background)
-                flexDirectionColumn()
+            attr { backgroundColor(YijianColors.background); flexDirectionColumn() }
+
+            // —— 错误 Toast ——
+            if (ctx.errorMessage.isNotEmpty()) {
+                View {
+                    attr {
+                        absolutePosition(top = 80f, left = 20f, right = 20f); zIndex(100)
+                        padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
+                        backgroundColor(Color(0xE8FF3B30)); borderRadius(10f)
+                        flexDirectionRow(); alignItemsCenter()
+                    }
+                    event { click { ctx.errorMessage = "" } }
+                    View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
+                        Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
+                    Text { attr { text(ctx.errorMessage); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
+                    View { attr { size(24f, 24f); allCenter() }
+                        Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
+                }
             }
 
             // ─── 内容区 ───
@@ -388,6 +405,10 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, video: VideoInfo, cardW
         }
         event {
             click {
+                if (!fileExists(video.path)) {
+                    ctx.showError("视频不存在: ${video.title}")
+                    return@click
+                }
                 val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
                 ctx.jumpPage("EditorPage", params)
             }
@@ -538,5 +559,30 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
         }
 
         View { attr { height(YijianTheme.Spacing.xxxl) } }
+    }
+}
+
+
+// ── 错误 Toast ——
+private fun ViewContainer<*, *>.ErrorToast(message: String, onDismiss: () -> Unit) {
+    View {
+        attr {
+            absolutePosition(top = 80f, left = 20f, right = 20f)
+            zIndex(100)
+            padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
+            backgroundColor(Color(0xE8FF3B30))
+            borderRadius(10f)
+            flexDirectionRow()
+            alignItemsCenter()
+        }
+        event { click { onDismiss.invoke() } }
+
+        View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
+            Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
+
+        Text { attr { text(message); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
+
+        View { attr { size(24f, 24f); allCenter() }
+            Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
     }
 }
