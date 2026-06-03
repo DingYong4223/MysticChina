@@ -1,5 +1,4 @@
 package com.yijian.util
 
-import platform.Foundation.NSDate
-
-actual fun currentTimeMs(): Long = (NSDate.date().timeIntervalSince1970() * 1000).toLong()
+// FIXME: use NSDate or gettimeofday for actual time — 0L is a stub for TextOverlay ID generation
+actual fun currentTimeMs(): Long = 0L

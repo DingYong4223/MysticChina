@@ -104,6 +104,10 @@ class PlayerController {
         seekTo(targetMs)
     }
 
+    /** 设置视频渲染表面 ID（从 VideoRenderView 的 surfaceReady 回调获得） */
+    fun setSurfaceId(surfaceId: Long) {
+        player?.setNativeSurface(surfaceId)
+    }
     /**
      * 切换控制栏显隐
      */

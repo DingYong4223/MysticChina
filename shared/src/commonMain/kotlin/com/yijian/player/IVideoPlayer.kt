@@ -37,6 +37,13 @@ interface IVideoPlayer {
     /** 释放播放器资源 */
     fun release()
 
+    /**
+     * 设置原生视频渲染表面（平台桥接）。
+     * @param surfaceId 由 VideoRenderView 的 surfaceReady 事件提供的表面 ID，
+     *   各平台 actual 实现负责解析为对应原生 Surface。
+     */
+    fun setNativeSurface(surfaceId: Long) {}
+
     // ============ 回调 ============
 
     /** 视频准备完成回调 */

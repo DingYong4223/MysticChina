@@ -1,6 +1,7 @@
 package com.yijian.player
 
 import android.media.MediaPlayer
+import android.view.Surface
 import java.io.File
 import java.util.Timer
 import kotlin.concurrent.timer
@@ -17,6 +18,7 @@ import kotlin.concurrent.timer
 class AndroidVideoPlayer : IVideoPlayer {
 
     private var mediaPlayer: MediaPlayer? = null
+    private var renderSurface: Surface? = null
     private var state = PlayerState.IDLE
     private var progressTimer: Timer? = null
     private var _looping = false
@@ -26,6 +28,24 @@ class AndroidVideoPlayer : IVideoPlayer {
     override var onCompletion: (() -> Unit)? = null
     override var onError: ((String) -> Unit)? = null
     override var onStateChanged: ((PlayerState) -> Unit)? = null
+
+    /**
+     * 绑定渲染表面 — 由 Kuikly VideoRenderView 通过 native bridge 提供。
+     * 在 loadVideo 之前或播放中随时调用。
+     */
+    fun setRenderSurface(surface: Surface?) {
+        renderSurface = surface
+        mediaPlayer?.let { mp ->
+            val pos = mp.currentPosition
+            mp.setSurface(surface)
+            if (pos > 0) mp.seekTo(pos)
+        }
+    }
+
+    override fun setNativeSurface(surfaceId: Long) {
+        val surface = SurfaceRegistry.get(surfaceId)
+        if (surface != null) setRenderSurface(surface)
+    }
 
     override fun loadVideo(path: String) {
         releaseInternal()
@@ -37,6 +57,7 @@ class AndroidVideoPlayer : IVideoPlayer {
         try {
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(path)
+                renderSurface?.let { setSurface(it) }
                 setOnPreparedListener { mp ->
                     setState(PlayerState.READY)
                     onPrepared?.invoke()

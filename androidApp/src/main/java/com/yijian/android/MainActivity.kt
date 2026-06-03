@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
+import com.yijian.android.view.VideoRenderViewImpl
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tencent.kuikly.core.render.android.IKuiklyRenderContext
@@ -74,7 +75,9 @@ class MainActivity : AppCompatActivity() {
 
         // 标准委托模式：自动注册所有内置 native view 工厂 + module
         delegator = KuiklyRenderViewBaseDelegator(object : KuiklyRenderViewBaseDelegatorDelegate {
-            override fun registerExternalRenderView(export: IKuiklyRenderExport) {}
+            override fun registerExternalRenderView(export: IKuiklyRenderExport) {
+                export.renderViewExport("VideoRenderView", { VideoRenderViewImpl(it) }, null)
+            }
             override fun registerExternalModule(export: IKuiklyRenderExport) {
                 export.moduleExport(GalleryModule.MODULE_NAME) {
                     GalleryModuleExport()
