@@ -53,8 +53,6 @@ internal class HomePage : BasePager() {
         override fun handleOnBackPressed() {
             if (draftMgr.isEditing) {
                 draftMgr.exitEditing()
-            } else {
-                getBackPressHandler().handleBackPressed()
             }
         }
     }
@@ -519,7 +517,6 @@ private fun ViewContainer<*, *>.DraftCard(
             }
         }
     }
-}
 }
 
 // ──────────────────────────────────────────────────────────
