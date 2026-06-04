@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             override fun debugLogEnable() = true
         })
 
-        val pageName = intent?.getStringExtra("pageName") ?: "SplashPage"
+        val pageName = intent?.getStringExtra("pageName") ?: "HomePage"
         val pageDataStr = intent?.getStringExtra("pageData") ?: "{}"
         val pageData: Map<String, Any> = try {
             val json = JSONObject(pageDataStr)
