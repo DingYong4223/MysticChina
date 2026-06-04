@@ -12,7 +12,6 @@ import com.tencent.kuikly.core.reactive.handler.observableList
 import com.tencent.kuikly.core.views.*
 import com.yijian.base.BasePager
 import com.yijian.components.DraftActionBar
-import com.yijian.components.DraftActionBarConfig
 import com.yijian.manager.DraftManager
 import com.yijian.model.UserProfile
 import com.yijian.model.VideoInfo
@@ -148,12 +147,7 @@ internal class HomePage : BasePager() {
 
             vif({ ctx.draftMgr.isEditing }) {
                 DraftActionBar(
-                    config = DraftActionBarConfig(
-                        isAllSelected = ctx.draftMgr.isAllSelected,
-                        selectedCount = ctx.draftMgr.selectedCount,
-                        onToggleSelectAll = { if (ctx.draftMgr.isAllSelected) ctx.draftMgr.deselectAll() else ctx.draftMgr.selectAll() },
-                        onDelete = { ctx.draftMgr.remove(ctx.draftMgr.selectedIds.toList()) },
-                    ),
+                    mgr = ctx.draftMgr,
                     safeAreaBottom = ctx.pagerData.safeAreaInsets.bottom,
                 )
             }
@@ -271,10 +265,24 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, vide
                     Text { attr { text(video.formattedDuration); fontSize(9f); color(YijianColors.textPrimary) } } }
             }
             vif({ mgr.isEditing }) {
-                View { attr { absolutePosition(top = 4f, right = 4f); size(20f, 20f); borderRadius(10f); backgroundColor(YijianColors.primary); border(Border(2f, BorderStyle.SOLID, Color(0x88FFFFFF))); allCenter() }
-                    vfor({ mgr.selectedIds }) { selId ->
-                        if (selId == video.id) Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
-                        else View { attr { size(0f, 0f) } }
+                // isSelected 在 attr{} 中读取 mgr.selectedIds（observable），自动响应变化
+                View {
+                    attr {
+                        val isSelected = mgr.selectedIds.contains(video.id)
+                        absolutePosition(top = 4f, right = 4f)
+                        size(20f, 20f)
+                        borderRadius(10f)
+                        if (isSelected) {
+                            backgroundColor(YijianColors.primary)
+                            border(Border(2f, BorderStyle.SOLID, YijianColors.primary))
+                        } else {
+                            backgroundColor(Color(0x44000000))
+                            border(Border(2f, BorderStyle.SOLID, Color(0xAAFFFFFF)))
+                        }
+                        allCenter()
+                    }
+                    vif({ mgr.selectedIds.contains(video.id) }) {
+                        Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
                     }
                 }
             }
