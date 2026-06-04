@@ -416,8 +416,9 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager)
                         flexDirectionRow(); flexWrapWrap()
                         paddingLeft(YijianTheme.Spacing.sm); paddingRight(YijianTheme.Spacing.sm)
                     }
-                    val gap = YijianTheme.Spacing.xs
-                    val cardWidth = (ctx.pagerData.pageViewWidth - YijianTheme.Spacing.sm * 2 - gap * 2) / 3f
+                    val innerW = ctx.pagerData.pageViewWidth - YijianTheme.Spacing.sm * 2
+                    val cardMargin = YijianTheme.Spacing.xs * 2
+                    val cardWidth = (innerW - cardMargin * 3) / 3f
                     for (draft in mgr.draftList) {
                         DraftCard(ctx, mgr, draft, cardWidth)
                     }
