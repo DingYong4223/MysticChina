@@ -432,10 +432,6 @@ private fun ViewContainer<*, *>.DraftCard(
     ctx: HomePage, mgr: DraftManager,
     video: VideoInfo, cardWidth: Float,
 ) {
-    var touchStartMs = 0L
-    val isSelected = mgr.selectedIds.contains(video.id)
-    val isEditing = mgr.isEditing
-
     View {
         attr {
             size(cardWidth, cardWidth * 9f / 16f + 52f)
@@ -444,33 +440,26 @@ private fun ViewContainer<*, *>.DraftCard(
             backgroundColor(YijianColors.surface)
             borderRadius(YijianTheme.Radius.md)
             overflow(true)
-            if (isSelected && isEditing) {
-                border(Border(2f, BorderStyle.SOLID, YijianColors.primary))
-            }
         }
         event {
-            touchDown { touchStartMs = currentTimeMs() }
-            touchUp {
-                val elapsed = currentTimeMs() - touchStartMs
-                if (elapsed >= 500L) {
-                    // 长按
-                    if (!isEditing) mgr.enterSelection(video.id)
+            // 长按 → 进入选中模式
+            longPress {
+                if (!mgr.isEditing) mgr.enterSelection(video.id)
+            }
+            // 单击
+            click {
+                if (mgr.isEditing) {
+                    mgr.toggleSelection(video.id)
                 } else {
-                    // 单击
-                    if (isEditing) {
-                        mgr.toggleSelection(video.id)
-                    } else {
-                        if (!fileExists(video.path)) {
-                            ctx.showError("视频不存在: ${video.title}")
-                            return@touchUp
-                        }
-                        val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
-                        ctx.jumpPage("EditorPage", params)
+                    if (!fileExists(video.path)) {
+                        ctx.showError("视频不存在: ${video.title}")
+                        return@click
                     }
+                    val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
+                    ctx.jumpPage("EditorPage", params)
                 }
             }
         }
-
         // 缩略图
         View {
             attr {
@@ -490,17 +479,18 @@ private fun ViewContainer<*, *>.DraftCard(
                 }
             }
 
-            // 选中模式 → 右上角 checkbox
-            if (isEditing) {
+            // 选中模式 → 右上角 checkbox（vif 使其响应式）
+            vif({ mgr.isEditing }) {
+                val sel = mgr.selectedIds.contains(video.id)
                 View {
                     attr {
                         absolutePosition(top = 4f, right = 4f)
                         size(20f, 20f); borderRadius(10f)
-                        backgroundColor(if (isSelected) YijianColors.primary else Color(0x00000000))
-                        border(Border(2f, BorderStyle.SOLID, if (isSelected) YijianColors.primary else Color(0x88FFFFFF)))
+                        backgroundColor(if (sel) YijianColors.primary else Color(0x00000000))
+                        border(Border(2f, BorderStyle.SOLID, if (sel) YijianColors.primary else Color(0x88FFFFFF)))
                         allCenter()
                     }
-                    if (isSelected) {
+                    vif({ sel }) {
                         Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
                     }
                 }

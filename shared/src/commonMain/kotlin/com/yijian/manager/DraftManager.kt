@@ -38,6 +38,7 @@ class DraftManager(private val sp: SharedPreferencesModule) {
     }
 
     fun enterSelection(id: String) {
+        com.tencent.kuikly.core.log.KLog.d("DraftMgr", "enterSelection: id=$id")
         isEditing = true
         if (!selectedIds.contains(id)) selectedIds.add(id)
     }
