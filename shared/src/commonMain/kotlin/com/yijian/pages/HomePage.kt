@@ -15,6 +15,7 @@ import com.yijian.model.VideoInfo
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
 import com.yijian.util.currentTimeMs
+import com.tencent.kuikly.core.log.KLog
 import com.yijian.components.DraftActionBar
 import com.yijian.components.DraftActionBarConfig
 import com.yijian.manager.DraftManager
@@ -56,6 +57,7 @@ internal class HomePage : BasePager() {
     val draftMgr by lazy {
         DraftManager(sp).also {
             it.onEditingStateChanged = { editing ->
+                KLog.d("HomePage", "onEditingStateChanged: editing=$editing")
                 if (editing) getBackPressHandler().addCallback(backCallback)
                 else getBackPressHandler().removeCallback(backCallback)
             }
@@ -450,7 +452,7 @@ private fun ViewContainer<*, *>.DraftCard(
             longPress {
                 if (!mgr.isEditing) mgr.enterSelection(video.id)
             }
-            // 单击
+            // 单击 → 编辑态切换选中，正常态跳转
             click {
                 if (mgr.isEditing) {
                     mgr.toggleSelection(video.id)
@@ -464,6 +466,7 @@ private fun ViewContainer<*, *>.DraftCard(
                 }
             }
         }
+
         // 缩略图
         View {
             attr {
