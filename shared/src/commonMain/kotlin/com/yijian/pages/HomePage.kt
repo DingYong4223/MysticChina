@@ -53,7 +53,8 @@ internal class HomePage : BasePager() {
         override fun handleOnBackPressed() {
             if (draftMgr.isEditing) {
                 draftMgr.exitEditing()
-                getBackPressHandler().removeCallback(this)
+            } else {
+                getBackPressHandler().handleBackPressed()
             }
         }
     }
@@ -118,7 +119,9 @@ internal class HomePage : BasePager() {
             View { attr { height(1f); backgroundColor(YijianColors.surfaceLight) } }
 
             // ─── 底部 Tab Bar ───
-            BottomTabBar(ctx)
+            vif({ !ctx.draftMgr.isEditing }) {
+                BottomTabBar(ctx)
+            }
 
             // ─── 编辑昵称弹层 ───
             vif({ ctx.showEditNickname }) {
@@ -517,16 +520,6 @@ private fun ViewContainer<*, *>.DraftCard(
         }
     }
 }
-
-private fun formatRelativeTime(createTime: Long): String {
-    if (createTime == 0L) return "刚刚"
-    val diff = currentTimeMs() - createTime
-    return when {
-        diff < 60_000L -> "刚刚"
-        diff < 3_600_000L -> "${diff / 60_000L}分钟前"
-        diff < 86_400_000L -> "${diff / 3_600_000L}小时前"
-        else -> "${diff / 86_400_000L}天前"
-    }
 }
 
 // ──────────────────────────────────────────────────────────
