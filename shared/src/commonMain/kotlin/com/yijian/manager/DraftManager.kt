@@ -126,8 +126,11 @@ class DraftManager(private val sp: SharedPreferencesModule) {
         var pos = start
         while (pos < json.length) {
             val c = json[pos]
-            if (c == '\\') { sb.append(json.getOrElse(pos + 1) { '?' }); pos += 2 }
-            else if (c == '"') break
+            if (c == '\\') {
+                val next = json.getOrElse(pos + 1) { '?' }
+                sb.append(when (next) { 'n' -> '\n'; 'r' -> '\r'; 't' -> '\t'; '"' -> '"'; '\\' -> '\\'; else -> '?' })
+                pos += 2
+            } else if (c == '"') break
             else { sb.append(c); pos++ }
         }
         return sb.toString()
