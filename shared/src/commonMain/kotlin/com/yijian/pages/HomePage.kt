@@ -632,28 +632,3 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
         View { attr { height(YijianTheme.Spacing.xxxl) } }
     }
 }
-
-
-// ── 错误 Toast ——
-private fun ViewContainer<*, *>.ErrorToast(message: String, onDismiss: () -> Unit) {
-    View {
-        attr {
-            absolutePosition(top = 80f, left = 20f, right = 20f)
-            zIndex(100)
-            padding(top = 12f, bottom = 12f, left = 16f, right = 16f)
-            backgroundColor(Color(0xE8FF3B30))
-            borderRadius(10f)
-            flexDirectionRow()
-            alignItemsCenter()
-        }
-        event { click { onDismiss.invoke() } }
-
-        View { attr { size(20f, 20f); borderRadius(10f); backgroundColor(Color(0xFFFFFFFF)); allCenter(); marginRight(10f) }
-            Text { attr { text("!"); fontSize(13f); color(Color(0xFFFF3B30)); fontWeightBold() } } }
-
-        Text { attr { text(message); fontSize(13f); color(Color(0xFFFFFFFF)); flex(1f) } }
-
-        View { attr { size(24f, 24f); allCenter() }
-            Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
-    }
-}
