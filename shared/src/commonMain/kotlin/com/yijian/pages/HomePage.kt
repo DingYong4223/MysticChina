@@ -202,7 +202,8 @@ private fun ViewContainer<*, *>.EditOverlay(ctx: HomePage, title: String, placeh
 // 剪辑 Tab
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager) {
-    val cardWidth = (ctx.pagerData.pageViewWidth - YijianTheme.Spacing.sm * 2 - YijianTheme.Spacing.xs * 6) / 3f
+    val innerW = ctx.pagerData.pageViewWidth - YijianTheme.Spacing.sm * 2
+    val cardWidth = ((innerW - YijianTheme.Spacing.xs * 6) / 3f * 100f).toInt().toFloat() / 100f
 
     View {
         attr { flex(1f); flexDirectionColumn(); paddingTop(YijianTheme.Spacing.md) }
@@ -234,7 +235,7 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager)
                 }
             }
             velse {
-                View { attr { flexDirectionRow(); flexWrapWrap() }
+                View { attr { width(innerW); flexDirectionRow(); flexWrapWrap() }
                     vfor({ mgr.draftList }) { draft ->
                         DraftCard(ctx, mgr, draft, cardWidth)
                     }
