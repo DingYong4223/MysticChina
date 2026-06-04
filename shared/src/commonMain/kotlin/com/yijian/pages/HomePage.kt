@@ -180,6 +180,9 @@ private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+// 编辑覆盖层
+// ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.EditOverlay(ctx: HomePage, title: String, placeholder: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     View {
         attr { absolutePositionAllZero(); backgroundColor(Color(0xCC000000)); allCenter() }
@@ -199,16 +202,17 @@ private fun ViewContainer<*, *>.EditOverlay(ctx: HomePage, title: String, placeh
         }
     }
 }
+
+// ═══════════════════════════════════════════════════════════
 // 剪辑 Tab
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager) {
     val innerW = ctx.pagerData.pageViewWidth - YijianTheme.Spacing.sm * 2
-    val cardWidth = ((innerW - YijianTheme.Spacing.xs * 6) / 3f * 100f).toInt().toFloat() / 100f
+    val cardWidth = (innerW - YijianTheme.Spacing.xs * 6) / 3f
 
     View {
         attr { flex(1f); flexDirectionColumn(); paddingTop(YijianTheme.Spacing.md) }
 
-        // 新建剪辑按钮
         View {
             attr { marginLeft(YijianTheme.Spacing.lg); marginRight(YijianTheme.Spacing.lg); marginBottom(YijianTheme.Spacing.lg); height(56f); borderRadius(12f)
                 backgroundLinearGradient(Direction.TO_RIGHT, ColorStop(YijianColors.gradientStart, 0f), ColorStop(YijianColors.gradientEnd, 1f))
@@ -218,13 +222,11 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager)
             Text { attr { text("新建剪辑"); fontSize(16f); fontWeightBold(); color(YijianColors.textPrimary) } }
         }
 
-        // 草稿箱标题
         View { attr { flexDirectionRow(); alignItemsCenter(); paddingLeft(YijianTheme.Spacing.lg); paddingRight(YijianTheme.Spacing.lg); marginBottom(YijianTheme.Spacing.sm) }
             Text { attr { text("草稿箱"); fontSize(14f); fontWeightBold(); color(YijianColors.textPrimary); flex(1f) } }
             Text { attr { text("全部 >"); fontSize(12f); color(YijianColors.textTertiary) } }
         }
 
-        // 草稿列表
         Scroller {
             attr { flex(1f); flexDirectionColumn(); paddingLeft(YijianTheme.Spacing.sm); paddingRight(YijianTheme.Spacing.sm) }
             vif({ mgr.draftList.isEmpty() }) {
@@ -254,11 +256,7 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, vide
         event {
             longPress { if (!mgr.isEditing) mgr.enterSelection(video.id) }
             click {
-                KLog.d("HomePage", "DraftCard click: id=${video.id}, isEditing=${mgr.isEditing}")
-                if (mgr.isEditing) {
-                    KLog.d("HomePage", "DraftCard click: toggleSelection ${video.id}")
-                    mgr.toggleSelection(video.id)
-                } else {
+                if (mgr.isEditing) { mgr.toggleSelection(video.id) } else {
                     if (!fileExists(video.path)) { ctx.showError("视频不存在: ${video.title}"); return@click }
                     val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
                     ctx.jumpPage("EditorPage", params)
@@ -275,11 +273,8 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, vide
             vif({ mgr.isEditing }) {
                 View { attr { absolutePosition(top = 4f, right = 4f); size(20f, 20f); borderRadius(10f); backgroundColor(YijianColors.primary); border(Border(2f, BorderStyle.SOLID, Color(0x88FFFFFF))); allCenter() }
                     vfor({ mgr.selectedIds }) { selId ->
-                        if (selId == video.id) {
-                            Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
-                        } else {
-                            View { attr { size(0f, 0f) } }
-                        }
+                        if (selId == video.id) Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
+                        else View { attr { size(0f, 0f) } }
                     }
                 }
             }

@@ -39,7 +39,7 @@ internal fun ViewContainer<*, *>.DraftActionBar(
         // 全选/反选
         View {
             attr { flex(1f); allCenter() }
-            event { click { config.onToggleSelectAll.invoke() } }
+            event { click { com.tencent.kuikly.core.log.KLog.d("DraftBar", "toggleAll clicked, isAllSelected=${config.isAllSelected}"); config.onToggleSelectAll.invoke() } }
             Text {
                 attr {
                     text(selectAllLabel)
