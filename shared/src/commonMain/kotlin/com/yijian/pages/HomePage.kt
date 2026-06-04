@@ -48,11 +48,16 @@ internal class HomePage : BasePager() {
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
     }
-    val draftMgr by lazy { DraftManager(sp) }
-    private val backCallback = object : BackPressCallback() {
+    private val backCallback: BackPressCallback = object : BackPressCallback() {
         override fun handleOnBackPressed() {
-            if (draftMgr.isEditing) {
-                draftMgr.exitEditing()
+            draftMgr.exitEditing()
+        }
+    }
+    val draftMgr by lazy {
+        DraftManager(sp).also {
+            it.onEditingStateChanged = { editing ->
+                if (editing) getBackPressHandler().addCallback(backCallback)
+                else getBackPressHandler().removeCallback(backCallback)
             }
         }
     }
@@ -65,7 +70,6 @@ internal class HomePage : BasePager() {
             avatarEmoji = sp.getString(SP_AVATAR) ?: "🎬"
         )
         draftMgr.load()
-        getBackPressHandler().addCallback(backCallback)
         if (draftMgr.draftList.isEmpty()) {
             draftMgr.add(VideoInfo("1", "午后阳光.mp4", "test1",
                 duration = 15200L, createTime = currentTimeMs() - 7200000L))

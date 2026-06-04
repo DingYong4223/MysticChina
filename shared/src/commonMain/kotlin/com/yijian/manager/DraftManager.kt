@@ -1,5 +1,6 @@
 package com.yijian.manager
 
+import com.tencent.kuikly.core.log.KLog
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
 import com.tencent.kuikly.core.reactive.handler.observableList
@@ -8,12 +9,14 @@ import com.yijian.model.VideoInfo
 class DraftManager(private val sp: SharedPreferencesModule) {
 
     companion object {
+        private const val TAG = "DraftMgr"
         private const val SP_KEY_DRAFTS = "yijian_drafts"
     }
 
     var draftList by observableList<VideoInfo>()
     var selectedIds by observableList<String>()
     var isEditing by observable(false)
+    var onEditingStateChanged: ((Boolean) -> Unit)? = null
 
     val selectedCount: Int get() = selectedIds.size
     val isAllSelected: Boolean get() = draftList.isNotEmpty() && selectedIds.size == draftList.size
@@ -38,8 +41,9 @@ class DraftManager(private val sp: SharedPreferencesModule) {
     }
 
     fun enterSelection(id: String) {
-        com.tencent.kuikly.core.log.KLog.d("DraftMgr", "enterSelection: id=$id")
+        KLog.d(TAG, "enterSelection: id=$id")
         isEditing = true
+        onEditingStateChanged?.invoke(true)
         if (!selectedIds.contains(id)) selectedIds.add(id)
     }
 
@@ -59,7 +63,9 @@ class DraftManager(private val sp: SharedPreferencesModule) {
     }
 
     fun exitEditing() {
+        KLog.d(TAG, "exitEditing")
         isEditing = false
+        onEditingStateChanged?.invoke(false)
         selectedIds.clear()
     }
 
