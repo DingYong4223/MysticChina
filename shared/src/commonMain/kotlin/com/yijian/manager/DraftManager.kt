@@ -50,7 +50,6 @@ class DraftManager(private val sp: SharedPreferencesModule) {
     fun toggleSelection(id: String) {
         if (selectedIds.contains(id)) selectedIds.remove(id)
         else selectedIds.add(id)
-        if (selectedIds.isEmpty()) exitEditing()
     }
 
     fun selectAll() {

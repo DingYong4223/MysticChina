@@ -249,16 +249,11 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager)
 // 草稿卡片
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, video: VideoInfo, cardWidth: Float) {
-    var handledByLongPress = false
     View {
         attr { size(cardWidth, cardWidth * 9f / 16f + 52f); flexDirectionColumn(); margin(YijianTheme.Spacing.xs); backgroundColor(YijianColors.surface); borderRadius(YijianTheme.Radius.md); overflow(true) }
         event {
-            longPress {
-                handledByLongPress = true
-                if (!mgr.isEditing) mgr.enterSelection(video.id)
-            }
+            longPress { if (!mgr.isEditing) mgr.enterSelection(video.id) }
             click {
-                if (handledByLongPress) { handledByLongPress = false; return@click }
                 if (mgr.isEditing) { mgr.toggleSelection(video.id) } else {
                     if (!fileExists(video.path)) { ctx.showError("视频不存在: ${video.title}"); return@click }
                     val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
