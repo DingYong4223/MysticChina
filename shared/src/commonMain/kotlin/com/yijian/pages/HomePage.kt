@@ -48,7 +48,7 @@ internal class HomePage : BasePager() {
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
     }
-    val draftMgr = DraftManager(sp)
+    val draftMgr by lazy { DraftManager(sp) }
     private val backCallback = object : BackPressCallback() {
         override fun handleOnBackPressed() {
             if (draftMgr.isEditing) {
