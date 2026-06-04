@@ -254,7 +254,11 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, vide
         event {
             longPress { if (!mgr.isEditing) mgr.enterSelection(video.id) }
             click {
-                if (mgr.isEditing) { mgr.toggleSelection(video.id) } else {
+                KLog.d("HomePage", "DraftCard click: id=${video.id}, isEditing=${mgr.isEditing}")
+                if (mgr.isEditing) {
+                    KLog.d("HomePage", "DraftCard click: toggleSelection ${video.id}")
+                    mgr.toggleSelection(video.id)
+                } else {
                     if (!fileExists(video.path)) { ctx.showError("视频不存在: ${video.title}"); return@click }
                     val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
                     ctx.jumpPage("EditorPage", params)
@@ -269,9 +273,12 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, vide
                     Text { attr { text(video.formattedDuration); fontSize(9f); color(YijianColors.textPrimary) } } }
             }
             vif({ mgr.isEditing }) {
-                val sel = mgr.selectedIds.contains(video.id)
-                View { attr { absolutePosition(top = 4f, right = 4f); size(20f, 20f); borderRadius(10f); backgroundColor(if (sel) YijianColors.primary else Color(0x00000000)); border(Border(2f, BorderStyle.SOLID, if (sel) YijianColors.primary else Color(0x88FFFFFF))); allCenter() }
-                    vif({ sel }) { Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } } }
+                View { attr { absolutePosition(top = 4f, right = 4f); size(20f, 20f); borderRadius(10f); backgroundColor(YijianColors.primary); border(Border(2f, BorderStyle.SOLID, Color(0x88FFFFFF))); allCenter() }
+                    vfor({ mgr.selectedIds }) { selId ->
+                        if (selId == video.id) {
+                            Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
+                        }
+                    }
                 }
             }
         }
