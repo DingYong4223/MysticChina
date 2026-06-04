@@ -277,6 +277,8 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, mgr: DraftManager, vide
                     vfor({ mgr.selectedIds }) { selId ->
                         if (selId == video.id) {
                             Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
+                        } else {
+                            View { attr { size(0f, 0f) } }
                         }
                     }
                 }
