@@ -15,6 +15,9 @@ import com.yijian.model.VideoInfo
 import com.yijian.theme.YijianColors
 import com.yijian.theme.YijianTheme
 import com.yijian.util.currentTimeMs
+import com.yijian.components.DraftActionBar
+import com.yijian.components.DraftActionBarConfig
+import com.yijian.manager.DraftManager
 import com.yijian.util.fileExists
 
 // ─── SP 键名常量 ───
@@ -35,9 +38,6 @@ internal class HomePage : BasePager() {
     // ─── 导航状态 ───
     var selectedTab by observable(0)                    // 0=剪辑 1=学习 2=我的
 
-    // ─── 剪辑 Tab 状态 ───
-    var draftList by observableList<VideoInfo>()        // observableList 不支持初始值
-
     // ─── 我的 Tab 状态 ───
     var userProfile by observable(UserProfile())
     var showEditNickname by observable(false)
@@ -48,26 +48,35 @@ internal class HomePage : BasePager() {
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
     }
+    val draftMgr = DraftManager(sp)
+    private val backCallback = object : BackPressCallback() {
+        override fun handleOnBackPressed() {
+            if (draftMgr.isEditing) {
+                draftMgr.exitEditing()
+                getBackPressHandler().removeCallback(this)
+            }
+        }
+    }
 
     override fun created() {
         super.created()
-        // 从 SharedPreferences 加载用户资料
         userProfile = UserProfile(
             nickname = sp.getString(SP_NICKNAME) ?: "创作者",
             bio = sp.getString(SP_BIO) ?: "记录生活的每一刻",
             avatarEmoji = sp.getString(SP_AVATAR) ?: "🎬"
         )
-        // 加载草稿（mock 数据）
-        draftList.addAll(listOf(
-            VideoInfo("1", "午后阳光.mp4", "test1", duration = 15200L,
-                createTime = currentTimeMs() - 7200000L),
-            VideoInfo("2", "城市街景.mp4", "test2", duration = 45000L,
-                createTime = currentTimeMs() - 86400000L),
-            VideoInfo("3", "旅行记录.mp4", "test3", duration = 120000L,
-                createTime = currentTimeMs() - 172800000L),
-            VideoInfo("4", "美食制作.mp4", "test4", duration = 32000L,
-                createTime = currentTimeMs() - 3600000L),
-        ))
+        draftMgr.load()
+        getBackPressHandler().addCallback(backCallback)
+        if (draftMgr.draftList.isEmpty()) {
+            draftMgr.add(VideoInfo("1", "午后阳光.mp4", "test1",
+                duration = 15200L, createTime = currentTimeMs() - 7200000L))
+            draftMgr.add(VideoInfo("2", "城市街景.mp4", "test2",
+                duration = 45000L, createTime = currentTimeMs() - 86400000L))
+            draftMgr.add(VideoInfo("3", "旅行记录.mp4", "test3",
+                duration = 120000L, createTime = currentTimeMs() - 172800000L))
+            draftMgr.add(VideoInfo("4", "美食制作.mp4", "test4",
+                duration = 32000L, createTime = currentTimeMs() - 3600000L))
+        }
     }
 
     private fun saveNickname() {
@@ -90,6 +99,7 @@ internal class HomePage : BasePager() {
         editingText = ""
     }
 
+
     override fun body(): ViewBuilder {
         val ctx = this
         return {
@@ -99,7 +109,7 @@ internal class HomePage : BasePager() {
             // ─── 内容区 ───
             View {
                 attr { flex(1f); flexDirectionColumn() }
-                vif({ ctx.selectedTab == 0 }) { ClipTabContent(ctx) }
+                vif({ ctx.selectedTab == 0 }) { ClipTabContent(ctx, ctx.draftMgr) }
                 vif({ ctx.selectedTab == 1 }) { LearnTabContent() }
                 vif({ ctx.selectedTab == 2 }) { ProfileTabContent(ctx) }
             }
@@ -148,6 +158,22 @@ internal class HomePage : BasePager() {
                     View { attr { size(24f, 24f); allCenter() }
                         Text { attr { text("✕"); fontSize(14f); color(Color(0xAAFFFFFF)) } } }
                 }
+            }
+
+            // ─── 选中模式操作栏 ───
+            vif({ ctx.draftMgr.isEditing }) {
+                DraftActionBar(
+                    config = DraftActionBarConfig(
+                        isAllSelected = ctx.draftMgr.isAllSelected,
+                        selectedCount = ctx.draftMgr.selectedCount,
+                        onToggleSelectAll = {
+                            if (ctx.draftMgr.isAllSelected) ctx.draftMgr.deselectAll()
+                            else ctx.draftMgr.selectAll()
+                        },
+                        onDelete = { ctx.draftMgr.remove(ctx.draftMgr.selectedIds.toList()) },
+                    ),
+                    safeAreaBottom = ctx.pagerData.safeAreaInsets.bottom,
+                )
             }
 
         }
@@ -312,7 +338,7 @@ private fun ViewContainer<*, *>.EditOverlay(
 // ──────────────────────────────────────────────────────────
 // Tab 1：剪辑
 // ──────────────────────────────────────────────────────────
-private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
+private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage, mgr: DraftManager) {
     View {
         attr { flex(1f); flexDirectionColumn(); backgroundColor(YijianColors.background) }
 
@@ -345,7 +371,10 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
                 )
                 flexDirectionRow(); alignItemsCenter(); justifyContentCenter()
             }
-            event { click { ctx.jumpPage("MainPage") } }
+            event { click {
+                if (mgr.isEditing) mgr.exitEditing()
+                ctx.jumpPage("MainPage")
+            } }
 
             Text { attr { text("🎬"); fontSize(20f); marginRight(8f) } }
             Text {
@@ -370,7 +399,7 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
         }
 
         // 草稿列表 / 空态
-        vif({ ctx.draftList.isEmpty() }) {
+        vif({ mgr.draftList.isEmpty() }) {
             View {
                 attr { flex(1f); allCenter(); flexDirectionColumn() }
                 Text { attr { text("📂"); fontSize(48f); marginBottom(12f) } }
@@ -386,9 +415,10 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
                         flexDirectionRow(); flexWrapWrap()
                         paddingLeft(YijianTheme.Spacing.sm); paddingRight(YijianTheme.Spacing.sm)
                     }
-                    val cardWidth = ctx.pagerData.pageViewWidth / 2 - YijianTheme.Spacing.md
-                    for (draft in ctx.draftList) {
-                        DraftCard(ctx, draft, cardWidth)
+                    val gap = YijianTheme.Spacing.xs
+                    val cardWidth = (ctx.pagerData.pageViewWidth - YijianTheme.Spacing.sm * 2 - gap * 2) / 3f
+                    for (draft in mgr.draftList) {
+                        DraftCard(ctx, mgr, draft, cardWidth)
                     }
                 }
             }
@@ -396,7 +426,14 @@ private fun ViewContainer<*, *>.ClipTabContent(ctx: HomePage) {
     }
 }
 
-private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, video: VideoInfo, cardWidth: Float) {
+private fun ViewContainer<*, *>.DraftCard(
+    ctx: HomePage, mgr: DraftManager,
+    video: VideoInfo, cardWidth: Float,
+) {
+    var touchStartMs = 0L
+    val isSelected = mgr.selectedIds.contains(video.id)
+    val isEditing = mgr.isEditing
+
     View {
         attr {
             size(cardWidth, cardWidth * 9f / 16f + 52f)
@@ -405,15 +442,30 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, video: VideoInfo, cardW
             backgroundColor(YijianColors.surface)
             borderRadius(YijianTheme.Radius.md)
             overflow(true)
+            if (isSelected && isEditing) {
+                border(Border(2f, BorderStyle.SOLID, YijianColors.primary))
+            }
         }
         event {
-            click {
-                if (!fileExists(video.path)) {
-                    ctx.showError("视频不存在: ${video.title}")
-                    return@click
+            touchDown { touchStartMs = currentTimeMs() }
+            touchUp {
+                val elapsed = currentTimeMs() - touchStartMs
+                if (elapsed >= 500L) {
+                    // 长按
+                    if (!isEditing) mgr.enterSelection(video.id)
+                } else {
+                    // 单击
+                    if (isEditing) {
+                        mgr.toggleSelection(video.id)
+                    } else {
+                        if (!fileExists(video.path)) {
+                            ctx.showError("视频不存在: ${video.title}")
+                            return@touchUp
+                        }
+                        val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
+                        ctx.jumpPage("EditorPage", params)
+                    }
                 }
-                val params = """{"videoPath":"${video.path}","videoTitle":"${video.title}","videoId":"${video.id}"}"""
-                ctx.jumpPage("EditorPage", params)
             }
         }
 
@@ -423,28 +475,44 @@ private fun ViewContainer<*, *>.DraftCard(ctx: HomePage, video: VideoInfo, cardW
                 size(cardWidth, cardWidth * 9f / 16f)
                 backgroundColor(YijianColors.backgroundLight); allCenter()
             }
-            Text { attr { text("🎞"); fontSize(32f) } }
+            Text { attr { text("🎞"); fontSize(24f) } }
 
             if (video.duration > 0) {
                 View {
                     attr {
-                        absolutePosition(bottom = 6f, right = 6f)
-                        paddingLeft(5f); paddingRight(5f); paddingTop(2f); paddingBottom(2f)
-                        backgroundColor(Color(0xCC000000)); borderRadius(4f)
+                        absolutePosition(bottom = 4f, right = 4f)
+                        paddingLeft(4f); paddingRight(4f); paddingTop(1f); paddingBottom(1f)
+                        backgroundColor(Color(0xCC000000)); borderRadius(3f)
                     }
-                    Text { attr { text(video.formattedDuration); fontSize(10f); color(YijianColors.textPrimary) } }
+                    Text { attr { text(video.formattedDuration); fontSize(9f); color(YijianColors.textPrimary) } }
+                }
+            }
+
+            // 选中模式 → 右上角 checkbox
+            if (isEditing) {
+                View {
+                    attr {
+                        absolutePosition(top = 4f, right = 4f)
+                        size(20f, 20f); borderRadius(10f)
+                        backgroundColor(if (isSelected) YijianColors.primary else Color(0x00000000))
+                        border(Border(2f, BorderStyle.SOLID, if (isSelected) YijianColors.primary else Color(0x88FFFFFF)))
+                        allCenter()
+                    }
+                    if (isSelected) {
+                        Text { attr { text("✓"); fontSize(12f); color(Color(0xFFFFFFFF)); fontWeightBold() } }
+                    }
                 }
             }
         }
 
-        // 信息行
+        // 标题
         View {
-            attr { flex(1f); padding(all = 6f); justifyContentCenter() }
+            attr { flex(1f); padding(all = 4f); justifyContentCenter() }
             Text {
-                attr { text(video.title); fontSize(12f); color(YijianColors.textPrimary); lines(1); marginBottom(3f) }
-            }
-            Text {
-                attr { text(formatRelativeTime(video.createTime)); fontSize(10f); color(YijianColors.textTertiary) }
+                attr {
+                    text(video.title); fontSize(11f); color(YijianColors.textPrimary)
+                    lines(1)
+                }
             }
         }
     }
