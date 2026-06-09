@@ -4,10 +4,11 @@ package com.fula.exploringchina.util
  * 工具常量
  */
 object Constants {
-    const val APP_NAME = "一剪"
+    const val APP_NAME = "探索中国"
     const val PAGE_MAIN = "MainPage"
     const val PAGE_PREVIEW = "PreviewPage"
     const val PAGE_SPLASH = "SplashPage"
+    const val PAGE_HANZI = "HanziPage"
 
     // Mock视频数据路径前缀
     const val MOCK_VIDEO_PREFIX = "file:///storage/emulated/0/Movies/"
@@ -18,9 +19,6 @@ object Constants {
  */
 object FormatUtil {
 
-    /**
-     * 将毫秒格式化为 mm:ss
-     */
     fun formatDuration(millis: Long): String {
         if (millis <= 0) return "00:00"
         val totalSeconds = millis / 1000
@@ -35,9 +33,6 @@ object FormatUtil {
         }
     }
 
-    /**
-     * 将毫秒格式化为 hh:mm:ss
-     */
     fun formatDurationLong(millis: Long): String {
         if (millis <= 0) return "00:00:00"
         val totalSeconds = millis / 1000

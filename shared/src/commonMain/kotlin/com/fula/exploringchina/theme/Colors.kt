@@ -3,23 +3,23 @@ package com.fula.exploringchina.theme
 import com.tencent.kuikly.core.base.Color
 
 /**
- * 一剪应用主题色板
- * 深色主题 — 仿剪映风格
+ * 探索中国应用主题色板
+ * 深色主题 — 中国红/金色系
  */
 object YijianColors {
 
-    // 背景色
+    // 背景色（保持深色）
     val background = Color(0xFF1A1A1A)
     val backgroundLight = Color(0xFF2A2A2A)
     val surface = Color(0xFF333333)
     val surfaceLight = Color(0xFF3D3D3D)
 
-    // 主色
-    val primary = Color(0xFF23D3FD)
-    val primaryDark = Color(0xFF1BA8CC)
-    val accent = Color(0xFFAD37FE)
-    val gradientStart = Color(0xFF23D3FD)
-    val gradientEnd = Color(0xFFAD37FE)
+    // 主色 — 中国红/金色系
+    val primary = Color(0xFFE8352A)          // 中国红
+    val primaryDark = Color(0xFFB82820)
+    val accent = Color(0xFFF5A623)           // 金黄
+    val gradientStart = Color(0xFFE8352A)    // 中国红
+    val gradientEnd = Color(0xFFF5A623)      // 金黄
 
     // 文字
     val textPrimary = Color(0xFFFFFFFF)
@@ -39,6 +39,6 @@ object YijianColors {
     // 控制栏
     val controlBarBg = Color(0xCC1A1A1A)
     val progressTrack = Color(0x4DFFFFFF)
-    val progressFill = Color(0xFF23D3FD)
+    val progressFill = Color(0xFFE8352A)
     val progressThumb = Color(0xFFFFFFFF)
 }
