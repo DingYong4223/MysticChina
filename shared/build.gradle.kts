@@ -50,8 +50,8 @@ kotlin {
 
     // ── CocoaPods ────────────────────────────────────────
     cocoapods {
-        summary = "Yijian Video Editor Shared Module"
-        homepage = "https://github.com/yijian"
+        summary = "ExploringChina Shared Module"
+        homepage = "https://github.com/DingYong4223/ExploringChina"
         version = "1.0"
         ios.deploymentTarget = "14.1"
         if (isSourceBuild) {

@@ -1,5 +1,5 @@
 // ============================================================
-// yijian — All-platform settings (includes KuiklyUI source modules)
+// exploringchina — All-platform settings (includes KuiklyUI source modules)
 // ============================================================
 
 pluginManagement {
