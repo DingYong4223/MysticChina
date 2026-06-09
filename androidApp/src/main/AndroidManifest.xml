@@ -7,12 +7,12 @@
 
     <application
         android:allowBackup="true"
-        android:label="一剪"
+        android:label="探索中国"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Yijian">
+        android:theme="@style/Theme.ExploringChina">
 
         <activity
-            android:name="com.yijian.android.MainActivity"
+            android:name="com.fula.exploringchina.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:windowSoftInputMode="adjustResize">

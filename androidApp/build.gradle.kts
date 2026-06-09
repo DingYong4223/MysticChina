@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.yijian.android"
+    namespace = "com.fula.exploringchina"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.yijian.android"
+        applicationId = "com.fula.exploringchina"
         minSdk = 21
         targetSdk = 34
         versionCode = 1

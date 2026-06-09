@@ -173,7 +173,7 @@ tasks.matching { it.name == "compileCommonMainKotlinMetadata" }.configureEach {
 
 // ── Android 配置 ─────────────────────────────────────────
 android {
-    namespace = "com.yijian"
+    namespace = "com.fula.exploringchina"
     compileSdk = 34
     defaultConfig {
         minSdk = 21

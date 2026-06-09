@@ -32,7 +32,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "yijian"
+rootProject.name = "exploringchina"
 include(":androidApp")
 include(":shared")
 
