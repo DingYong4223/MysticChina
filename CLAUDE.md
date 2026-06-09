@@ -81,7 +81,7 @@ Maven repos required: `mirrors.tencent.com/nexus/repository/maven-tencent/` (Kui
 
 ## Package & Namespace
 
-- Shared Kotlin package: `com.yijian`
-- Android app ID: `com.yijian.android`
+- Shared Kotlin package: `com.fula.exploringchina`
+- Android app ID: `com.fula.exploringchina`
 - iOS framework: `shared` (static, CocoaPods)
-- `rootProject.name` is still `"yijian"` in `settings.gradle.kts` — update if renaming matters.
+- `rootProject.name` is `"exploringchina"` in `settings.gradle.kts`
