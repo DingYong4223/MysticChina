@@ -42,7 +42,6 @@ internal class SplashPage : BasePager() {
                 backgroundColor(YijianColors.background)
             }
 
-            // 居中容器
             View {
                 attr {
                     flex(1f)
@@ -50,7 +49,6 @@ internal class SplashPage : BasePager() {
                     flexDirectionColumn()
                 }
 
-                // Logo 图标
                 View {
                     attr {
                         size(90f, 90f)
@@ -64,7 +62,7 @@ internal class SplashPage : BasePager() {
                     }
                     Text {
                         attr {
-                            text("W")
+                            text("探")
                             fontSize(42f)
                             color(YijianColors.textPrimary)
                             fontWeightBold()
@@ -72,29 +70,26 @@ internal class SplashPage : BasePager() {
                     }
                 }
 
-                // 应用名称
                 Text {
                     attr {
                         marginTop(YijianTheme.Spacing.xl)
-                        text("一剪")
+                        text("探索中国")
                         fontSize(YijianTheme.FontSize.display)
                         color(YijianColors.textPrimary)
                         fontWeightBold()
                     }
                 }
 
-                // 副标题
                 Text {
                     attr {
                         marginTop(YijianTheme.Spacing.sm)
-                        text("你的智能视频剪辑助手")
+                        text("探索中华文化之美")
                         fontSize(YijianTheme.FontSize.body)
                         color(YijianColors.textSecondary)
                     }
                 }
             }
 
-            // 底部版本
             Text {
                 attr {
                     absolutePosition(bottom = 40f, left = 0f, right = 0f)
