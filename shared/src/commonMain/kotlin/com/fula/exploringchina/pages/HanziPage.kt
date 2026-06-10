@@ -4,11 +4,12 @@ import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.views.*
 import com.fula.exploringchina.base.BasePager
+import com.fula.exploringchina.hanzi.HanziWeb
 import com.fula.exploringchina.theme.YijianColors
 import com.fula.exploringchina.theme.YijianTheme
 
 /**
- * 汉字练习页 — 占位，待后续实现
+ * 汉字练习页 — 顶部导航栏 + 原生 WebView（HanziWriter 动画 + 练字 quiz）
  */
 @Page("HanziPage", supportInLocal = true)
 internal class HanziPage : BasePager() {
@@ -18,7 +19,7 @@ internal class HanziPage : BasePager() {
         return {
             attr { backgroundColor(YijianColors.background); flexDirectionColumn() }
 
-            // 顶部导航栏
+            // ── 顶部导航栏 ──────────────────────────────────────
             View {
                 attr {
                     height(YijianTheme.BarHeight.topBar + pagerData.statusBarHeight)
@@ -26,25 +27,25 @@ internal class HanziPage : BasePager() {
                     flexDirectionRow()
                     alignItemsCenter()
                     paddingTop(pagerData.statusBarHeight)
-                    paddingLeft(YijianTheme.Spacing.lg)
+                    paddingLeft(YijianTheme.Spacing.sm)
                     paddingRight(YijianTheme.Spacing.lg)
                 }
+
+                // 返回按钮
                 View {
-                    attr {
-                        size(40f, 40f)
-                        allCenter()
-                        marginRight(YijianTheme.Spacing.sm)
-                    }
+                    attr { size(44f, 44f); allCenter() }
                     event { click { ctx.closePage() } }
                     Text {
                         attr {
                             text("‹")
-                            fontSize(28f)
+                            fontSize(30f)
                             color(YijianColors.textPrimary)
                             fontWeightBold()
                         }
                     }
                 }
+
+                // 标题
                 Text {
                     attr {
                         text("汉字练习")
@@ -56,26 +57,12 @@ internal class HanziPage : BasePager() {
                 }
             }
 
-            // 内容区 — 占位
-            View {
-                attr { flex(1f); allCenter(); flexDirectionColumn() }
-                Text { attr { text("🖊"); fontSize(64f); marginBottom(YijianTheme.Spacing.xl) } }
-                Text {
-                    attr {
-                        text("汉字练习")
-                        fontSize(YijianTheme.FontSize.largeTitle)
-                        color(YijianColors.textPrimary)
-                        fontWeightBold()
-                        marginBottom(YijianTheme.Spacing.md)
-                    }
-                }
-                Text {
-                    attr {
-                        text("精彩内容即将上线")
-                        fontSize(YijianTheme.FontSize.body)
-                        color(YijianColors.textSecondary)
-                    }
-                }
+            // 分隔线
+            View { attr { height(1f); backgroundColor(YijianColors.surfaceLight) } }
+
+            // ── 汉字 WebView（占满剩余高度） ─────────────────────
+            HanziWeb {
+                attr { flex(1f) }
             }
         }
     }

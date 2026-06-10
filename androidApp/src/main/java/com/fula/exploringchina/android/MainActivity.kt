@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         delegator = KuiklyRenderViewBaseDelegator(object : KuiklyRenderViewBaseDelegatorDelegate {
             override fun registerExternalRenderView(export: IKuiklyRenderExport) {
                 export.renderViewExport("VideoRenderView", { VideoRenderViewImpl(it) }, null)
+                export.renderViewExport("HanziWebView", { HanziWebViewImpl(it) }, null)
             }
             override fun registerExternalModule(export: IKuiklyRenderExport) {
                 export.moduleExport(GalleryModule.MODULE_NAME) {
