@@ -9,7 +9,7 @@ import com.fula.exploringchina.theme.YijianColors
 import com.fula.exploringchina.theme.YijianTheme
 
 /**
- * 汉字练习页 — 顶部导航栏 + 原生 WebView（HanziWriter 动画 + 练字 quiz）
+ * 汉字练习页 — 顶部导航栏 + 原生 WebView（加载 practise.html 练字测验）
  */
 @Page("HanziPage", supportInLocal = true)
 internal class HanziPage : BasePager() {

@@ -23,8 +23,8 @@ class HanziWebViewImpl(context: Context) : WebView(context), IKuiklyRenderViewEx
             javaScriptEnabled = true
             domStorageEnabled = true
             allowFileAccess = true
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
+            // allowFileAccessFromFileURLs / allowUniversalAccessFromFileURLs 已在 API 30 废弃，
+            // API 31+ 被静默忽略；同源的 file:// XHR 不需要这两个标志。
             cacheMode = WebSettings.LOAD_NO_CACHE
             builtInZoomControls = false
             displayZoomControls = false
@@ -40,7 +40,10 @@ class HanziWebViewImpl(context: Context) : WebView(context), IKuiklyRenderViewEx
      */
     override fun setProp(propKey: String, propValue: Any): Boolean {
         if (propKey == "src") {
-            loadUrl("file:///android_asset/hanzi/$propValue")
+            val filename = propValue.toString()
+            // 防路径遍历：文件名不得包含目录分隔符或上级引用
+            if (filename.contains('/') || filename.contains("..")) return false
+            loadUrl("file:///android_asset/hanzi/$filename")
             return true
         }
         return false
