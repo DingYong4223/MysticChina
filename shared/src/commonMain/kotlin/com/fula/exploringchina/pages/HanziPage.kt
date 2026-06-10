@@ -61,8 +61,12 @@ internal class HanziPage : BasePager() {
             View { attr { height(1f); backgroundColor(YijianColors.surfaceLight) } }
 
             // ── 汉字 WebView（占满剩余高度） ─────────────────────
+            // 注意：flex(1f) 只填充 column 主轴（高度），原生 View 宽度需显式指定
             HanziWeb {
-                attr { flex(1f) }
+                attr {
+                    flex(1f)
+                    width(ctx.pagerData.pageViewWidth)
+                }
             }
         }
     }
