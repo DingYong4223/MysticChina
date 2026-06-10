@@ -43,10 +43,8 @@ out/
 .gradle/
 .gradletasknamecache
 build/
-!gradle/wrapper/gradle-wrapper.jar
 !buildSrc/build/
 *.class
-*.jar
 *.war
 *.nar
 *.ear

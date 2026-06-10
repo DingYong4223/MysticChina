@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
 import com.fula.exploringchina.android.view.VideoRenderViewImpl
+import com.fula.exploringchina.android.view.HanziWebViewImpl
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.tencent.kuikly.core.render.android.IKuiklyRenderContext
