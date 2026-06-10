@@ -13,7 +13,7 @@ import com.tencent.kuikly.core.base.event.Event
  *       attr {
  *           flex(1f)
  *           width(pageViewWidth)
- *           src("practise.html")   // 指定 assets/hanzi/ 下的 HTML 文件名
+ *           src("game.html")   // 指定 assets/hanzi/ 下的 HTML 文件名
  *       }
  *   }
  */
@@ -21,7 +21,7 @@ import com.tencent.kuikly.core.base.event.Event
 /** 控制 HanziWebView 行为的属性类。 */
 class HanziWebAttr : Attr() {
     /**
-     * 指定要加载的 HTML 文件名（相对于 assets/hanzi/），例如 "practise.html"。
+     * 指定要加载的 HTML 文件名（相对于 assets/hanzi/），例如 "game.html"。
      * 通过 KuiklyUI prop 机制发往 Android 端，触发 HanziWebViewImpl.setProp("src", …)。
      */
     fun src(url: String): HanziWebAttr {
