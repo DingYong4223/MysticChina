@@ -9,10 +9,11 @@ import com.tencent.kuikly.core.render.android.export.IKuiklyRenderViewExport
 import com.tencent.kuikly.core.render.android.export.KuiklyRenderCallback
 
 /**
- * 汉字练习 WebView — 加载 assets/hanzi/index.html（内含 hanzi-writer.min.js）
+ * 汉字练习 WebView — 加载 assets/hanzi/ 下的 HTML 文件。
  *
  * 注册名："HanziWebView"
- * 用法：在 Kuikly DSL 中通过 NativeView("HanziWebView") { } 嵌入
+ * 加载时机：KuiklyUI 完成 FlexBox 布局后调用 setProp("src", filename)，
+ *           此时 WebView 已有正确的 Android 视图宽度，viewport 计算更准确。
  */
 @SuppressLint("SetJavaScriptEnabled")
 class HanziWebViewImpl(context: Context) : WebView(context), IKuiklyRenderViewExport {
@@ -30,11 +31,19 @@ class HanziWebViewImpl(context: Context) : WebView(context), IKuiklyRenderViewEx
         }
         webViewClient = WebViewClient()
         setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        loadUrl("file:///android_asset/hanzi/index.html")
+        // loadUrl 不在此处调用 — 等待 KuiklyUI 通过 setProp("src", …) 触发
     }
 
+    /**
+     * 响应 "src" prop：加载 assets/hanzi/{value} 页面。
+     * KuiklyUI 在完成布局后才调用此方法，WebView 届时已有正确宽度。
+     */
     override fun setProp(propKey: String, propValue: Any): Boolean {
-        return super.setProp(propKey, propValue)
+        if (propKey == "src") {
+            loadUrl("file:///android_asset/hanzi/$propValue")
+            return true
+        }
+        return false
     }
 
     override fun call(method: String, params: String?, callback: KuiklyRenderCallback?): Any? = null
