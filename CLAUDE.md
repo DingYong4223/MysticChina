@@ -5,24 +5,48 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build Commands
 
 ```bash
-# Android APK (standard build — uses published KuiklyUI Maven artifacts)
+# Android APK
 ./gradlew :androidApp:assembleDebug
 
-# Verify shared module compiles for Android
-./gradlew :shared:compileKotlinAndroid
+# Compile shared module (Android)
+./gradlew :shared:compileDebugKotlinAndroid
 
 # Run unit tests
 ./gradlew :shared:testDebugUnitTest
-
-# Full source build (enables macOS/JS platforms — requires ../KuiklyUI source)
-cp settings.full.gradle.kts settings.gradle.kts
-./gradlew :androidApp:assembleDebug
 
 # Clean
 ./gradlew clean
 ```
 
-**Build mode detection**: `settings.gradle.kts` (default) uses published Maven AAR — Android + iOS only. `settings.full.gradle.kts` adds KuiklyUI source modules from `../KuiklyUI/`, enabling macOS and JS targets. The shared module auto-detects mode via `rootProject.findProject(":core-annotations") != null`.
+> **Note:** `./gradlew` requires `gradle/wrapper/gradle-wrapper.jar` — the file is committed in this repo.  
+> If missing, copy it from another Android project or re-generate with `gradle wrapper --gradle-version 8.5`.
+
+**Build mode**: `settings.gradle.kts` always uses KuiklyUI source modules from `../KuiklyUI/` (sibling directory, must be cloned). The shared module auto-detects source build via `rootProject.findProject(":core-annotations") != null`.
+
+### KuiklyUI Patched Build Files (REQUIRED on new machines)
+
+`settings.gradle.kts` points `:core` and `:core-annotations` to patched build files that remove the `js(IR) { browser() }` block. Without this patch, Gradle throws `Cannot add task 'clean' as a task with that name already exists` during configuration.
+
+Patched files live **outside this repo** in the KuiklyUI sibling directory:
+
+| File | Location |
+|---|---|
+| `build.kuikly-core.gradle.kts` | `../KuiklyUI/core/` |
+| `build.kuikly-annotations.gradle.kts` | `../KuiklyUI/core-annotations/` |
+
+Source copies are committed at `buildSrc/build.kuikly-core.gradle.kts`. To restore on a new machine:
+
+```bash
+# From ExploringChina root
+cp buildSrc/build.kuikly-core.gradle.kts ../KuiklyUI/core/build.kuikly-core.gradle.kts
+
+# Generate core-annotations patch (remove js(IR) block, update compileSdk 32→34)
+cp ../KuiklyUI/core-annotations/build.2.1.21.gradle.kts \
+   ../KuiklyUI/core-annotations/build.kuikly-annotations.gradle.kts
+sed -i '' '/js(IR)/,/^    }/d' ../KuiklyUI/core-annotations/build.kuikly-annotations.gradle.kts
+sed -i '' 's/compileSdk = 32/compileSdk = 34/' ../KuiklyUI/core-annotations/build.kuikly-annotations.gradle.kts
+sed -i '' 's/targetSdk = 32/targetSdk = 34/'  ../KuiklyUI/core-annotations/build.kuikly-annotations.gradle.kts
+```
 
 ## Architecture
 
@@ -59,9 +83,16 @@ Default start page: `SplashPage` → `HomePage` → `MainPage` (media library) �
 
 Custom native views and modules are registered in `MainActivity`:
 - **`VideoRenderView`** → `VideoRenderViewImpl` (Android `SurfaceView` wrapper)
+- **`HanziWebView`** → `HanziWebViewImpl` (Android `WebView`, loads `assets/hanzi/index.html`)
 - **`GalleryModule`** → `GalleryModuleExport` inner class — handles `pickVideo` via `ACTION_OPEN_DOCUMENT`, copies to cache dir, returns JSON path
 
+To add a new native view: (1) implement `IKuiklyRenderViewExport` in `androidApp/.../view/`, (2) register via `export.renderViewExport("Name", { MyViewImpl(it) }, null)` in `MainActivity`, (3) create a `DeclarativeBaseView` subclass in `commonMain` with matching `viewName()`.
+
 `IVideoPlayer` (`player/IVideoPlayer.kt`) is the cross-platform contract. Platform factories (`PlatformPlayerFactory.kt`) provide `actual` implementations per target.
+
+### HanziPage
+
+`HanziPage` embeds a native `WebView` via the `HanziWeb { }` DSL (defined in `commonMain/hanzi/HanziWebView.kt`). The WebView loads `shared/src/commonMain/assets/hanzi/index.html` which bundles `hanzi-writer.min.js` — no network required. Features: stroke animation, stroke quiz, character input. Reference project: `../Hanzi/` (hanzi-writer demo).
 
 ### KSP Workaround
 
