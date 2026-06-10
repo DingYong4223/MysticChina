@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>练字</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1a1a1a; color: #f0f0f0;
+      font-family: -apple-system, 'PingFang SC', sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px 16px; min-height: 100vh;
+    }
+    .char-row { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; width: 100%; max-width: 360px; }
+    .char-label { font-size: 14px; color: #aaa; }
+    .char-input { background: #2a2a2a; border: 1px solid #444; border-radius: 8px; color: #f0f0f0; font-size: 28px; text-align: center; padding: 8px; width: 56px; }
+    .btn { background: #e85d04; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    .btn:active { opacity: 0.8; }
+    .btn-outline { background: transparent; border: 1px solid #555; color: #ccc; }
+    .char-grid { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; max-width: 360px; margin-bottom: 20px; }
+    .char-chip { background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #ddd; font-size: 18px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .char-chip:active, .char-chip.active { background: #e85d04; border-color: #e85d04; color: #fff; }
+    .section { width: 100%; max-width: 360px; margin-bottom: 28px; }
+    .section-title { font-size: 13px; color: #888; letter-spacing: 1px; margin-bottom: 12px; }
+    .writer-wrap { background: #242424; border-radius: 12px; display: flex; justify-content: center; align-items: center; padding: 12px; margin-bottom: 12px; }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hint { font-size: 12px; color: #666; margin-top: 8px; text-align: center; }
+    .error-msg { color: #ff6b6b; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="char-grid" id="char-grid"></div>
+  <div class="char-row">
+    <span class="char-label">练习</span>
+    <input class="char-input" id="char-input" maxlength="1" value="我">
+    <button class="btn" id="btn-update">更新</button>
+  </div>
+  <div class="error-msg" id="error-msg"></div>
+
+  <div class="section">
+    <div class="section-title">练字测验</div>
+    <div class="writer-wrap"><div id="quiz-target"></div></div>
+    <div class="controls">
+      <button class="btn" id="btn-quiz-reset">↺ 重置</button>
+      <button class="btn btn-outline" id="btn-outline-quiz">轮廓 开/关</button>
+    </div>
+    <div class="hint" id="quiz-hint">按笔画顺序描写汉字</div>
+  </div>
+
+  <script src="./hanzi-writer.min.js"></script>
+  <script>
+    var LOCAL_CHARS = '我你他她它们的是了在有不这中人国大来到说时要就出会可也对都而多去能下过子上用年地分家学以发方好那些生知等部被从问题为工作看日月水火山口手目耳心'.split('');
+    var SIZE = 260;
+    var quizWriter = null;
+    var quizOutlineOn = true;
+
+    function localLoader(char, onLoad, onError) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', './data/' + char + '.json', true);
+      xhr.onload = function() {
+        if (xhr.status === 200) { try { onLoad(JSON.parse(xhr.responseText)); } catch(e) { onError(e); } }
+        else { onError(new Error('HTTP ' + xhr.status)); }
+      };
+      xhr.onerror = function(e) { onError(e); };
+      xhr.send();
+    }
+    function clearEl(id) {
+      var el = document.getElementById(id);
+      el.innerHTML = ''; el.style.width = SIZE + 'px'; el.style.height = SIZE + 'px';
+    }
+    function showError(msg) { var el = document.getElementById('error-msg'); el.textContent = msg; el.style.display = 'block'; }
+    function hideError() { document.getElementById('error-msg').style.display = 'none'; }
+
+    function updateQuiz(char) {
+      var vw = window.innerWidth || window.screen.width || 360;
+      if (vw < 100) vw = 360;
+      SIZE = Math.max(Math.min(vw - 80, 280), 200);
+      hideError(); clearEl('quiz-target');
+      document.getElementById('quiz-hint').textContent = '按笔画顺序描写汉字';
+      quizWriter = HanziWriter.create('quiz-target', char, {
+        width: SIZE, height: SIZE, padding: 8,
+        charDataLoader: localLoader,
+        onLoadCharDataError: function() { showError('「' + char + '」暂无数据，请从上方选择常用字'); },
+        strokeColor: '#e85d04', outlineColor: '#aaa', highlightColor: '#ff9f1c',
+        showOutline: quizOutlineOn, showCharacter: false,
+        showHintAfterMisses: 2, highlightOnComplete: true
+      });
+      quizWriter.quiz({ onComplete: function() { document.getElementById('quiz-hint').textContent = '🎉 写完了！按↺重新练习'; } });
+      document.querySelectorAll('.char-chip').forEach(function(el) { el.classList.toggle('active', el.textContent === char); });
+      document.getElementById('char-input').value = char;
+    }
+
+    var grid = document.getElementById('char-grid');
+    LOCAL_CHARS.forEach(function(ch) {
+      var chip = document.createElement('div'); chip.className = 'char-chip'; chip.textContent = ch;
+      chip.addEventListener('click', function() { updateQuiz(ch); }); grid.appendChild(chip);
+    });
+    document.getElementById('btn-update').addEventListener('click', function() {
+      var ch = document.getElementById('char-input').value.trim(); if (ch) updateQuiz(ch);
+    });
+    document.getElementById('char-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { var ch = this.value.trim(); if (ch) updateQuiz(ch); }
+    });
+    document.getElementById('btn-quiz-reset').addEventListener('click', function() {
+      if (quizWriter) {
+        document.getElementById('quiz-hint').textContent = '按笔画顺序描写汉字';
+        quizWriter.quiz({ onComplete: function() { document.getElementById('quiz-hint').textContent = '🎉 写完了！按↺重新练习'; } });
+      }
+    });
+    document.getElementById('btn-outline-quiz').addEventListener('click', function() {
+      quizOutlineOn = !quizOutlineOn;
+      if (quizWriter) quizOutlineOn ? quizWriter.showOutline() : quizWriter.hideOutline();
+    });
+
+    window.onload = function() {
+      // KuiklyUI WebView 的 CSS viewport 被锁定，用 screen.width 强制覆盖 body 宽度
+      var dpWidth = window.screen.width || window.screen.availWidth || 360;
+      document.documentElement.style.width = dpWidth + 'px';
+      document.body.style.width = dpWidth + 'px';
+      document.body.style.maxWidth = 'none';
+      setTimeout(function() { updateQuiz('我'); }, 50);
+    };
+  </script>
+</body>
+</html>
