@@ -40,16 +40,17 @@ include(":shared")
 val kuiklyDir = file("../KuiklyUI")
 val kuiklyBuildFile = "build.2.1.21.gradle.kts"
 
+// :core 使用本地修改版 build 文件（去掉 js(IR) target，避免 duplicate 'clean' task 冲突）
 include(":core")
 project(":core").apply {
     projectDir = File(kuiklyDir, "core")
-    buildFileName = kuiklyBuildFile
+    buildFileName = "build.kuikly-core.gradle.kts"   // patched: no js(IR) target
 }
 
 include(":core-annotations")
 project(":core-annotations").apply {
     projectDir = File(kuiklyDir, "core-annotations")
-    buildFileName = kuiklyBuildFile
+    buildFileName = "build.kuikly-annotations.gradle.kts"   // patched: no js(IR) target
 }
 
 include(":core-ksp")
