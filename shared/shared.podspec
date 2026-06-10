@@ -1,11 +1,11 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'shared'
     spec.version                  = '1.0'
-    spec.homepage                 = 'https://github.com/yijian'
+    spec.homepage                 = 'https://github.com/DingYong4223/ExploringChina'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = 'MIT'
-    spec.summary                  = 'Yijian Video Editor Shared Module'
+    spec.summary                  = 'ExploringChina Shared Module'
     spec.vendored_frameworks      = 'build/cocoapods/framework/shared.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '14.1'
