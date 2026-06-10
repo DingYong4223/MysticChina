@@ -9,6 +9,8 @@
 
 `HanziPage` 当前通过 `HanziWebView` 组件加载 `assets/hanzi/index.html`，该页面同时包含"笔画动画"和"练字测验"两个 section。需求：新建专注于练字测验的 `practise.html`，并让 `HanziWebView` 组件支持通过 Attr 指定加载哪个页面，`HanziPage` 改为加载 `practise.html`。
 
+共享资源存放于 `shared/src/commonMain/assets/`，通过 `shared/build.gradle.kts` 中的 `assets.srcDirs` 配置自动打包进 Android APK，无需在 `androidApp/` 下重复放置。
+
 ---
 
 ## 目标
@@ -27,7 +29,10 @@
 | `shared/.../hanzi/HanziWebView.kt` | 修改：新增 `HanziWebAttr` 及 `src()` 方法 |
 | `androidApp/.../view/HanziWebViewImpl.kt` | 修改：移除 init 中 loadUrl，新增 setProp 处理 `src` |
 | `shared/.../pages/HanziPage.kt` | 修改：在 `HanziWeb` attr 中加入 `src("practise.html")` |
-| `assets/hanzi/practise.html` | 新建：quiz-only 页面 |
+| `shared/src/commonMain/assets/hanzi/practise.html` | 新建：quiz-only 页面 |
+| `shared/src/commonMain/assets/hanzi/index.html` | 已存在：全功能版本（动画 + 练字） |
+| `shared/src/commonMain/assets/hanzi/hanzi-writer.min.js` | 已存在：HanziWriter JS 库 |
+| `shared/src/commonMain/assets/hanzi/data/*.json` | 已存在：71 个汉字笔划数据文件 |
 
 ---
 

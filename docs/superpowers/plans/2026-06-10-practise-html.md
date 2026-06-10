@@ -14,189 +14,60 @@
 
 | 操作 | 路径 |
 |---|---|
-| 新建 | `androidApp/src/main/assets/hanzi/practise.html` |
-| 新建（恢复）| `androidApp/src/main/assets/hanzi/index.html` |
-| 新建（恢复）| `androidApp/src/main/assets/hanzi/hanzi-writer.min.js` |
-| 新建（恢复）| `androidApp/src/main/assets/hanzi/data/*.json`（71 个） |
+| 新建 | `shared/src/commonMain/assets/hanzi/practise.html` |
+| 已存在 | `shared/src/commonMain/assets/hanzi/index.html` |
+| 已存在 | `shared/src/commonMain/assets/hanzi/hanzi-writer.min.js` |
+| 已存在 | `shared/src/commonMain/assets/hanzi/data/*.json`（71 个） |
 | 修改 | `shared/src/commonMain/kotlin/com/fula/exploringchina/hanzi/HanziWebView.kt` |
 | 修改 | `androidApp/src/main/java/com/fula/exploringchina/android/view/HanziWebViewImpl.kt` |
 | 修改 | `shared/src/commonMain/kotlin/com/fula/exploringchina/pages/HanziPage.kt` |
 
 ---
 
-## Task 1：恢复 assets 目录
+## Task 1：清理重复资源（androidApp/assets）
 
-assets 在上次代码还原时丢失，需要重建才能继续后续步骤。
+`shared/src/commonMain/assets/hanzi/` 已包含所有资源（JS 库、71 个 JSON、index.html），由 shared/build.gradle.kts 的 `assets.srcDirs` 自动打包。
+`androidApp/src/main/assets/hanzi/` 有重复的部分文件需要清理，以避免 AGP 合并时产生冲突。
 
 **Files:**
-- Create: `androidApp/src/main/assets/hanzi/hanzi-writer.min.js`
-- Create: `androidApp/src/main/assets/hanzi/data/*.json`（71 个）
+- Delete contents: `androidApp/src/main/assets/hanzi/`
 
-- [ ] **Step 1.1：复制 HanziWriter JS 库**
-
-```bash
-cp /Users/delanding/ProjDYDoing/gitself/Hanzi/hanzi-writer.min.js \
-   androidApp/src/main/assets/hanzi/
-```
-
-Expected: 文件存在，约 36K。
-
-- [ ] **Step 1.2：下载常用汉字笔划数据（71 个 JSON）**
+- [ ] **Step 1.1：清理 androidApp 下的重复 hanzi 资源**
 
 ```bash
-BASE="https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0"
-CHARS=(我 你 他 她 它 们 的 是 了 在 有 不 这 中 人 国 大 来 到 说 时 要 就 出 会 可 也 对 都 而 多 去 能 下 过 子 上 用 年 地 分 家 学 以 发 方 好 那 些 生 知 等 部 被 从 问 题 为 工 作 看 日 月 水 火 山 口 手 目 耳 心)
-for ch in "${CHARS[@]}"; do
-  curl -sf "${BASE}/${ch}.json" \
-       -o "androidApp/src/main/assets/hanzi/data/${ch}.json"
-done
-ls androidApp/src/main/assets/hanzi/data/ | wc -l
+rm -rf androidApp/src/main/assets/hanzi
 ```
 
-Expected: `71`
+- [ ] **Step 1.2：确认 shared 下资源完整**
+
+```bash
+echo "JS: $(ls shared/src/commonMain/assets/hanzi/hanzi-writer.min.js)"
+echo "HTML: $(ls shared/src/commonMain/assets/hanzi/index.html)"
+echo "Data: $(ls shared/src/commonMain/assets/hanzi/data/ | wc -l) files"
+```
+
+Expected:
+```
+JS: shared/src/commonMain/assets/hanzi/hanzi-writer.min.js
+HTML: shared/src/commonMain/assets/hanzi/index.html
+Data:       71 files
+```
 
 ---
 
-## Task 2：恢复 `index.html`
+## Task 2：确认 `index.html` 已存在
 
-`index.html` 是全功能版本（动画 + 练字），需恢复以保证验收标准 5（index.html 可独立打开）。
+`shared/src/commonMain/assets/hanzi/index.html` 在 Task 1 已就位，无需重新创建。验证其包含 `animation-target` 和 `quiz-target` 两个 section 即可。
 
-**Files:**
-- Create: `androidApp/src/main/assets/hanzi/index.html`
+**Files:** 无变更
 
-- [ ] **Step 2.1：写入 index.html**
+- [ ] **Step 2.1：确认 index.html 包含两个 section**
 
-创建文件 `androidApp/src/main/assets/hanzi/index.html`，内容如下：
-
-```html
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>汉字练习</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: #1a1a1a; color: #f0f0f0;
-      font-family: -apple-system, 'PingFang SC', sans-serif;
-      display: flex; flex-direction: column; align-items: center;
-      padding: 20px 16px; min-height: 100vh;
-    }
-    .char-row { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; width: 100%; max-width: 360px; }
-    .char-label { font-size: 14px; color: #aaa; }
-    .char-input { background: #2a2a2a; border: 1px solid #444; border-radius: 8px; color: #f0f0f0; font-size: 28px; text-align: center; padding: 8px; width: 56px; }
-    .btn { background: #e85d04; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 14px; cursor: pointer; white-space: nowrap; }
-    .btn:active { opacity: 0.8; }
-    .btn-outline { background: transparent; border: 1px solid #555; color: #ccc; }
-    .char-grid { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; max-width: 360px; margin-bottom: 20px; }
-    .char-chip { background: #2a2a2a; border: 1px solid #444; border-radius: 6px; color: #ddd; font-size: 18px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .char-chip:active, .char-chip.active { background: #e85d04; border-color: #e85d04; color: #fff; }
-    .section { width: 100%; max-width: 360px; margin-bottom: 28px; }
-    .section-title { font-size: 13px; color: #888; letter-spacing: 1px; margin-bottom: 12px; }
-    .writer-wrap { background: #242424; border-radius: 12px; display: flex; justify-content: center; align-items: center; padding: 12px; margin-bottom: 12px; }
-    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
-    .hint { font-size: 12px; color: #666; margin-top: 8px; text-align: center; }
-    .error-msg { color: #ff6b6b; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; }
-  </style>
-</head>
-<body>
-  <div class="char-grid" id="char-grid"></div>
-  <div class="char-row">
-    <span class="char-label">练习</span>
-    <input class="char-input" id="char-input" maxlength="1" value="我">
-    <button class="btn" id="btn-update">更新</button>
-  </div>
-  <div class="error-msg" id="error-msg"></div>
-
-  <div class="section">
-    <div class="section-title">笔画动画</div>
-    <div class="writer-wrap"><div id="animation-target"></div></div>
-    <div class="controls">
-      <button class="btn" id="btn-animate">▶ 播放</button>
-      <button class="btn btn-outline" id="btn-outline-anim">轮廓 开/关</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">练字测验</div>
-    <div class="writer-wrap"><div id="quiz-target"></div></div>
-    <div class="controls">
-      <button class="btn" id="btn-quiz-reset">↺ 重置</button>
-      <button class="btn btn-outline" id="btn-outline-quiz">轮廓 开/关</button>
-    </div>
-    <div class="hint" id="quiz-hint">按笔画顺序描写汉字</div>
-  </div>
-
-  <script src="./hanzi-writer.min.js"></script>
-  <script>
-    var LOCAL_CHARS = '我你他她它们的是了在有不这中人国大来到说时要就出会可也对都而多去能下过子上用年地分家学以发方好那些生知等部被从问题为工作看日月水火山口手目耳心'.split('');
-    var SIZE = 260;
-    var animWriter = null, quizWriter = null;
-    var animOutlineOn = true, quizOutlineOn = true;
-
-    function localLoader(char, onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', './data/' + char + '.json', true);
-      xhr.onload = function() {
-        if (xhr.status === 200) { try { onLoad(JSON.parse(xhr.responseText)); } catch(e) { onError(e); } }
-        else { onError(new Error('HTTP ' + xhr.status)); }
-      };
-      xhr.onerror = function(e) { onError(e); };
-      xhr.send();
-    }
-    function clearEl(id) {
-      var el = document.getElementById(id);
-      el.innerHTML = ''; el.style.width = SIZE + 'px'; el.style.height = SIZE + 'px';
-    }
-    function showError(msg) { var el = document.getElementById('error-msg'); el.textContent = msg; el.style.display = 'block'; }
-    function hideError() { document.getElementById('error-msg').style.display = 'none'; }
-
-    function updateWriters(char) {
-      var vw = window.innerWidth || window.screen.width || 360;
-      if (vw < 100) vw = 360;
-      SIZE = Math.max(Math.min(vw - 80, 280), 200);
-      hideError(); clearEl('animation-target'); clearEl('quiz-target');
-      document.getElementById('quiz-hint').textContent = '按笔画顺序描写汉字';
-      var opts = { width: SIZE, height: SIZE, padding: 8, charDataLoader: localLoader,
-        onLoadCharDataError: function() { showError('「' + char + '」暂无数据，请从上方选择常用字'); } };
-      animWriter = HanziWriter.create('animation-target', char, Object.assign({}, opts, {
-        strokeColor: '#f0f0f0', outlineColor: '#888', showOutline: true, showCharacter: true,
-        strokeAnimationSpeed: 1, delayBetweenStrokes: 300 }));
-      quizWriter = HanziWriter.create('quiz-target', char, Object.assign({}, opts, {
-        strokeColor: '#e85d04', outlineColor: '#aaa', highlightColor: '#ff9f1c',
-        showOutline: quizOutlineOn, showCharacter: false, showHintAfterMisses: 2, highlightOnComplete: true }));
-      quizWriter.quiz({ onComplete: function() { document.getElementById('quiz-hint').textContent = '🎉 写完了！按↺重新练习'; } });
-      document.querySelectorAll('.char-chip').forEach(function(el) { el.classList.toggle('active', el.textContent === char); });
-      document.getElementById('char-input').value = char;
-    }
-
-    var grid = document.getElementById('char-grid');
-    LOCAL_CHARS.forEach(function(ch) {
-      var chip = document.createElement('div'); chip.className = 'char-chip'; chip.textContent = ch;
-      chip.addEventListener('click', function() { updateWriters(ch); }); grid.appendChild(chip);
-    });
-    document.getElementById('btn-update').addEventListener('click', function() { var ch = document.getElementById('char-input').value.trim(); if (ch) updateWriters(ch); });
-    document.getElementById('char-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') { var ch = this.value.trim(); if (ch) updateWriters(ch); } });
-    document.getElementById('btn-animate').addEventListener('click', function() { if (animWriter) animWriter.animateCharacter(); });
-    document.getElementById('btn-outline-anim').addEventListener('click', function() { animOutlineOn = !animOutlineOn; if (animWriter) animOutlineOn ? animWriter.showOutline() : animWriter.hideOutline(); });
-    document.getElementById('btn-quiz-reset').addEventListener('click', function() {
-      if (quizWriter) { document.getElementById('quiz-hint').textContent = '按笔画顺序描写汉字';
-        quizWriter.quiz({ onComplete: function() { document.getElementById('quiz-hint').textContent = '🎉 写完了！按↺重新练习'; } }); }
-    });
-    document.getElementById('btn-outline-quiz').addEventListener('click', function() { quizOutlineOn = !quizOutlineOn; if (quizWriter) quizOutlineOn ? quizWriter.showOutline() : quizWriter.hideOutline(); });
-
-    window.onload = function() {
-      var dpWidth = window.screen.width || window.screen.availWidth || 360;
-      document.documentElement.style.width = dpWidth + 'px';
-      document.body.style.width = dpWidth + 'px';
-      document.body.style.maxWidth = 'none';
-      setTimeout(function() { updateWriters('我'); }, 50);
-    };
-  </script>
-</body>
-</html>
+```bash
+grep -c "animation-target\|quiz-target" shared/src/commonMain/assets/hanzi/index.html
 ```
+
+Expected: `2`（各出现一次）
 
 ---
 
@@ -205,11 +76,11 @@ Expected: `71`
 仅包含练字测验 section，去掉笔画动画及相关代码。
 
 **Files:**
-- Create: `androidApp/src/main/assets/hanzi/practise.html`
+- Create: `shared/src/commonMain/assets/hanzi/practise.html`
 
 - [ ] **Step 3.1：写入 practise.html**
 
-创建文件 `androidApp/src/main/assets/hanzi/practise.html`，内容如下（注意：无 animation-target、无 animWriter、无动画按钮）：
+创建文件 `shared/src/commonMain/assets/hanzi/practise.html`，内容如下（注意：无 animation-target、无 animWriter、无动画按钮）：
 
 ```html
 <!DOCTYPE html>
@@ -334,7 +205,7 @@ Expected: `71`
 
 ```bash
 grep -c "animation-target\|animWriter\|btn-animate\|btn-outline-anim" \
-  androidApp/src/main/assets/hanzi/practise.html
+  shared/src/commonMain/assets/hanzi/practise.html
 ```
 
 Expected: `0`（practise.html 中不含任何动画相关标识符）
@@ -527,7 +398,7 @@ APK=$(find . -path "*/outputs/apk/debug/*.apk" | head -1)
 unzip -l "$APK" | grep "hanzi/"
 ```
 
-Expected 输出应包含（至少）：
+Expected 输出应包含（至少，来源于 `shared/src/commonMain/assets/hanzi/`）：
 ```
 assets/hanzi/hanzi-writer.min.js
 assets/hanzi/index.html
@@ -568,7 +439,7 @@ sleep 4 && adb logcat -d | grep "chromium" | grep "CONSOLE\|practise" | tail -5
 
 ```bash
 git add \
-  androidApp/src/main/assets/hanzi/ \
+  shared/src/commonMain/assets/hanzi/ \
   shared/src/commonMain/kotlin/com/fula/exploringchina/hanzi/HanziWebView.kt \
   androidApp/src/main/java/com/fula/exploringchina/android/view/HanziWebViewImpl.kt \
   shared/src/commonMain/kotlin/com/fula/exploringchina/pages/HanziPage.kt
