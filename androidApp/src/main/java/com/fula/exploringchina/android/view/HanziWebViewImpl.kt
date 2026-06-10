@@ -33,7 +33,9 @@ class HanziWebViewImpl(context: Context) : WebView(context), IKuiklyRenderViewEx
         loadUrl("file:///android_asset/hanzi/index.html")
     }
 
-    override fun setProp(propKey: String, propValue: Any): Boolean = false
+    override fun setProp(propKey: String, propValue: Any): Boolean {
+        return super.setProp(propKey, propValue)
+    }
 
     override fun call(method: String, params: String?, callback: KuiklyRenderCallback?): Any? = null
 }
