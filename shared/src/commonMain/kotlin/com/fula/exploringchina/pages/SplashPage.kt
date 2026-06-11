@@ -49,23 +49,18 @@ internal class SplashPage : BasePager() {
                     flexDirectionColumn()
                 }
 
+                // 中国结图标区域：红色圆形背景 + 中国结 emoji
                 View {
                     attr {
                         size(90f, 90f)
-                        backgroundLinearGradient(
-                            Direction.TO_RIGHT,
-                            ColorStop(YijianColors.gradientStart, 0f),
-                            ColorStop(YijianColors.gradientEnd, 1f)
-                        )
-                        borderRadius(22f)
+                        backgroundColor(YijianColors.primary)
+                        borderRadius(45f)   // 圆形
                         allCenter()
                     }
                     Text {
                         attr {
-                            text("探")
-                            fontSize(42f)
-                            color(YijianColors.textPrimary)
-                            fontWeightBold()
+                            text("🏮")      // 红灯笼，中国传统文化象征
+                            fontSize(46f)
                         }
                     }
                 }

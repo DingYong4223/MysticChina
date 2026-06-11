@@ -8,8 +8,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #1a1a1a;
-      color: #f0f0f0;
+      background: #FFF0EE;
+      color: #2D0A08;
       font-family: -apple-system, 'PingFang SC', sans-serif;
       display: flex;
       flex-direction: column;
@@ -28,13 +28,13 @@
       max-width: 360px;
     }
 
-    .char-label { font-size: 14px; color: #aaa; }
+    .char-label { font-size: 14px; color: #8B3A35; }
 
     .char-input {
-      background: #2a2a2a;
-      border: 1px solid #444;
+      background: #FFE4E1;
+      border: 1px solid #FFBDB6;
       border-radius: 8px;
-      color: #f0f0f0;
+      color: #2D0A08;
       font-size: 28px;
       text-align: center;
       padding: 8px;
@@ -42,7 +42,7 @@
     }
 
     .btn {
-      background: #e85d04;
+      background: #E8352A;
       color: #fff;
       border: none;
       border-radius: 8px;
@@ -55,7 +55,7 @@
     .btn-outline {
       background: transparent;
       border: 1px solid #555;
-      color: #ccc;
+      color: #8B3A35;
     }
 
     /* ── 常用字选择器 ─────────────────────── */
@@ -68,10 +68,10 @@
       margin-bottom: 20px;
     }
     .char-chip {
-      background: #2a2a2a;
-      border: 1px solid #444;
+      background: #FFE4E1;
+      border: 1px solid #FFBDB6;
       border-radius: 6px;
-      color: #ddd;
+      color: #2D0A08;
       font-size: 18px;
       width: 38px;
       height: 38px;
@@ -81,8 +81,8 @@
       cursor: pointer;
     }
     .char-chip:active, .char-chip.active {
-      background: #e85d04;
-      border-color: #e85d04;
+      background: #E8352A;
+      border-color: #E8352A;
       color: #fff;
     }
 
@@ -91,13 +91,13 @@
 
     .section-title {
       font-size: 13px;
-      color: #888;
+      color: #BD7672;
       letter-spacing: 1px;
       margin-bottom: 12px;
     }
 
     .writer-wrap {
-      background: #242424;
+      background: #FFE4E1;
       border-radius: 12px;
       display: flex;
       justify-content: center;
@@ -110,7 +110,7 @@
 
     .hint {
       font-size: 12px;
-      color: #666;
+      color: #BD7672;
       margin-top: 8px;
       text-align: center;
     }
@@ -241,9 +241,9 @@
       }));
 
       quizWriter = HanziWriter.create('quiz-target', char, Object.assign({}, opts, {
-        strokeColor: '#e85d04',
-        outlineColor: '#aaa',       // 高对比度轮廓，深色背景清晰可见
-        highlightColor: '#ff9f1c',
+        strokeColor: '#E8352A',
+        outlineColor: '#FFBDB6',       // 高对比度轮廓，深色背景清晰可见
+        highlightColor: '#FF5A4A',
         showOutline: quizOutlineOn,
         showCharacter: false,
         showHintAfterMisses: 2,

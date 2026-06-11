@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App 前景图标 — 中国结
+  画布 108×108dp，安全区：中心 72dp 圆内 (18~90)
+  整体造型：顶部挂绳 → 中央方形盘扣 → 四角花瓣耳 → 底部双流苏
+  全部使用白色，叠在红色背景上
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- ── 顶部挂绳（两根平行竖线向上延伸） ── -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M46,20 L46,30"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M62,20 L62,30"/>
+    <!-- 顶部横连 -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M46,20 L62,20"/>
+
+    <!-- ── 中央方形盘扣（填充白色实心矩形，中空） ── -->
+    <!-- 外框 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,30 L70,30 L70,62 L38,62 Z"/>
+    <!-- 内镂空（深红，模拟镂空效果） -->
+    <path
+        android:fillColor="#E8352A"
+        android:pathData="M43,35 L65,35 L65,57 L43,57 Z"/>
+    <!-- 内十字纹：横 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M43,46 L65,46 L65,48 L43,48 Z"/>
+    <!-- 内十字纹：竖 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M53,35 L55,35 L55,57 L53,57 Z"/>
+
+    <!-- ── 左耳（左侧花瓣环） ── -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M38,38 C28,34 22,38 22,46 C22,54 28,58 38,54"/>
+
+    <!-- ── 右耳（右侧花瓣环） ── -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M70,38 C80,34 86,38 86,46 C86,54 80,58 70,54"/>
+
+    <!-- ── 底部两根绳向下汇聚 ── -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M46,62 L46,72"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M62,62 L62,72"/>
+
+    <!-- ── 流苏小球（两个小圆） ── -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M43,72 A3.5,3.5 0 1,1 42.99,72 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M59,72 A3.5,3.5 0 1,1 58.99,72 Z"/>
+
+    <!-- ── 流苏线（每侧 3 根细线） ── -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M41,75.5 L39,88"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M43,75.5 L43,88"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M45,75.5 L47,88"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M57,75.5 L55,88"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M59,75.5 L59,88"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M61,75.5 L63,88"/>
+
+</vector>

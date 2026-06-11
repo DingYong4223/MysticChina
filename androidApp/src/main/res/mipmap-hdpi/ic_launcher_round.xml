@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 红色背景 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#E8352A"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+    <!-- 白色前景图案 -->
+    <item
+        android:left="12dp"
+        android:top="12dp"
+        android:right="12dp"
+        android:bottom="12dp"
+        android:drawable="@drawable/ic_launcher_foreground"/>
+</layer-list>
