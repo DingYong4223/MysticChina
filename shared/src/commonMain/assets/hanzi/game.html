@@ -27,6 +27,9 @@
     .controls { display: flex; gap: 8px; flex-wrap: wrap; }
     .hint { font-size: 12px; color: #666; margin-top: 8px; text-align: center; }
     .error-msg { color: #ff6b6b; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; }
+    .result-msg { font-size: 16px; font-weight: bold; text-align: center; margin-top: 10px; min-height: 22px; display: none; }
+    .result-msg.success { color: #4caf50; }
+    .result-msg.error   { color: #ff6b6b; }
   </style>
 </head>
 <body>
@@ -39,13 +42,14 @@
   <div class="error-msg" id="error-msg"></div>
 
   <div class="section">
-    <div class="section-title">练字测验</div>
+    <div class="section-title">练字游戏</div>
     <div class="writer-wrap"><div id="quiz-target"></div></div>
     <div class="controls">
       <button class="btn" id="btn-quiz-reset">↺ 重置</button>
       <button class="btn btn-outline" id="btn-outline-quiz">轮廓 开/关</button>
     </div>
-    <div class="hint" id="quiz-hint">按笔画顺序描写汉字</div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="hint" id="quiz-hint">沿轮廓描写，顺序不限，全部写完后判断笔顺</div>
   </div>
 
   <script src="./hanzi-writer.min.js"></script>
@@ -54,13 +58,34 @@
     var SIZE = 260;
     var quizWriter = null;
     var quizOutlineOn = true;
+    var charQueue = [];
+    var autoAdvanceTimer = null;
+    var currentChar = '我';
 
+    // ── 随机队列 ──────────────────────────────────────────
+    function refillQueue() {
+      charQueue = LOCAL_CHARS.slice();
+      for (var i = charQueue.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = charQueue[i]; charQueue[i] = charQueue[j]; charQueue[j] = tmp;
+      }
+    }
+    function nextRandomChar() {
+      if (charQueue.length === 0) refillQueue();
+      return charQueue.pop();
+    }
+
+    // ── 工具 ──────────────────────────────────────────────
     function localLoader(char, onLoad, onError) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', './data/' + char + '.json', true);
       xhr.onload = function() {
-        if (xhr.status === 200) { try { onLoad(JSON.parse(xhr.responseText)); } catch(e) { onError(e); } }
-        else { onError(new Error('HTTP ' + xhr.status)); }
+        // file:// 协议下 Android WebView 返回 status=0
+        if (xhr.status === 200 || (xhr.status === 0 && xhr.responseText)) {
+          try { onLoad(JSON.parse(xhr.responseText)); } catch(e) { onError(e); }
+        } else {
+          onError(new Error('HTTP ' + xhr.status));
+        }
       };
       xhr.onerror = function(e) { onError(e); };
       xhr.send();
@@ -69,57 +94,108 @@
       var el = document.getElementById(id);
       el.innerHTML = ''; el.style.width = SIZE + 'px'; el.style.height = SIZE + 'px';
     }
-    function showError(msg) { var el = document.getElementById('error-msg'); el.textContent = msg; el.style.display = 'block'; }
+    function showError(msg) {
+      var el = document.getElementById('error-msg');
+      el.textContent = msg; el.style.display = 'block';
+    }
     function hideError() { document.getElementById('error-msg').style.display = 'none'; }
 
-    function updateQuiz(char) {
+    function setResult(text, type) {
+      var el = document.getElementById('result-msg');
+      el.textContent = text;
+      el.className = 'result-msg' + (type ? ' ' + type : '');
+      el.style.display = text ? 'block' : 'none';
+    }
+
+    // ── 核心：启动一个汉字的 random-order quiz ────────────
+    function startQuiz(char) {
+      if (autoAdvanceTimer !== null) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+
+      currentChar = char;
       var vw = window.innerWidth || window.screen.width || 360;
       if (vw < 100) vw = 360;
       SIZE = Math.max(Math.min(vw - 80, 280), 200);
-      hideError(); clearEl('quiz-target');
-      document.getElementById('quiz-hint').textContent = '按笔画顺序描写汉字';
+
+      hideError();
+      setResult('', '');
+      document.getElementById('quiz-hint').textContent = '沿轮廓描写，顺序不限，全部写完后判断笔顺';
+      document.querySelectorAll('.char-chip').forEach(function(el) {
+        el.classList.toggle('active', el.textContent === char);
+      });
+      document.getElementById('char-input').value = char;
+
+      clearEl('quiz-target');
       quizWriter = HanziWriter.create('quiz-target', char, {
         width: SIZE, height: SIZE, padding: 8,
         charDataLoader: localLoader,
-        onLoadCharDataError: function() { showError('「' + char + '」暂无数据，请从上方选择常用字'); },
-        strokeColor: '#e85d04', outlineColor: '#aaa', highlightColor: '#ff9f1c',
-        showOutline: quizOutlineOn, showCharacter: false,
-        showHintAfterMisses: 2, highlightOnComplete: true
+        onLoadCharDataError: function() {
+          showError('「' + char + '」暂无数据，请从上方选择常用字');
+        },
+        strokeColor: '#e85d04',
+        outlineColor: '#aaa',
+        highlightColor: '#ff9f1c',
+        showOutline: quizOutlineOn,
+        showCharacter: false,
       });
-      quizWriter.quiz({ onComplete: function() { document.getElementById('quiz-hint').textContent = '🎉 写完了！按↺重新练习'; } });
-      document.querySelectorAll('.char-chip').forEach(function(el) { el.classList.toggle('active', el.textContent === char); });
-      document.getElementById('char-input').value = char;
+
+      quizWriter.quiz({
+        randomOrder: true,
+        onComplete: function(summary) {
+          var order = summary.userStrokeOrder;
+          var isCorrect = order.every(function(idx, i) { return idx === i; });
+          if (isCorrect) {
+            setResult('🎉 笔顺正确！', 'success');
+            document.getElementById('quiz-hint').textContent = '3 秒后进入下一个汉字…';
+            autoAdvanceTimer = setTimeout(function() {
+              autoAdvanceTimer = null;
+              startQuiz(nextRandomChar());
+            }, 3000);
+          } else {
+            setResult('❌ 笔顺有误，再试一次！', 'error');
+            document.getElementById('quiz-hint').textContent = '点击 ↺ 重置后重新书写';
+          }
+        },
+      });
     }
 
+    // ── 事件绑定 ──────────────────────────────────────────
     var grid = document.getElementById('char-grid');
     LOCAL_CHARS.forEach(function(ch) {
-      var chip = document.createElement('div'); chip.className = 'char-chip'; chip.textContent = ch;
-      chip.addEventListener('click', function() { updateQuiz(ch); }); grid.appendChild(chip);
+      var chip = document.createElement('div');
+      chip.className = 'char-chip'; chip.textContent = ch;
+      chip.addEventListener('click', function() { startQuiz(ch); });
+      grid.appendChild(chip);
     });
+
     document.getElementById('btn-update').addEventListener('click', function() {
-      var ch = document.getElementById('char-input').value.trim(); if (ch) updateQuiz(ch);
+      var ch = document.getElementById('char-input').value.trim();
+      if (ch) startQuiz(ch);
     });
     document.getElementById('char-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') { var ch = this.value.trim(); if (ch) updateQuiz(ch); }
+      if (e.key === 'Enter') { var ch = this.value.trim(); if (ch) startQuiz(ch); }
     });
+
     document.getElementById('btn-quiz-reset').addEventListener('click', function() {
-      if (quizWriter) {
-        document.getElementById('quiz-hint').textContent = '按笔画顺序描写汉字';
-        quizWriter.quiz({ onComplete: function() { document.getElementById('quiz-hint').textContent = '🎉 写完了！按↺重新练习'; } });
-      }
+      startQuiz(currentChar);
     });
+
     document.getElementById('btn-outline-quiz').addEventListener('click', function() {
       quizOutlineOn = !quizOutlineOn;
       if (quizWriter) quizOutlineOn ? quizWriter.showOutline() : quizWriter.hideOutline();
     });
 
+    // ── 初始化 ────────────────────────────────────────────
     window.onload = function() {
       // KuiklyUI WebView 的 CSS viewport 被锁定，用 screen.width 强制覆盖 body 宽度
       var dpWidth = window.screen.width || window.screen.availWidth || 360;
       document.documentElement.style.width = dpWidth + 'px';
       document.body.style.width = dpWidth + 'px';
       document.body.style.maxWidth = 'none';
-      setTimeout(function() { updateQuiz('我'); }, 50);
+      refillQueue();
+      setTimeout(function() { startQuiz('我'); }, 50);
     };
   </script>
 </body>
