@@ -2,20 +2,19 @@ package com.fula.mysticchina.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
-import com.tencent.kuikly.core.directives.vfor
 import com.tencent.kuikly.core.directives.vif
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
 import com.tencent.kuikly.core.views.*
 import com.fula.mysticchina.base.BasePager
+import com.fula.mysticchina.components.ExploreTabContent
 import com.fula.mysticchina.model.UserProfile
 import com.fula.mysticchina.theme.MysticChinaColors
 import com.fula.mysticchina.theme.MysticChinaTheme
-import com.fula.mysticchina.util.Constants
 
 private const val SP_NICKNAME = "mysticchina_nickname"
-private const val SP_BIO = "mysticchina_bio"
-private const val SP_AVATAR = "mysticchina_avatar"
+private const val SP_BIO      = "mysticchina_bio"
+private const val SP_AVATAR   = "mysticchina_avatar"
 
 private enum class HomeTab(val label: String, val icon: String) {
     EXPLORE("探索", "🧭"),
@@ -23,31 +22,14 @@ private enum class HomeTab(val label: String, val icon: String) {
     PROFILE("我的", "👤")
 }
 
-/** 文化功能卡片数据 */
-private data class CultureCard(
-    val emoji: String,
-    val title: String,
-    val subtitle: String,
-    val pageName: String?,   // null = 即将上线，禁用点击
-)
-
-private val CULTURE_CARDS = listOf(
-    CultureCard("🖊", "汉字练习", "写好每一笔", Constants.PAGE_HANZI),
-    CultureCard("🍜", "美食", "舌尖上的中国", null),
-    CultureCard("🎭", "文化", "千年传承之美", null),
-    CultureCard("🏯", "景点", "大好河山", null),
-    CultureCard("🧑‍🤝‍🧑", "人文", "人间烟火气", null),
-    CultureCard("📜", "历史", "五千年文明", null),
-)
-
 @Page("HomePage", supportInLocal = true)
 internal class HomePage : BasePager() {
 
-    var selectedTab by observable(0)
-    var userProfile by observable(UserProfile())
+    var selectedTab    by observable(0)
+    var userProfile    by observable(UserProfile())
     var showEditNickname by observable(false)
-    var showEditBio by observable(false)
-    var editingText by observable("")
+    var showEditBio      by observable(false)
+    var editingText      by observable("")
 
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
@@ -56,9 +38,9 @@ internal class HomePage : BasePager() {
     override fun created() {
         super.created()
         userProfile = UserProfile(
-            nickname = sp.getString(SP_NICKNAME) ?: "文化探索者",
-            bio = sp.getString(SP_BIO) ?: "探索中华文化之美",
-            avatarEmoji = sp.getString(SP_AVATAR) ?: "🧭"
+            nickname    = sp.getString(SP_NICKNAME) ?: "文化探索者",
+            bio         = sp.getString(SP_BIO)      ?: "探索中华文化之美",
+            avatarEmoji = sp.getString(SP_AVATAR)   ?: "🧭",
         )
     }
 
@@ -94,7 +76,7 @@ internal class HomePage : BasePager() {
                 vif({ ctx.selectedTab == 2 }) { ProfileTabContent(ctx) }
             }
 
-            View { attr { height(1f); backgroundColor(MysticChinaColors.surfaceLight) } }
+            View { attr { height(1f); backgroundColor(MysticChinaColors.divider) } }
 
             BottomTabBar(ctx)
 
@@ -123,7 +105,7 @@ private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
     View {
         attr {
             height(56f + ctx.pagerData.safeAreaInsets.bottom)
-            backgroundColor(MysticChinaColors.background)
+            backgroundColor(MysticChinaColors.backgroundLight)
             flexDirectionRow()
             alignItemsCenter()
             paddingBottom(ctx.pagerData.safeAreaInsets.bottom)
@@ -154,113 +136,6 @@ private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
                         if (selected) fontWeightSemiBold() else fontWeightNormal()
                     }
                 }
-            }
-        }
-    }
-}
-
-// ═══════════════════════════════════════════════════════════
-// 探索 Tab — 文化功能卡片网格
-// ═══════════════════════════════════════════════════════════
-private fun ViewContainer<*, *>.ExploreTabContent(ctx: HomePage) {
-    View {
-        attr { flex(1f); flexDirectionColumn() }
-
-        // 顶部标题栏
-        View {
-            attr {
-                height(MysticChinaTheme.BarHeight.topBar + ctx.pagerData.statusBarHeight)
-                backgroundColor(MysticChinaColors.background)
-                flexDirectionRow()
-                alignItemsCenter()
-                paddingTop(ctx.pagerData.statusBarHeight)
-                paddingLeft(MysticChinaTheme.Spacing.lg)
-                paddingRight(MysticChinaTheme.Spacing.lg)
-            }
-            Text {
-                attr {
-                    text("探索神秘中国")
-                    fontSize(MysticChinaTheme.FontSize.title)
-                    color(MysticChinaColors.textPrimary)
-                    fontWeightBold()
-                    flex(1f)
-                }
-            }
-        }
-
-        // 卡片网格
-        val cardMargin = MysticChinaTheme.Spacing.sm
-        val cardSize = (ctx.pagerData.pageViewWidth - cardMargin * 3) / 2f
-
-        Scroller {
-            attr { flex(1f); flexDirectionColumn(); paddingTop(MysticChinaTheme.Spacing.md) }
-            View {
-                attr {
-                    flexDirectionRow()
-                    flexWrapWrap()
-                    paddingLeft(cardMargin)
-                    paddingRight(cardMargin)
-                }
-                CULTURE_CARDS.forEach { card ->
-                    CultureCardView(ctx, card, cardSize, cardMargin)
-                }
-            }
-        }
-    }
-}
-
-// ═══════════════════════════════════════════════════════════
-// 文化功能卡片
-// ═══════════════════════════════════════════════════════════
-private fun ViewContainer<*, *>.CultureCardView(
-    ctx: HomePage,
-    card: CultureCard,
-    cardSize: Float,
-    margin: Float
-) {
-    val enabled = card.pageName != null
-    View {
-        attr {
-            size(cardSize, cardSize)
-            margin(margin / 2)
-            borderRadius(MysticChinaTheme.Radius.xl)
-            overflow(true)
-            flexDirectionColumn()
-            allCenter()
-            if (enabled) {
-                backgroundLinearGradient(
-                    Direction.TO_BOTTOM_RIGHT,
-                    ColorStop(MysticChinaColors.gradientStart, 0f),
-                    ColorStop(MysticChinaColors.gradientEnd, 1f)
-                )
-            } else {
-                backgroundColor(MysticChinaColors.surface)
-            }
-        }
-        if (enabled) {
-            event { click { ctx.jumpPage(card.pageName!!) } }
-        }
-        Text {
-            attr {
-                text(card.emoji)
-                fontSize(48f)
-                marginBottom(MysticChinaTheme.Spacing.md)
-            }
-        }
-        Text {
-            attr {
-                text(card.title)
-                fontSize(MysticChinaTheme.FontSize.subtitle)
-                fontWeightBold()
-                color(if (enabled) MysticChinaColors.textPrimary else MysticChinaColors.textTertiary)
-                marginBottom(MysticChinaTheme.Spacing.xs)
-            }
-        }
-        Text {
-            attr {
-                text(card.subtitle)
-                fontSize(MysticChinaTheme.FontSize.small)
-                color(if (enabled) MysticChinaColors.textSecondary else MysticChinaColors.textDisabled)
             }
         }
     }
@@ -303,7 +178,7 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
         }
         View {
             attr {
-                height(1f); backgroundColor(MysticChinaColors.surfaceLight)
+                height(1f); backgroundColor(MysticChinaColors.divider)
                 marginLeft(MysticChinaTheme.Spacing.lg); marginRight(MysticChinaTheme.Spacing.lg); marginBottom(MysticChinaTheme.Spacing.lg)
             }
         }
@@ -318,7 +193,7 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
                 View {
                     attr {
                         absolutePosition(bottom = 0f, left = MysticChinaTheme.Spacing.lg, right = 0f)
-                        height(1f); backgroundColor(MysticChinaColors.surfaceLight)
+                        height(1f); backgroundColor(MysticChinaColors.divider)
                     }
                 }
             }
@@ -328,14 +203,14 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 编辑覆盖层
+// 编辑覆盖层（昵称/简介）
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.EditOverlay(
     ctx: HomePage,
     title: String,
     placeholder: String,
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     View {
         attr { absolutePositionAllZero(); backgroundColor(Color(0xCC000000)); allCenter() }
@@ -366,7 +241,7 @@ private fun ViewContainer<*, *>.EditOverlay(
                         backgroundLinearGradient(
                             Direction.TO_RIGHT,
                             ColorStop(MysticChinaColors.gradientStart, 0f),
-                            ColorStop(MysticChinaColors.gradientEnd, 1f)
+                            ColorStop(MysticChinaColors.gradientEnd, 1f),
                         )
                         borderRadius(MysticChinaTheme.Radius.md); marginLeft(12f)
                     }
