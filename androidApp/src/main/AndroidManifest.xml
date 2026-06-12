@@ -9,12 +9,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="探索中国"
+        android:label="神秘中国"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ExploringChina">
+        android:theme="@style/Theme.MysticChina">
 
         <activity
-            android:name="com.fula.exploringchina.android.MainActivity"
+            android:name="com.fula.mysticchina.android.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:windowSoftInputMode="adjustResize">

@@ -1,5 +1,5 @@
 // ============================================================
-// exploringchina — All-platform settings (includes KuiklyUI source modules)
+// mysticchina — All-platform settings (includes KuiklyUI source modules)
 // ============================================================
 
 pluginManagement {
@@ -32,7 +32,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "exploringchina"
+rootProject.name = "mysticchina"
 include(":androidApp")
 include(":shared")
 

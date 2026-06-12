@@ -54,7 +54,7 @@ kotlin {
     macosX64()
     macosArm64()
 
-    // js(IR) target removed — ExploringChina does not need Web/browser platform.
+    // js(IR) target removed — MysticChina does not need Web/browser platform.
     // The js(IR) { browser() } block applies LifecycleBasePlugin which registers
     // a duplicate 'clean' task and breaks the root project build.
 

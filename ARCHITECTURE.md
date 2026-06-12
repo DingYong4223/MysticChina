@@ -1,8 +1,8 @@
-# 一剪（yijian）项目方案文档
+# 神秘中国（MysticChina）项目方案文档
 
 ## 1. 项目概述
 
-**项目名称**：一剪（Yijian）  
+**项目名称**：神秘中国（MysticChina）  
 **定位**：一款基于 Kuikly 跨端框架的移动端视频剪辑应用，仿照剪映（CapCut）实现核心功能  
 **技术栈**：Kuikly（KMM跨端UI框架） + Kotlin Multiplatform + 原生视频渲染  
 **目标平台**：Android、iOS  
@@ -114,11 +114,11 @@
 ## 4. 项目结构
 
 ```
-yijian/
+mysticchina/
 ├── shared/                          # KMM 跨平台共享模块
 │   ├── src/
 │   │   ├── commonMain/
-│   │   │   ├── kotlin/com/yijian/
+│   │   │   ├── kotlin/com/mysticchina/
 │   │   │   │   ├── App.kt              # 应用入口/路由
 │   │   │   │   ├── theme/              # 主题系统
 │   │   │   │   │   ├── Theme.kt        # 颜色、字体、间距
@@ -148,13 +148,13 @@ yijian/
 │   │   │   │       └── Constants.kt   # 常量定义
 │   │   │   └── resources/             # 共享资源
 │   │   ├── androidMain/               # Android 平台实现
-│   │   │   └── kotlin/com/yijian/
+│   │   │   └── kotlin/com/mysticchina/
 │   │   │       ├── player/
 │   │   │       │   └── AndroidVideoPlayer.kt
 │   │   │       └── bridge/
 │   │   │           └── AndroidFileBridge.kt
 │   │   ├── iosMain/                   # iOS 平台实现
-│   │   │   └── kotlin/com/yijian/
+│   │   │   └── kotlin/com/mysticchina/
 │   │   │       ├── player/
 │   │   │       │   └── IOSVideoPlayer.kt
 │   │   │       └── bridge/

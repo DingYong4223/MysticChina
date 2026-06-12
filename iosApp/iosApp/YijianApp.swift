@@ -1,21 +1,2 @@
-import SwiftUI
-
-@main
-struct YijianApp: App {
-    var body: some Scene {
-        WindowGroup {
-            KuiklyViewController()
-        }
-    }
-}
-
-struct KuiklyViewController: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        // 通过 Kuikly 启动页面
-        let vc = KuiklyPagerManager.shared.startPager(pageName: "MainPage")
-        return vc ?? UIViewController()
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-    }
-}
+// YijianApp.swift — Renamed to MysticChinaApp.swift. This file is deprecated.
+// The active entry point is now iosApp/iosApp/MysticChinaApp.swift

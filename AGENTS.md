@@ -1,7 +1,7 @@
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **ExploringChina** (1654 symbols, 3327 relationships, 104 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **MysticChina** (1738 symbols, 3424 relationships, 104 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -24,10 +24,10 @@ This project is indexed by GitNexus as **ExploringChina** (1654 symbols, 3327 re
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/ExploringChina/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/ExploringChina/clusters` | All functional areas |
-| `gitnexus://repo/ExploringChina/processes` | All execution flows |
-| `gitnexus://repo/ExploringChina/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/MysticChina/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/MysticChina/clusters` | All functional areas |
+| `gitnexus://repo/MysticChina/processes` | All execution flows |
+| `gitnexus://repo/MysticChina/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 

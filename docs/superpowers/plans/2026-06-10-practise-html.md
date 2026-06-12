@@ -18,9 +18,9 @@
 | 已存在 | `shared/src/commonMain/assets/hanzi/index.html` |
 | 已存在 | `shared/src/commonMain/assets/hanzi/hanzi-writer.min.js` |
 | 已存在 | `shared/src/commonMain/assets/hanzi/data/*.json`（71 个） |
-| 修改 | `shared/src/commonMain/kotlin/com/fula/exploringchina/hanzi/HanziWebView.kt` |
-| 修改 | `androidApp/src/main/java/com/fula/exploringchina/android/view/HanziWebViewImpl.kt` |
-| 修改 | `shared/src/commonMain/kotlin/com/fula/exploringchina/pages/HanziPage.kt` |
+| 修改 | `shared/src/commonMain/kotlin/com/fula/mysticchina/hanzi/HanziWebView.kt` |
+| 修改 | `androidApp/src/main/java/com/fula/mysticchina/android/view/HanziWebViewImpl.kt` |
+| 修改 | `shared/src/commonMain/kotlin/com/fula/mysticchina/pages/HanziPage.kt` |
 
 ---
 
@@ -215,14 +215,14 @@ Expected: `0`（practise.html 中不含任何动画相关标识符）
 ## Task 4：修改 `HanziWebView.kt` — 引入 `HanziWebAttr`
 
 **Files:**
-- Modify: `shared/src/commonMain/kotlin/com/fula/exploringchina/hanzi/HanziWebView.kt`
+- Modify: `shared/src/commonMain/kotlin/com/fula/mysticchina/hanzi/HanziWebView.kt`
 
 - [ ] **Step 4.1：替换文件内容**
 
-将 `shared/src/commonMain/kotlin/com/fula/exploringchina/hanzi/HanziWebView.kt` 完整替换为：
+将 `shared/src/commonMain/kotlin/com/fula/mysticchina/hanzi/HanziWebView.kt` 完整替换为：
 
 ```kotlin
-package com.fula.exploringchina.hanzi
+package com.fula.mysticchina.hanzi
 
 import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.base.event.Event
@@ -278,14 +278,14 @@ Expected: `BUILD SUCCESSFUL`
 ## Task 5：修改 `HanziWebViewImpl.kt` — 响应 `src` prop
 
 **Files:**
-- Modify: `androidApp/src/main/java/com/fula/exploringchina/android/view/HanziWebViewImpl.kt`
+- Modify: `androidApp/src/main/java/com/fula/mysticchina/android/view/HanziWebViewImpl.kt`
 
 - [ ] **Step 5.1：替换文件内容**
 
-将 `androidApp/src/main/java/com/fula/exploringchina/android/view/HanziWebViewImpl.kt` 完整替换为：
+将 `androidApp/src/main/java/com/fula/mysticchina/android/view/HanziWebViewImpl.kt` 完整替换为：
 
 ```kotlin
-package com.fula.exploringchina.android.view
+package com.fula.mysticchina.android.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -350,7 +350,7 @@ Expected: `BUILD SUCCESSFUL`
 ## Task 6：修改 `HanziPage.kt` — 指定 `src("practise.html")`
 
 **Files:**
-- Modify: `shared/src/commonMain/kotlin/com/fula/exploringchina/pages/HanziPage.kt`
+- Modify: `shared/src/commonMain/kotlin/com/fula/mysticchina/pages/HanziPage.kt`
 
 - [ ] **Step 6.1：在 HanziWeb attr 块中加入 src**
 
@@ -418,10 +418,10 @@ Expected: `0`
 
 ```bash
 adb install -r "$APK" && \
-adb shell am force-stop com.fula.exploringchina && \
+adb shell am force-stop com.fula.mysticchina && \
 sleep 1 && \
 adb shell am start \
-  -n "com.fula.exploringchina/com.fula.exploringchina.android.MainActivity" \
+  -n "com.fula.mysticchina/com.fula.mysticchina.android.MainActivity" \
   --es pageName "HanziPage"
 ```
 
@@ -440,9 +440,9 @@ sleep 4 && adb logcat -d | grep "chromium" | grep "CONSOLE\|practise" | tail -5
 ```bash
 git add \
   shared/src/commonMain/assets/hanzi/ \
-  shared/src/commonMain/kotlin/com/fula/exploringchina/hanzi/HanziWebView.kt \
-  androidApp/src/main/java/com/fula/exploringchina/android/view/HanziWebViewImpl.kt \
-  shared/src/commonMain/kotlin/com/fula/exploringchina/pages/HanziPage.kt
+  shared/src/commonMain/kotlin/com/fula/mysticchina/hanzi/HanziWebView.kt \
+  androidApp/src/main/java/com/fula/mysticchina/android/view/HanziWebViewImpl.kt \
+  shared/src/commonMain/kotlin/com/fula/mysticchina/pages/HanziPage.kt
 
 git commit -m "feat: add practise.html quiz-only page and make HanziWebView src configurable"
 ```

@@ -50,8 +50,8 @@ kotlin {
 
     // ── CocoaPods ────────────────────────────────────────
     cocoapods {
-        summary = "ExploringChina Shared Module"
-        homepage = "https://github.com/DingYong4223/ExploringChina"
+        summary = "MysticChina Shared Module"
+        homepage = "https://github.com/DingYong4223/MysticChina"
         version = "1.0"
         ios.deploymentTarget = "14.1"
         if (isSourceBuild) {
@@ -173,7 +173,7 @@ tasks.matching { it.name == "compileCommonMainKotlinMetadata" }.configureEach {
 
 // ── Android 配置 ─────────────────────────────────────────
 android {
-    namespace = "com.fula.exploringchina"
+    namespace = "com.fula.mysticchina"
     compileSdk = 34
     defaultConfig {
         minSdk = 21

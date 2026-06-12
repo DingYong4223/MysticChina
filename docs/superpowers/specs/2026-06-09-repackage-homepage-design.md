@@ -1,4 +1,4 @@
-# ExploringChina — 包名变更 + 首页重构 设计文档
+# MysticChina — 包名变更 + 首页重构 设计文档
 
 **日期**: 2026-06-09  
 **状态**: 待实现
@@ -7,8 +7,8 @@
 
 ## 1. 目标
 
-将 yijian 框架代码改造为 ExploringChina（探索中国文化）项目：
-1. 全局包名从 `com.yijian` 更换为 `com.fula.exploringchina`
+将 yijian 框架代码改造为 MysticChina（探索中国文化）项目：
+1. 全局包名从 `com.yijian` 更换为 `com.fula.mysticchina`
 2. 首页重构为文化功能卡片网格，首张卡片为"汉字练习"入口
 
 ---
@@ -17,12 +17,12 @@
 
 | 变更项 | 旧值 | 新值 |
 |---|---|---|
-| Kotlin 包路径 | `com.yijian` | `com.fula.exploringchina` |
-| Android namespace (shared) | `com.yijian` | `com.fula.exploringchina` |
-| Android app ID (androidApp) | `com.yijian.android` | `com.fula.exploringchina` |
-| SharedPreferences key 前缀 | `yijian_*` | `exploringchina_*` |
-| `rootProject.name` | `"yijian"` | `"exploringchina"` |
-| `IKuiklyRenderModuleExport` 内部 TAG | `YijianMain` | `ExploringChinaMain` |
+| Kotlin 包路径 | `com.yijian` | `com.fula.mysticchina` |
+| Android namespace (shared) | `com.yijian` | `com.fula.mysticchina` |
+| Android app ID (androidApp) | `com.yijian.android` | `com.fula.mysticchina` |
+| SharedPreferences key 前缀 | `yijian_*` | `mysticchina_*` |
+| `rootProject.name` | `"yijian"` | `"mysticchina"` |
+| `IKuiklyRenderModuleExport` 内部 TAG | `YijianMain` | `MysticChinaMain` |
 
 **不变**：`@Page` 注解名称字符串（`"HomePage"`, `"SplashPage"` 等）及 `jumpPage` 调用，KuiklyUI 依赖坐标。
 
@@ -45,7 +45,7 @@
 ## 4. SplashPage 改动
 
 - Logo 字母：`W` → `探`
-- 应用名称：`一剪` → `探索中国`
+- 应用名称：`一剪` → `神秘中国`
 - 副标题：`你的智能视频剪辑助手` → `探索中华文化之美`
 - 跳转目标：`HomePage`（不变）
 

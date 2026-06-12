@@ -40,11 +40,11 @@ include(":core-render-android")
 project(":core-render-android").projectDir = File(rootDir, "../KuiklyUI/core-render-android")
 project(":core-render-android").buildFileName = kuiklyBuildFileName
 
-// compose 模块需要独立的 kotlin 插件，且 yijian 项目不使用 Compose
+// compose 模块需要独立的 kotlin 插件，且 MysticChina 项目不使用 Compose
 // include(":compose")
 // project(":compose").projectDir = File(rootDir, "../KuiklyUI/compose")
 // project(":compose").buildFileName = kuiklyBuildFileName
 
-// ── yijian 模块 ────────────────────────────
+// ── MysticChina 模块 ────────────────────────────
 include(":shared")
 include(":androidApp")

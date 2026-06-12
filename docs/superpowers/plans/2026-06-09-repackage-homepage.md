@@ -1,10 +1,10 @@
-# ExploringChina 包名变更 + 首页重构 Implementation Plan
+# MysticChina 包名变更 + 首页重构 Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 将 yijian 框架代码改造为 ExploringChina，全局包名改为 `com.fula.exploringchina`，首页重构为探索中国文化卡片网格，首张卡片为"汉字练习"入口。
+**Goal:** 将 yijian 框架代码改造为 MysticChina（原 ExploringChina），全局包名改为 `com.fula.mysticchina`，首页重构为神秘中国文化卡片网格，首张卡片为"汉字练习"入口。
 
-**Architecture:** 所有 Kotlin 源文件包路径从 `com.yijian` 迁移到 `com.fula.exploringchina`，目录结构保持一致。首页 `HomePage` 的 Tab 枚举和内容组件全部替换，新增 `HanziPage` 占位页。主题色从蓝紫系改为中国红/金色系。
+**Architecture:** 所有 Kotlin 源文件包路径从 `com.mysticchina` 迁移到 `com.fula.mysticchina`，目录结构保持一致。首页 `HomePage` 的 Tab 枚举和内容组件全部替换，新增 `HanziPage` 占位页。主题色从蓝紫系改为中国红/金色系。
 
 **Tech Stack:** Kotlin Multiplatform、Kuikly UI DSL、Android Gradle (AGP 8.2.2)
 
@@ -27,7 +27,7 @@
 - `shared/src/commonMain/kotlin/com/yijian/pages/HanziPage.kt` — 汉字练习占位页
 
 ### 包路径迁移（所有 .kt 文件 package 声明 + import）
-所有 `com.yijian` → `com.fula.exploringchina`，目录结构同步重命名。
+所有 `com.mysticchina` → `com.fula.mysticchina`，目录结构同步重命名。
 涉及目录：
 - `shared/src/commonMain/kotlin/com/yijian/` → `com/fula/exploringchina/`
 - `shared/src/androidMain/kotlin/com/yijian/` → `com/fula/exploringchina/`
@@ -58,7 +58,7 @@ rootProject.name = "exploringchina"
 找到 `android {` 块中的 `namespace`，改为：
 ```kotlin
 android {
-    namespace = "com.fula.exploringchina"
+    namespace = "com.fula.mysticchina"
     compileSdk = 34
     // ... 其余不变
 }
@@ -68,10 +68,10 @@ android {
 
 ```kotlin
 android {
-    namespace = "com.fula.exploringchina"
+    namespace = "com.fula.mysticchina"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.fula.exploringchina"
+        applicationId = "com.fula.mysticchina"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
@@ -93,12 +93,12 @@ android {
 
     <application
         android:allowBackup="true"
-        android:label="探索中国"
+        android:label="神秘中国"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ExploringChina">
+        android:theme="@style/Theme.MysticChina">
 
         <activity
-            android:name="com.fula.exploringchina.MainActivity"
+            android:name="com.fula.mysticchina.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:windowSoftInputMode="adjustResize">
@@ -116,7 +116,7 @@ android {
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ExploringChina" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.MysticChina" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/black</item>
@@ -130,7 +130,7 @@ android {
 ```bash
 git add settings.gradle.kts shared/build.gradle.kts androidApp/build.gradle.kts \
         androidApp/src/main/AndroidManifest.xml androidApp/src/main/res/values/styles.xml
-git commit -m "chore: update gradle namespace, appId, manifest to com.fula.exploringchina"
+git commit -m "chore: update gradle namespace, appId, manifest to com.fula.mysticchina"
 ```
 
 ---
@@ -142,7 +142,7 @@ git commit -m "chore: update gradle namespace, appId, manifest to com.fula.explo
 - [ ] **Step 1: 创建新目录结构**
 
 ```bash
-cd /Users/delanding/ProjDoing/TDF/ExploringChina
+cd /Users/delanding/ProjDoing/TDF/MysticChina
 
 # shared commonMain
 mkdir -p shared/src/commonMain/kotlin/com/fula/exploringchina
@@ -181,11 +181,11 @@ cp -r androidApp/src/main/java/com/yijian/android/. androidApp/src/main/java/com
 # 替换所有 .kt 文件中的包声明和 import
 find shared/src/*/kotlin/com/fula/exploringchina androidApp/src/main/java/com/fula/exploringchina \
   -name "*.kt" \
-  -exec sed -i '' 's/package com\.yijian/package com.fula.exploringchina/g' {} \;
+  -exec sed -i '' 's/package com\.yijian/package com.fula.mysticchina/g' {} \;
 
 find shared/src/*/kotlin/com/fula/exploringchina androidApp/src/main/java/com/fula/exploringchina \
   -name "*.kt" \
-  -exec sed -i '' 's/import com\.yijian\./import com.fula.exploringchina./g' {} \;
+  -exec sed -i '' 's/import com\.yijian\./import com.fula.mysticchina./g' {} \;
 ```
 
 - [ ] **Step 5: 删除旧包目录**
@@ -219,7 +219,7 @@ grep -r "com\.yijian" shared/src/*/kotlin/com/fula androidApp/src/main/java/com/
 
 ```bash
 git add -A
-git commit -m "refactor: migrate package com.yijian → com.fula.exploringchina"
+git commit -m "refactor: migrate package com.mysticchina → com.fula.mysticchina"
 ```
 
 ---
@@ -234,15 +234,15 @@ git commit -m "refactor: migrate package com.yijian → com.fula.exploringchina"
 
 完整替换文件内容：
 ```kotlin
-package com.fula.exploringchina.theme
+package com.fula.mysticchina.theme
 
 import com.tencent.kuikly.core.base.Color
 
 /**
- * 探索中国应用主题色板
+ * 神秘中国应用主题色板
  * 深色主题 — 中国红/金色系
  */
-object YijianColors {
+object MysticChinaColors {
 
     // 背景色（保持深色）
     val background = Color(0xFF1A1A1A)
@@ -283,13 +283,13 @@ object YijianColors {
 - [ ] **Step 2: 更新 Constants.kt — 添加 PAGE_HANZI，更新 APP_NAME**
 
 ```kotlin
-package com.fula.exploringchina.util
+package com.fula.mysticchina.util
 
 /**
  * 工具常量
  */
 object Constants {
-    const val APP_NAME = "探索中国"
+    const val APP_NAME = "神秘中国"
     const val PAGE_MAIN = "MainPage"
     const val PAGE_PREVIEW = "PreviewPage"
     const val PAGE_SPLASH = "SplashPage"
@@ -371,16 +371,16 @@ git commit -m "feat: update theme colors to Chinese red/gold, add PAGE_HANZI con
 
 完整替换文件内容：
 ```kotlin
-package com.fula.exploringchina.pages
+package com.fula.mysticchina.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.log.KLog
 import com.tencent.kuikly.core.timer.setTimeout
 import com.tencent.kuikly.core.views.*
-import com.fula.exploringchina.base.BasePager
-import com.fula.exploringchina.theme.YijianColors
-import com.fula.exploringchina.theme.YijianTheme
+import com.fula.mysticchina.base.BasePager
+import com.fula.mysticchina.theme.MysticChinaColors
+import com.fula.mysticchina.theme.MysticChinaTheme
 
 private const val TAG = "SplashPage"
 
@@ -412,7 +412,7 @@ internal class SplashPage : BasePager() {
     override fun body(): ViewBuilder {
         return {
             attr {
-                backgroundColor(YijianColors.background)
+                backgroundColor(MysticChinaColors.background)
             }
 
             // 居中容器
@@ -429,8 +429,8 @@ internal class SplashPage : BasePager() {
                         size(90f, 90f)
                         backgroundLinearGradient(
                             Direction.TO_RIGHT,
-                            ColorStop(YijianColors.gradientStart, 0f),
-                            ColorStop(YijianColors.gradientEnd, 1f)
+                            ColorStop(MysticChinaColors.gradientStart, 0f),
+                            ColorStop(MysticChinaColors.gradientEnd, 1f)
                         )
                         borderRadius(22f)
                         allCenter()
@@ -439,7 +439,7 @@ internal class SplashPage : BasePager() {
                         attr {
                             text("探")
                             fontSize(42f)
-                            color(YijianColors.textPrimary)
+                            color(MysticChinaColors.textPrimary)
                             fontWeightBold()
                         }
                     }
@@ -448,10 +448,10 @@ internal class SplashPage : BasePager() {
                 // 应用名称
                 Text {
                     attr {
-                        marginTop(YijianTheme.Spacing.xl)
-                        text("探索中国")
-                        fontSize(YijianTheme.FontSize.display)
-                        color(YijianColors.textPrimary)
+                        marginTop(MysticChinaTheme.Spacing.xl)
+                        text("神秘中国")
+                        fontSize(MysticChinaTheme.FontSize.display)
+                        color(MysticChinaColors.textPrimary)
                         fontWeightBold()
                     }
                 }
@@ -459,10 +459,10 @@ internal class SplashPage : BasePager() {
                 // 副标题
                 Text {
                     attr {
-                        marginTop(YijianTheme.Spacing.sm)
+                        marginTop(MysticChinaTheme.Spacing.sm)
                         text("探索中华文化之美")
-                        fontSize(YijianTheme.FontSize.body)
-                        color(YijianColors.textSecondary)
+                        fontSize(MysticChinaTheme.FontSize.body)
+                        color(MysticChinaColors.textSecondary)
                     }
                 }
             }
@@ -473,8 +473,8 @@ internal class SplashPage : BasePager() {
                     absolutePosition(bottom = 40f, left = 0f, right = 0f)
                     textAlignCenter()
                     text("v1.0.0 · Powered by KuiklyUI")
-                    fontSize(YijianTheme.FontSize.caption)
-                    color(YijianColors.textTertiary)
+                    fontSize(MysticChinaTheme.FontSize.caption)
+                    color(MysticChinaColors.textTertiary)
                 }
             }
         }
@@ -494,7 +494,7 @@ internal class SplashPage : BasePager() {
 
 ```bash
 git add shared/src/commonMain/kotlin/com/fula/exploringchina/pages/SplashPage.kt
-git commit -m "feat: update SplashPage branding to ExploringChina"
+git commit -m "feat: update SplashPage branding to MysticChina"
 ```
 
 ---
@@ -507,14 +507,14 @@ git commit -m "feat: update SplashPage branding to ExploringChina"
 - [ ] **Step 1: 创建 HanziPage.kt**
 
 ```kotlin
-package com.fula.exploringchina.pages
+package com.fula.mysticchina.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.views.*
-import com.fula.exploringchina.base.BasePager
-import com.fula.exploringchina.theme.YijianColors
-import com.fula.exploringchina.theme.YijianTheme
+import com.fula.mysticchina.base.BasePager
+import com.fula.mysticchina.theme.MysticChinaColors
+import com.fula.mysticchina.theme.MysticChinaTheme
 
 /**
  * 汉字练习页 — 占位，待后续实现
@@ -525,32 +525,32 @@ internal class HanziPage : BasePager() {
     override fun body(): ViewBuilder {
         val ctx = this
         return {
-            attr { backgroundColor(YijianColors.background); flexDirectionColumn() }
+            attr { backgroundColor(MysticChinaColors.background); flexDirectionColumn() }
 
             // 顶部导航栏
             View {
                 attr {
-                    height(YijianTheme.BarHeight.topBar + pagerData.statusBarHeight)
-                    backgroundColor(YijianColors.background)
+                    height(MysticChinaTheme.BarHeight.topBar + pagerData.statusBarHeight)
+                    backgroundColor(MysticChinaColors.background)
                     flexDirectionRow()
                     alignItemsCenter()
                     paddingTop(pagerData.statusBarHeight)
-                    paddingLeft(YijianTheme.Spacing.lg)
-                    paddingRight(YijianTheme.Spacing.lg)
+                    paddingLeft(MysticChinaTheme.Spacing.lg)
+                    paddingRight(MysticChinaTheme.Spacing.lg)
                 }
                 // 返回按钮
                 View {
                     attr {
                         size(40f, 40f)
                         allCenter()
-                        marginRight(YijianTheme.Spacing.sm)
+                        marginRight(MysticChinaTheme.Spacing.sm)
                     }
                     event { click { ctx.closePage() } }
                     Text {
                         attr {
                             text("‹")
                             fontSize(28f)
-                            color(YijianColors.textPrimary)
+                            color(MysticChinaColors.textPrimary)
                             fontWeightBold()
                         }
                     }
@@ -558,8 +558,8 @@ internal class HanziPage : BasePager() {
                 Text {
                     attr {
                         text("汉字练习")
-                        fontSize(YijianTheme.FontSize.title)
-                        color(YijianColors.textPrimary)
+                        fontSize(MysticChinaTheme.FontSize.title)
+                        color(MysticChinaColors.textPrimary)
                         fontWeightBold()
                         flex(1f)
                     }
@@ -569,21 +569,21 @@ internal class HanziPage : BasePager() {
             // 内容区 — 占位
             View {
                 attr { flex(1f); allCenter(); flexDirectionColumn() }
-                Text { attr { text("🖊"); fontSize(64f); marginBottom(YijianTheme.Spacing.xl) } }
+                Text { attr { text("🖊"); fontSize(64f); marginBottom(MysticChinaTheme.Spacing.xl) } }
                 Text {
                     attr {
                         text("汉字练习")
-                        fontSize(YijianTheme.FontSize.largeTitle)
-                        color(YijianColors.textPrimary)
+                        fontSize(MysticChinaTheme.FontSize.largeTitle)
+                        color(MysticChinaColors.textPrimary)
                         fontWeightBold()
-                        marginBottom(YijianTheme.Spacing.md)
+                        marginBottom(MysticChinaTheme.Spacing.md)
                     }
                 }
                 Text {
                     attr {
                         text("精彩内容即将上线")
-                        fontSize(YijianTheme.FontSize.body)
-                        color(YijianColors.textSecondary)
+                        fontSize(MysticChinaTheme.FontSize.body)
+                        color(MysticChinaColors.textSecondary)
                     }
                 }
             }
@@ -617,7 +617,7 @@ git commit -m "feat: add HanziPage placeholder"
 - [ ] **Step 1: 完整替换 HomePage.kt**
 
 ```kotlin
-package com.fula.exploringchina.pages
+package com.fula.mysticchina.pages
 
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.*
@@ -626,11 +626,11 @@ import com.tencent.kuikly.core.directives.vif
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
 import com.tencent.kuikly.core.views.*
-import com.fula.exploringchina.base.BasePager
-import com.fula.exploringchina.model.UserProfile
-import com.fula.exploringchina.theme.YijianColors
-import com.fula.exploringchina.theme.YijianTheme
-import com.fula.exploringchina.util.Constants
+import com.fula.mysticchina.base.BasePager
+import com.fula.mysticchina.model.UserProfile
+import com.fula.mysticchina.theme.MysticChinaColors
+import com.fula.mysticchina.theme.MysticChinaTheme
+import com.fula.mysticchina.util.Constants
 
 private const val SP_NICKNAME = "exploringchina_nickname"
 private const val SP_BIO = "exploringchina_bio"
@@ -700,7 +700,7 @@ internal class HomePage : BasePager() {
     override fun body(): ViewBuilder {
         val ctx = this
         return {
-            attr { backgroundColor(YijianColors.background); flexDirectionColumn() }
+            attr { backgroundColor(MysticChinaColors.background); flexDirectionColumn() }
 
             View {
                 attr { flex(1f); flexDirectionColumn() }
@@ -709,7 +709,7 @@ internal class HomePage : BasePager() {
                 vif({ ctx.selectedTab == 2 }) { ProfileTabContent(ctx) }
             }
 
-            View { attr { height(1f); backgroundColor(YijianColors.surfaceLight) } }
+            View { attr { height(1f); backgroundColor(MysticChinaColors.surfaceLight) } }
 
             BottomTabBar(ctx)
 
@@ -738,7 +738,7 @@ private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
     View {
         attr {
             height(56f + ctx.pagerData.safeAreaInsets.bottom)
-            backgroundColor(YijianColors.background)
+            backgroundColor(MysticChinaColors.background)
             flexDirectionRow()
             alignItemsCenter()
             paddingBottom(ctx.pagerData.safeAreaInsets.bottom)
@@ -751,21 +751,21 @@ private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
                 View {
                     attr {
                         size(4f, 4f); borderRadius(2f)
-                        backgroundColor(if (selected) YijianColors.primary else Color(0x00000000))
+                        backgroundColor(if (selected) MysticChinaColors.primary else Color(0x00000000))
                         marginBottom(2f)
                     }
                 }
                 Text {
                     attr {
                         text(tab.icon); fontSize(22f)
-                        color(if (selected) YijianColors.primary else YijianColors.textTertiary)
+                        color(if (selected) MysticChinaColors.primary else MysticChinaColors.textTertiary)
                         marginBottom(2f)
                     }
                 }
                 Text {
                     attr {
                         text(tab.label); fontSize(10f)
-                        color(if (selected) YijianColors.primary else YijianColors.textTertiary)
+                        color(if (selected) MysticChinaColors.primary else MysticChinaColors.textTertiary)
                         if (selected) fontWeightSemiBold() else fontWeightNormal()
                     }
                 }
@@ -784,19 +784,19 @@ private fun ViewContainer<*, *>.ExploreTabContent(ctx: HomePage) {
         // 顶部标题栏
         View {
             attr {
-                height(YijianTheme.BarHeight.topBar + ctx.pagerData.statusBarHeight)
-                backgroundColor(YijianColors.background)
+                height(MysticChinaTheme.BarHeight.topBar + ctx.pagerData.statusBarHeight)
+                backgroundColor(MysticChinaColors.background)
                 flexDirectionRow()
                 alignItemsCenter()
                 paddingTop(ctx.pagerData.statusBarHeight)
-                paddingLeft(YijianTheme.Spacing.lg)
-                paddingRight(YijianTheme.Spacing.lg)
+                paddingLeft(MysticChinaTheme.Spacing.lg)
+                paddingRight(MysticChinaTheme.Spacing.lg)
             }
             Text {
                 attr {
-                    text("探索中国文化")
-                    fontSize(YijianTheme.FontSize.title)
-                    color(YijianColors.textPrimary)
+                    text("神秘中国文化")
+                    fontSize(MysticChinaTheme.FontSize.title)
+                    color(MysticChinaColors.textPrimary)
                     fontWeightBold()
                     flex(1f)
                 }
@@ -804,11 +804,11 @@ private fun ViewContainer<*, *>.ExploreTabContent(ctx: HomePage) {
         }
 
         // 卡片网格
-        val cardMargin = YijianTheme.Spacing.sm
+        val cardMargin = MysticChinaTheme.Spacing.sm
         val cardSize = (ctx.pagerData.pageViewWidth - cardMargin * 3) / 2f
 
         Scroller {
-            attr { flex(1f); flexDirectionColumn(); paddingTop(YijianTheme.Spacing.md) }
+            attr { flex(1f); flexDirectionColumn(); paddingTop(MysticChinaTheme.Spacing.md) }
             View {
                 attr {
                     flexDirectionRow()
@@ -838,18 +838,18 @@ private fun ViewContainer<*, *>.CultureCardView(
         attr {
             size(cardSize, cardSize)
             margin(margin / 2)
-            borderRadius(YijianTheme.Radius.xl)
+            borderRadius(MysticChinaTheme.Radius.xl)
             overflow(true)
             flexDirectionColumn()
             allCenter()
             if (enabled) {
                 backgroundLinearGradient(
                     Direction.TO_BOTTOM_RIGHT,
-                    ColorStop(YijianColors.gradientStart, 0f),
-                    ColorStop(YijianColors.gradientEnd, 1f)
+                    ColorStop(MysticChinaColors.gradientStart, 0f),
+                    ColorStop(MysticChinaColors.gradientEnd, 1f)
                 )
             } else {
-                backgroundColor(YijianColors.surface)
+                backgroundColor(MysticChinaColors.surface)
             }
         }
         if (enabled) {
@@ -859,23 +859,23 @@ private fun ViewContainer<*, *>.CultureCardView(
             attr {
                 text(card.emoji)
                 fontSize(48f)
-                marginBottom(YijianTheme.Spacing.md)
+                marginBottom(MysticChinaTheme.Spacing.md)
             }
         }
         Text {
             attr {
                 text(card.title)
-                fontSize(YijianTheme.FontSize.subtitle)
+                fontSize(MysticChinaTheme.FontSize.subtitle)
                 fontWeightBold()
-                color(if (enabled) YijianColors.textPrimary else YijianColors.textTertiary)
-                marginBottom(YijianTheme.Spacing.xs)
+                color(if (enabled) MysticChinaColors.textPrimary else MysticChinaColors.textTertiary)
+                marginBottom(MysticChinaTheme.Spacing.xs)
             }
         }
         Text {
             attr {
                 text(card.subtitle)
-                fontSize(YijianTheme.FontSize.small)
-                color(if (enabled) YijianColors.textSecondary else YijianColors.textDisabled)
+                fontSize(MysticChinaTheme.FontSize.small)
+                color(if (enabled) MysticChinaColors.textSecondary else MysticChinaColors.textDisabled)
             }
         }
     }
@@ -886,10 +886,10 @@ private fun ViewContainer<*, *>.CultureCardView(
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.LearnTabContent() {
     View {
-        attr { flex(1f); backgroundColor(YijianColors.background); allCenter(); flexDirectionColumn() }
+        attr { flex(1f); backgroundColor(MysticChinaColors.background); allCenter(); flexDirectionColumn() }
         Text { attr { text("📚"); fontSize(48f); marginBottom(16f) } }
-        Text { attr { text("即将上线"); fontSize(16f); color(YijianColors.textPrimary); marginBottom(8f) } }
-        Text { attr { text("学习内容正在精心准备中..."); fontSize(12f); color(YijianColors.textSecondary) } }
+        Text { attr { text("即将上线"); fontSize(16f); color(MysticChinaColors.textPrimary); marginBottom(8f) } }
+        Text { attr { text("学习内容正在精心准备中..."); fontSize(12f); color(MysticChinaColors.textSecondary) } }
     }
 }
 
@@ -898,47 +898,47 @@ private fun ViewContainer<*, *>.LearnTabContent() {
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
     Scroller {
-        attr { flex(1f); backgroundColor(YijianColors.background); flexDirectionColumn(); paddingTop(YijianTheme.Spacing.xxl) }
+        attr { flex(1f); backgroundColor(MysticChinaColors.background); flexDirectionColumn(); paddingTop(MysticChinaTheme.Spacing.xxl) }
         View { attr { allCenter(); flexDirectionColumn() }
             View {
-                attr { size(80f, 80f); borderRadius(40f); backgroundColor(YijianColors.surface); allCenter() }
+                attr { size(80f, 80f); borderRadius(40f); backgroundColor(MysticChinaColors.surface); allCenter() }
                 Text { attr { text(ctx.userProfile.avatarEmoji); fontSize(36f) } }
             }
         }
         View {
             attr { allCenter(); marginBottom(8f); flexDirectionRow(); justifyContentCenter(); alignItemsCenter() }
             event { click { ctx.editingText = ctx.userProfile.nickname; ctx.showEditNickname = true } }
-            Text { attr { text(ctx.userProfile.nickname); fontSize(20f); fontWeightBold(); color(YijianColors.textPrimary) } }
-            Text { attr { text(" ✏"); fontSize(14f); color(YijianColors.textTertiary) } }
+            Text { attr { text(ctx.userProfile.nickname); fontSize(20f); fontWeightBold(); color(MysticChinaColors.textPrimary) } }
+            Text { attr { text(" ✏"); fontSize(14f); color(MysticChinaColors.textTertiary) } }
         }
         View {
-            attr { allCenter(); marginBottom(YijianTheme.Spacing.xl); paddingLeft(32f); paddingRight(32f) }
+            attr { allCenter(); marginBottom(MysticChinaTheme.Spacing.xl); paddingLeft(32f); paddingRight(32f) }
             event { click { ctx.editingText = ctx.userProfile.bio; ctx.showEditBio = true } }
-            Text { attr { text(ctx.userProfile.bio); fontSize(14f); color(YijianColors.textSecondary); textAlignCenter(); lines(3) } }
+            Text { attr { text(ctx.userProfile.bio); fontSize(14f); color(MysticChinaColors.textSecondary); textAlignCenter(); lines(3) } }
         }
         View {
             attr {
-                height(1f); backgroundColor(YijianColors.surfaceLight)
-                marginLeft(YijianTheme.Spacing.lg); marginRight(YijianTheme.Spacing.lg); marginBottom(YijianTheme.Spacing.lg)
+                height(1f); backgroundColor(MysticChinaColors.surfaceLight)
+                marginLeft(MysticChinaTheme.Spacing.lg); marginRight(MysticChinaTheme.Spacing.lg); marginBottom(MysticChinaTheme.Spacing.lg)
             }
         }
-        listOf("⚙  设置", "📱  关于探索中国").forEach { label ->
+        listOf("⚙  设置", "📱  关于神秘中国").forEach { label ->
             View {
                 attr {
-                    height(52f); paddingLeft(YijianTheme.Spacing.lg); paddingRight(YijianTheme.Spacing.lg)
-                    flexDirectionRow(); alignItemsCenter(); backgroundColor(YijianColors.background)
+                    height(52f); paddingLeft(MysticChinaTheme.Spacing.lg); paddingRight(MysticChinaTheme.Spacing.lg)
+                    flexDirectionRow(); alignItemsCenter(); backgroundColor(MysticChinaColors.background)
                 }
-                Text { attr { text(label); fontSize(14f); color(YijianColors.textPrimary); flex(1f) } }
-                Text { attr { text(">"); fontSize(14f); color(YijianColors.textTertiary) } }
+                Text { attr { text(label); fontSize(14f); color(MysticChinaColors.textPrimary); flex(1f) } }
+                Text { attr { text(">"); fontSize(14f); color(MysticChinaColors.textTertiary) } }
                 View {
                     attr {
-                        absolutePosition(bottom = 0f, left = YijianTheme.Spacing.lg, right = 0f)
-                        height(1f); backgroundColor(YijianColors.surfaceLight)
+                        absolutePosition(bottom = 0f, left = MysticChinaTheme.Spacing.lg, right = 0f)
+                        height(1f); backgroundColor(MysticChinaColors.surfaceLight)
                     }
                 }
             }
         }
-        View { attr { height(YijianTheme.Spacing.xxxl) } }
+        View { attr { height(MysticChinaTheme.Spacing.xxxl) } }
     }
 }
 
@@ -958,35 +958,35 @@ private fun ViewContainer<*, *>.EditOverlay(
         View {
             attr {
                 width(ctx.pagerData.pageViewWidth - 48f)
-                backgroundColor(YijianColors.surface); borderRadius(16f)
-                padding(all = YijianTheme.Spacing.lg); flexDirectionColumn()
+                backgroundColor(MysticChinaColors.surface); borderRadius(16f)
+                padding(all = MysticChinaTheme.Spacing.lg); flexDirectionColumn()
             }
             event { click {} }
             Text {
-                attr { text(title); fontSize(16f); fontWeightBold(); color(YijianColors.textPrimary); marginBottom(YijianTheme.Spacing.md) }
+                attr { text(title); fontSize(16f); fontWeightBold(); color(MysticChinaColors.textPrimary); marginBottom(MysticChinaTheme.Spacing.md) }
             }
             View {
-                attr { flexDirectionRow(); justifyContentFlexEnd(); marginTop(YijianTheme.Spacing.lg) }
+                attr { flexDirectionRow(); justifyContentFlexEnd(); marginTop(MysticChinaTheme.Spacing.lg) }
                 View {
                     attr {
                         padding(left = 20f, right = 20f, top = 10f, bottom = 10f)
-                        backgroundColor(YijianColors.surfaceLight); borderRadius(YijianTheme.Radius.md)
+                        backgroundColor(MysticChinaColors.surfaceLight); borderRadius(MysticChinaTheme.Radius.md)
                     }
                     event { click { onDismiss() } }
-                    Text { attr { text("取消"); fontSize(14f); color(YijianColors.textPrimary) } }
+                    Text { attr { text("取消"); fontSize(14f); color(MysticChinaColors.textPrimary) } }
                 }
                 View {
                     attr {
                         padding(left = 20f, right = 20f, top = 10f, bottom = 10f)
                         backgroundLinearGradient(
                             Direction.TO_RIGHT,
-                            ColorStop(YijianColors.gradientStart, 0f),
-                            ColorStop(YijianColors.gradientEnd, 1f)
+                            ColorStop(MysticChinaColors.gradientStart, 0f),
+                            ColorStop(MysticChinaColors.gradientEnd, 1f)
                         )
-                        borderRadius(YijianTheme.Radius.md); marginLeft(12f)
+                        borderRadius(MysticChinaTheme.Radius.md); marginLeft(12f)
                     }
                     event { click { onConfirm() } }
-                    Text { attr { text("保存"); fontSize(14f); color(YijianColors.textPrimary); fontWeightBold() } }
+                    Text { attr { text("保存"); fontSize(14f); color(MysticChinaColors.textPrimary); fontWeightBold() } }
                 }
             }
         }
@@ -1027,7 +1027,7 @@ git commit -m "feat: redesign HomePage with cultural card grid and HanziPage ent
 git push origin main
 ```
 
-预期：所有 commits 成功推送到 `https://github.com/DingYong4223/ExploringChina`。
+预期：所有 commits 成功推送到 `https://github.com/DingYong4223/MysticChina`。
 
 - [ ] **Step 2: 更新 CLAUDE.md 包名说明**
 
@@ -1036,8 +1036,8 @@ git push origin main
 ```markdown
 ## Package & Namespace
 
-- Shared Kotlin package: `com.fula.exploringchina`
-- Android app ID: `com.fula.exploringchina`
+- Shared Kotlin package: `com.fula.mysticchina`
+- Android app ID: `com.fula.mysticchina`
 - iOS framework: `shared` (static, CocoaPods)
 - `rootProject.name` is `"exploringchina"` in `settings.gradle.kts`
 ```

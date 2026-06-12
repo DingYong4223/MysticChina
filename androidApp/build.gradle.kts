@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.fula.exploringchina"
+    namespace = "com.fula.mysticchina"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.fula.exploringchina"
+        applicationId = "com.fula.mysticchina"
         minSdk = 21
         targetSdk = 34
         versionCode = 1

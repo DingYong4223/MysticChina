@@ -37,7 +37,7 @@ Patched files live **outside this repo** in the KuiklyUI sibling directory:
 Source copies are committed at `buildSrc/build.kuikly-core.gradle.kts`. To restore on a new machine:
 
 ```bash
-# From ExploringChina root
+# From MysticChina root
 cp buildSrc/build.kuikly-core.gradle.kts ../KuiklyUI/core/build.kuikly-core.gradle.kts
 
 # Generate core-annotations patch (remove js(IR) block, update compileSdk 32→34)
@@ -112,15 +112,15 @@ Maven repos required: `mirrors.tencent.com/nexus/repository/maven-tencent/` (Kui
 
 ## Package & Namespace
 
-- Shared Kotlin package: `com.fula.exploringchina`
-- Android app ID: `com.fula.exploringchina`
+- Shared Kotlin package: `com.fula.mysticchina`
+- Android app ID: `com.fula.mysticchina`
 - iOS framework: `shared` (static, CocoaPods)
-- `rootProject.name` is `"exploringchina"` in `settings.gradle.kts`
+- `rootProject.name` is `"mysticchina"` in `settings.gradle.kts`
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **ExploringChina** (1654 symbols, 3327 relationships, 104 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **MysticChina** (1738 symbols, 3424 relationships, 104 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -143,10 +143,10 @@ This project is indexed by GitNexus as **ExploringChina** (1654 symbols, 3327 re
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/ExploringChina/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/ExploringChina/clusters` | All functional areas |
-| `gitnexus://repo/ExploringChina/processes` | All execution flows |
-| `gitnexus://repo/ExploringChina/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/MysticChina/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/MysticChina/clusters` | All functional areas |
+| `gitnexus://repo/MysticChina/processes` | All execution flows |
+| `gitnexus://repo/MysticChina/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 
