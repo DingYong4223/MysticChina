@@ -1,0 +1,343 @@
+<h2>探索 Tab — 整体布局方案</h2>
+<p class="subtitle">三种「精选置顶 + 主题分区」的布局风格，点击选择你倾向的方向</p>
+
+<style>
+.phone-row {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.phone-wrap .label {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
+.phone {
+  width: 200px;
+  height: 380px;
+  background: #1a1a1a;
+  border-radius: 28px;
+  border: 2px solid #333;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.phone-wrap.selected .phone {
+  border-color: #c8a96e;
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.3);
+}
+.phone-bar {
+  height: 28px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.phone-dot {
+  width: 40px;
+  height: 4px;
+  background: #444;
+  border-radius: 2px;
+}
+.phone-screen {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #0f0f0f;
+  padding: 0;
+}
+
+/* === Option A: Hero Banner === */
+.hero-banner {
+  background: linear-gradient(135deg, #8B1A1A 0%, #C8522A 100%);
+  height: 90px;
+  display: flex;
+  align-items: flex-end;
+  padding: 8px 10px;
+  flex-shrink: 0;
+  position: relative;
+}
+.hero-tag {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 8px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  position: absolute;
+  top: 8px;
+  left: 10px;
+}
+.hero-title {
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.3;
+}
+.hero-sub {
+  color: rgba(255,255,255,0.7);
+  font-size: 8px;
+  margin-top: 2px;
+}
+.section-title-bar {
+  padding: 8px 10px 4px;
+  font-size: 9px;
+  font-weight: bold;
+  color: #c8a96e;
+  letter-spacing: 0.5px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 0 10px;
+}
+.card-cell {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-emoji { font-size: 14px; }
+.card-name { font-size: 8px; color: #ddd; }
+.card-sub { font-size: 7px; color: #666; }
+
+/* === Option B: Horizontal Scroll Featured === */
+.hscroll-featured {
+  display: flex;
+  gap: 6px;
+  padding: 10px 10px 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.h-feat-card {
+  flex-shrink: 0;
+  width: 100px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.h-feat-card.c1 { background: linear-gradient(135deg, #1a3a5c, #2d6a9f); }
+.h-feat-card.c2 { background: linear-gradient(135deg, #3a1a1a, #8B3a1a); }
+.h-feat-indicator {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  padding: 2px 0 4px;
+}
+.h-dot { width: 4px; height: 4px; border-radius: 2px; background: #444; }
+.h-dot.active { background: #c8a96e; width: 10px; }
+.hscroll-more {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px dashed #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 8px;
+  text-align: center;
+}
+
+/* === Option C: Strip + Icon Grid === */
+.strip-featured {
+  display: flex;
+  gap: 5px;
+  padding: 8px 10px 4px;
+  flex-shrink: 0;
+}
+.strip-item {
+  flex: 1;
+  background: #1e1e1e;
+  border-radius: 6px;
+  padding: 5px 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 2px solid #c8a96e;
+}
+.strip-emoji { font-size: 12px; }
+.strip-text { font-size: 7px; color: #ddd; line-height: 1.3; }
+.strip-new {
+  background: #c8a96e;
+  color: #000;
+  font-size: 6px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  margin-left: auto;
+}
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 4px 10px;
+}
+.icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 2px;
+  background: #1a1a1a;
+  border-radius: 6px;
+}
+.icon-emoji { font-size: 16px; }
+.icon-name { font-size: 7px; color: #aaa; }
+.divider-line {
+  height: 1px;
+  background: #222;
+  margin: 4px 10px;
+}
+</style>
+
+<div class="phone-row">
+
+  <!-- Option A -->
+  <div class="phone-wrap" data-choice="a" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+          <span class="hero-tag">今日精选</span>
+          <div>
+            <div class="hero-title">汉字闯关</div>
+            <div class="hero-sub">每日一练，笔顺挑战</div>
+          </div>
+        </div>
+        <!-- Section 1 -->
+        <div class="section-title-bar">🈶 文字书法</div>
+        <div class="card-grid">
+          <div class="card-cell"><span class="card-emoji">🖊</span><div><div class="card-name">汉字练习</div></div></div>
+          <div class="card-cell"><span class="card-emoji">📖</span><div><div class="card-name">古诗词</div></div></div>
+        </div>
+        <!-- Section 2 -->
+        <div class="section-title-bar">🏮 传统文化</div>
+        <div class="card-grid">
+          <div class="card-cell"><span class="card-emoji">🎋</span><div><div class="card-name">节气日历</div></div></div>
+          <div class="card-cell"><span class="card-emoji">🎨</span><div><div class="card-name">传统色彩</div></div></div>
+        </div>
+        <div class="section-title-bar">🧩 益智游戏</div>
+        <div class="card-grid">
+          <div class="card-cell"><span class="card-emoji">♟</span><div><div class="card-name">华容道</div></div></div>
+          <div class="card-cell"><span class="card-emoji">⭕</span><div><div class="card-name">五子棋</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="label">A · 大图精选横幅<br><span style="color:#555;font-size:11px">沉浸感强，突出一个重点</span></div>
+  </div>
+
+  <!-- Option B -->
+  <div class="phone-wrap" data-choice="b" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <!-- Horizontal Scroll -->
+        <div class="hscroll-featured">
+          <div class="h-feat-card c1">
+            <div style="font-size:8px;color:#fff;font-weight:bold;">汉字闯关</div>
+            <div style="font-size:7px;color:rgba(255,255,255,0.6);">笔顺挑战</div>
+          </div>
+          <div class="h-feat-card c2">
+            <div style="font-size:8px;color:#fff;font-weight:bold;">古诗词背诵</div>
+            <div style="font-size:7px;color:rgba(255,255,255,0.6);">飞花令</div>
+          </div>
+          <div class="hscroll-more">更多<br>→</div>
+        </div>
+        <div class="h-dot-row" style="display:flex;gap:3px;justify-content:center;padding:3px 0;">
+          <div class="h-dot active"></div>
+          <div class="h-dot"></div>
+          <div class="h-dot"></div>
+        </div>
+        <!-- Sections with wider cards -->
+        <div class="section-title-bar">🈶 文字书法</div>
+        <div class="card-grid">
+          <div class="card-cell"><span class="card-emoji">🖊</span><div><div class="card-name">汉字练习</div><div class="card-sub">笔顺·闯关</div></div></div>
+          <div class="card-cell"><span class="card-emoji">📖</span><div><div class="card-name">古诗词</div><div class="card-sub">背诵·飞花令</div></div></div>
+        </div>
+        <div class="section-title-bar">🏮 传统文化</div>
+        <div class="card-grid">
+          <div class="card-cell"><span class="card-emoji">🎋</span><div><div class="card-name">节气日历</div></div></div>
+          <div class="card-cell"><span class="card-emoji">🎨</span><div><div class="card-name">传统色彩</div></div></div>
+        </div>
+        <div class="section-title-bar">🧩 益智游戏</div>
+        <div class="card-grid">
+          <div class="card-cell"><span class="card-emoji">♟</span><div><div class="card-name">华容道</div></div></div>
+          <div class="card-cell"><span class="card-emoji">⭕</span><div><div class="card-name">五子棋</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="label">B · 横向轮播精选<br><span style="color:#555;font-size:11px">可展示多个精选，空间高效</span></div>
+  </div>
+
+  <!-- Option C -->
+  <div class="phone-wrap" data-choice="c" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <!-- Strip -->
+        <div style="padding:6px 10px 2px;font-size:8px;color:#888;">✨ 最近更新</div>
+        <div class="strip-featured">
+          <div class="strip-item"><span class="strip-emoji">🖊</span><div class="strip-text">汉字<br>闯关</div><span class="strip-new">NEW</span></div>
+          <div class="strip-item"><span class="strip-emoji">📖</span><div class="strip-text">古诗词<br>背诵</div></div>
+          <div class="strip-item"><span class="strip-emoji">🎋</span><div class="strip-text">节气<br>日历</div></div>
+        </div>
+        <!-- Icon Grid sections -->
+        <div class="section-title-bar">🈶 文字书法</div>
+        <div class="icon-grid">
+          <div class="icon-cell"><span class="icon-emoji">🖊</span><span class="icon-name">汉字</span></div>
+          <div class="icon-cell"><span class="icon-emoji">📖</span><span class="icon-name">古诗词</span></div>
+          <div class="icon-cell"><span class="icon-emoji">💬</span><span class="icon-name">成语</span></div>
+          <div class="icon-cell"><span class="icon-emoji">✍️</span><span class="icon-name">字帖</span></div>
+        </div>
+        <div class="divider-line"></div>
+        <div class="section-title-bar">🏮 传统文化</div>
+        <div class="icon-grid">
+          <div class="icon-cell"><span class="icon-emoji">🎋</span><span class="icon-name">节气</span></div>
+          <div class="icon-cell"><span class="icon-emoji">🎨</span><span class="icon-name">传统色</span></div>
+          <div class="icon-cell"><span class="icon-emoji">🏯</span><span class="icon-name">景点</span></div>
+          <div class="icon-cell"><span class="icon-emoji">🧧</span><span class="icon-name">节日</span></div>
+        </div>
+        <div class="divider-line"></div>
+        <div class="section-title-bar">🧩 益智游戏</div>
+        <div class="icon-grid">
+          <div class="icon-cell"><span class="icon-emoji">♟</span><span class="icon-name">华容道</span></div>
+          <div class="icon-cell"><span class="icon-emoji">⭕</span><span class="icon-name">五子棋</span></div>
+          <div class="icon-cell" style="opacity:0.3"><span class="icon-emoji">🀄</span><span class="icon-name">麻将</span></div>
+          <div class="icon-cell" style="opacity:0.3"><span class="icon-emoji">🔲</span><span class="icon-name">围棋</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="label">C · 紧凑条目 + 图标宫格<br><span style="color:#555;font-size:11px">密度高，功能多时仍整齐</span></div>
+  </div>
+
+</div>
+
+<div style="background:#1a1a1a;border-radius:8px;padding:12px 16px;margin-top:8px;font-size:12px;color:#888;line-height:1.7;">
+  <strong style="color:#c8a96e;">对比要点：</strong><br>
+  A — 一个大主角，视觉冲击强，但每次只能推一个功能<br>
+  B — 横向轮播，适合 2-4 个并列精选，空间利用率高<br>
+  C — 上方精选条紧凑，下方图标宫格每个分区可放 8+ 功能，最适合功能多时扩展
+</div>

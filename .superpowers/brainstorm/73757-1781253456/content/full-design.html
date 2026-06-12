@@ -1,0 +1,411 @@
+<h2>探索 Tab — 完整设计方案</h2>
+<p class="subtitle">整体页面结构预览，确认后进入技术设计阶段</p>
+
+<style>
+.layout-row {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.phone {
+  width: 220px;
+  height: 440px;
+  background: #1a1a1a;
+  border-radius: 32px;
+  border: 2px solid #333;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.phone-bar {
+  height: 28px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.phone-dot { width: 40px; height: 4px; background: #444; border-radius: 2px; }
+.phone-screen {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #0f0f0f;
+  scrollbar-width: none;
+}
+.phone-screen::-webkit-scrollbar { display: none; }
+
+/* Page title */
+.page-title {
+  padding: 10px 12px 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* Featured carousel */
+.carousel {
+  display: flex;
+  gap: 8px;
+  padding: 4px 12px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.feat-card {
+  flex-shrink: 0;
+  width: 150px;
+  height: 80px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 10px;
+  position: relative;
+  overflow: hidden;
+}
+.feat-card.f1 { background: linear-gradient(135deg, #6B1414 0%, #B84A1A 100%); }
+.feat-card.f2 { background: linear-gradient(135deg, #0D2744 0%, #1A5276 100%); }
+.feat-card.f3 { background: linear-gradient(135deg, #1A3A1A 0%, #2D7A2D 100%); }
+.feat-tag {
+  background: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  font-size: 7px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  width: fit-content;
+  letter-spacing: 0.3px;
+}
+.feat-title { font-size: 11px; font-weight: bold; color: #fff; }
+.feat-sub { font-size: 8px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+.feat-arrow {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  color: rgba(255,255,255,0.4);
+  font-size: 10px;
+}
+.carousel-dots {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px 6px;
+  flex-shrink: 0;
+}
+.cdot { width: 4px; height: 4px; border-radius: 2px; background: #333; }
+.cdot.on { background: #c8a96e; width: 12px; }
+
+/* Category section */
+.cat-section { margin-bottom: 4px; }
+.cat-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px 4px;
+  gap: 4px;
+}
+.cat-em { font-size: 11px; }
+.cat-name { font-size: 9px; font-weight: bold; color: #c8a96e; letter-spacing: 0.5px; flex: 1; }
+.cat-count { font-size: 8px; color: #444; }
+
+/* Horizontal scroll row */
+.feat-row {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+}
+.feat-row::-webkit-scrollbar { display: none; }
+.feat-item {
+  flex-shrink: 0;
+  width: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 4px 6px;
+  background: #1c1c1c;
+  border-radius: 8px;
+  position: relative;
+}
+.feat-item.dim { opacity: 0.38; }
+.feat-item-em { font-size: 20px; line-height: 1; }
+.feat-item-name {
+  font-size: 7.5px;
+  color: #ccc;
+  text-align: center;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+.soon-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: #2a2a2a;
+  color: #666;
+  font-size: 5.5px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  letter-spacing: 0.2px;
+}
+.divider {
+  height: 1px;
+  background: #1a1a1a;
+  margin: 2px 0;
+  flex-shrink: 0;
+}
+
+/* Annotation panel on the right */
+.annotation-panel {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ann-block {
+  background: #161616;
+  border-radius: 8px;
+  border-left: 3px solid #c8a96e;
+  padding: 10px 12px;
+}
+.ann-title { font-size: 11px; font-weight: bold; color: #c8a96e; margin-bottom: 5px; }
+.ann-body { font-size: 11px; color: #888; line-height: 1.7; }
+.ann-body b { color: #ccc; }
+</style>
+
+<div class="layout-row">
+  <!-- Phone mockup -->
+  <div class="phone">
+    <div class="phone-bar"><div class="phone-dot"></div></div>
+    <div class="phone-screen">
+      <div class="page-title">探索</div>
+
+      <!-- Featured Carousel -->
+      <div class="carousel">
+        <div class="feat-card f1">
+          <div class="feat-tag">今日精选</div>
+          <div>
+            <div class="feat-title">汉字闯关</div>
+            <div class="feat-sub">每关十字，写对才能过关</div>
+          </div>
+          <div class="feat-arrow">→</div>
+        </div>
+        <div class="feat-card f2">
+          <div class="feat-tag">本周推荐</div>
+          <div>
+            <div class="feat-title">古诗词背诵</div>
+            <div class="feat-sub">三百首经典，逐句检测</div>
+          </div>
+          <div class="feat-arrow">→</div>
+        </div>
+        <div class="feat-card f3">
+          <div class="feat-tag">即将上线</div>
+          <div>
+            <div class="feat-title">二十四节气</div>
+            <div class="feat-sub">今日芒种，麦黄梅熟</div>
+          </div>
+          <div class="feat-arrow">→</div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <div class="cdot on"></div>
+        <div class="cdot"></div>
+        <div class="cdot"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section: 文字书法 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🈶</span>
+          <span class="cat-name">文字书法</span>
+          <span class="cat-count">8个功能</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item">
+            <span class="feat-item-em">🖊</span>
+            <span class="feat-item-name">汉字练习</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">📖</span>
+            <span class="feat-item-name">古诗词</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">💬</span>
+            <span class="feat-item-name">成语接龙</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎙</span>
+            <span class="feat-item-name">飞花令</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">✍️</span>
+            <span class="feat-item-name">字帖临摹</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section: 传统文化 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🏮</span>
+          <span class="cat-name">传统文化</span>
+          <span class="cat-count">8个功能</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎋</span>
+            <span class="feat-item-name">节气日历</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎨</span>
+            <span class="feat-item-name">传统色彩</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🧧</span>
+            <span class="feat-item-name">传统节日</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🗺</span>
+            <span class="feat-item-name">朝代游戏</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section: 益智游戏 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🧩</span>
+          <span class="cat-name">益智游戏</span>
+          <span class="cat-count">5个功能</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">♟</span>
+            <span class="feat-item-name">华容道</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">⭕</span>
+            <span class="feat-item-name">五子棋</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🀄</span>
+            <span class="feat-item-name">麻将识牌</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section: 音乐艺术 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🎵</span>
+          <span class="cat-name">音乐艺术</span>
+          <span class="cat-count">6个功能</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎭</span>
+            <span class="feat-item-name">京剧脸谱</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">✂️</span>
+            <span class="feat-item-name">剪纸图案</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎼</span>
+            <span class="feat-item-name">民族乐器</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section: 饮食文化 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🍜</span>
+          <span class="cat-name">饮食文化</span>
+          <span class="cat-count">3个功能</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">🗺</span>
+            <span class="feat-item-name">菜系地图</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🍵</span>
+            <span class="feat-item-name">茶文化</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:16px;flex-shrink:0;"></div>
+    </div>
+  </div>
+
+  <!-- Annotation panel -->
+  <div class="annotation-panel">
+    <div class="ann-block">
+      <div class="ann-title">① 顶部精选轮播</div>
+      <div class="ann-body">
+        开发者在代码中手动配置 2–4 张卡片。<br>
+        每张有<b>渐变背景色、标签、标题、副标题</b>。<br>
+        横向可滑动，小圆点指示当前位置。
+      </div>
+    </div>
+    <div class="ann-block">
+      <div class="ann-title">② 主题分区</div>
+      <div class="ann-body">
+        5 个固定分区：<b>文字书法 / 传统文化 / 益智游戏 / 音乐艺术 / 饮食文化</b><br>
+        每区标题行显示功能总数。<br>
+        未来新功能只需加入对应分区列表，无需改布局。
+      </div>
+    </div>
+    <div class="ann-block">
+      <div class="ann-title">③ 功能卡片横向滑动</div>
+      <div class="ann-body">
+        每个卡片：<b>emoji 图标 + 名称</b>（2行内）。<br>
+        已上线：正常显示，点击跳转。<br>
+        未上线：<b>40% 透明度</b> + 右上角「即将」徽章，点击无反应。
+      </div>
+    </div>
+    <div class="ann-block">
+      <div class="ann-title">④ 可扩展性</div>
+      <div class="ann-body">
+        分区内卡片数量无上限，横向继续增长。<br>
+        新增分区只需在数据列表中追加一个 <b>CategorySection</b>，UI 自动渲染。
+      </div>
+    </div>
+  </div>
+</div>

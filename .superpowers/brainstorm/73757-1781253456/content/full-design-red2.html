@@ -1,0 +1,311 @@
+<h2>探索 Tab — 全红背景方案</h2>
+<p class="subtitle">背景使用中国红，选出你最喜欢的深度</p>
+
+<style>
+.phone-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.phone-wrap .label {
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  line-height: 1.6;
+}
+.phone {
+  width: 200px;
+  height: 420px;
+  border-radius: 30px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.phone-wrap.selected .phone {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 3px rgba(255,215,0,0.3);
+}
+.phone-bar {
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.phone-dot { width: 36px; height: 4px; border-radius: 2px; opacity: 0.4; }
+.phone-screen {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+}
+.phone-screen::-webkit-scrollbar { display: none; }
+
+.page-title {
+  padding: 10px 11px 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.title-bar { width: 3px; height: 15px; border-radius: 2px; background: rgba(255,255,255,0.6); }
+
+.carousel {
+  display: flex;
+  gap: 7px;
+  padding: 3px 11px;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+.feat-card {
+  flex-shrink: 0;
+  width: 138px;
+  height: 78px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 9px;
+  overflow: hidden;
+}
+.feat-tag {
+  font-size: 7px;
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.18);
+  padding: 2px 5px;
+  border-radius: 3px;
+  width: fit-content;
+}
+.feat-title { font-size: 11px; font-weight: bold; color: #fff; }
+.feat-sub { font-size: 7.5px; color: rgba(255,255,255,0.65); margin-top: 1px; }
+
+.carousel-dots {
+  display: flex;
+  gap: 4px;
+  padding: 4px 11px 5px;
+  flex-shrink: 0;
+}
+.cdot { width: 4px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.2); }
+.cdot.on { width: 12px; background: rgba(255,255,255,0.8); }
+
+.cat-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 11px 3px;
+  gap: 4px;
+}
+.cat-em { font-size: 10px; }
+.cat-name { font-size: 9px; font-weight: bold; letter-spacing: 0.5px; flex: 1; }
+.cat-count { font-size: 7.5px; opacity: 0.5; }
+
+.feat-row {
+  display: flex;
+  gap: 5px;
+  padding: 0 11px 8px;
+  overflow-x: hidden;
+}
+.feat-item {
+  flex-shrink: 0;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 3px 6px;
+  border-radius: 8px;
+  position: relative;
+}
+.feat-item.dim { opacity: 0.45; }
+.feat-item-em { font-size: 18px; line-height: 1; }
+.feat-item-name { font-size: 7px; text-align: center; line-height: 1.3; color: rgba(255,255,255,0.9); }
+.soon-badge {
+  position: absolute;
+  top: 3px; right: 2px;
+  font-size: 5px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.3);
+  color: rgba(255,255,255,0.5);
+}
+.hdivider { height: 1px; margin: 2px 0; opacity: 0.15; background: #fff; flex-shrink: 0; }
+
+/* ===========================
+   OPTION A: 深朱红 #8B0000
+   卡片用半透明黑
+   =========================== */
+.opt-a .phone { background: #8B0000; border-color: #6A0000; }
+.opt-a .phone-bar { background: #700000; }
+.opt-a .phone-dot { background: #fff; }
+.opt-a .phone-screen { background: #8B0000; }
+.opt-a .feat-card.f1 { background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2)); border: 1px solid rgba(255,255,255,0.12); }
+.opt-a .feat-card.f2 { background: linear-gradient(135deg, #0D2744, #1A5276); }
+.opt-a .feat-card.f3 { background: linear-gradient(135deg, #1A3A1A, #2D7A2D); }
+.opt-a .cat-name { color: #FFD0C0; }
+.opt-a .feat-item { background: rgba(0,0,0,0.25); }
+.opt-a .feat-item.available { background: rgba(0,0,0,0.35); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
+/* ===========================
+   OPTION B: 中红 #C0392B
+   鲜艳饱和，卡片用深红
+   =========================== */
+.opt-b .phone { background: #C0392B; border-color: #A93226; }
+.opt-b .phone-bar { background: #A93226; }
+.opt-b .phone-dot { background: #fff; }
+.opt-b .phone-screen { background: #C0392B; }
+.opt-b .feat-card.f1 { background: linear-gradient(135deg, #7B241C, #C0392B); border: 1px solid rgba(255,255,255,0.15); }
+.opt-b .feat-card.f2 { background: linear-gradient(135deg, #154360, #1A5276); }
+.opt-b .feat-card.f3 { background: linear-gradient(135deg, #0B5345, #148F77); }
+.opt-b .cat-name { color: #FFE5E0; }
+.opt-b .feat-item { background: rgba(0,0,0,0.2); }
+.opt-b .feat-item.available { background: rgba(0,0,0,0.3); }
+
+/* ===========================
+   OPTION C: 朱红 #DE2910 (旗红)
+   渐变深到浅，最鲜艳
+   =========================== */
+.opt-c .phone { background: linear-gradient(180deg, #9E1B0A 0%, #DE2910 40%, #C42408 100%); border-color: #9E1B0A; }
+.opt-c .phone-bar { background: #7A1308; }
+.opt-c .phone-dot { background: #fff; }
+.opt-c .phone-screen { background: linear-gradient(180deg, #9E1B0A 0%, #DE2910 40%, #C42408 100%); }
+.opt-c .feat-card.f1 { background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06)); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+.opt-c .feat-card.f2 { background: linear-gradient(135deg, #0D2744, #1A6090); }
+.opt-c .feat-card.f3 { background: linear-gradient(135deg, #2D1A5C, #6030A0); }
+.opt-c .cat-name { color: #FFE8C0; }
+.opt-c .feat-item { background: rgba(0,0,0,0.22); }
+.opt-c .feat-item.available { background: rgba(0,0,0,0.32); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+</style>
+
+<div class="phone-row">
+
+  <!-- Option A: 深朱红 -->
+  <div class="phone-wrap opt-a" data-choice="a" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <div class="page-title"><div class="title-bar"></div>探索</div>
+        <div class="carousel">
+          <div class="feat-card f1"><div class="feat-tag">今日精选</div><div><div class="feat-title">汉字闯关</div><div class="feat-sub">每关十字，写对才过关</div></div></div>
+          <div class="feat-card f2"><div class="feat-tag">本周推荐</div><div><div class="feat-title">古诗词</div><div class="feat-sub">三百首经典</div></div></div>
+        </div>
+        <div class="carousel-dots"><div class="cdot on"></div><div class="cdot"></div><div class="cdot"></div></div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🈶</span><span class="cat-name">文字书法</span><span class="cat-count">8个</span></div>
+        <div class="feat-row">
+          <div class="feat-item available"><span class="feat-item-em">🖊</span><span class="feat-item-name">汉字练习</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">📖</span><span class="feat-item-name">古诗词</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">💬</span><span class="feat-item-name">成语接龙</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">✍️</span><span class="feat-item-name">字帖</span><span class="soon-badge">即将</span></div>
+        </div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🏮</span><span class="cat-name">传统文化</span><span class="cat-count">8个</span></div>
+        <div class="feat-row">
+          <div class="feat-item dim"><span class="feat-item-em">🎋</span><span class="feat-item-name">节气日历</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">🎨</span><span class="feat-item-name">传统色彩</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">🧧</span><span class="feat-item-name">传统节日</span><span class="soon-badge">即将</span></div>
+        </div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🧩</span><span class="cat-name">益智游戏</span><span class="cat-count">5个</span></div>
+        <div class="feat-row">
+          <div class="feat-item dim"><span class="feat-item-em">♟</span><span class="feat-item-name">华容道</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">⭕</span><span class="feat-item-name">五子棋</span><span class="soon-badge">即将</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="label"><strong>A · 深朱红 #8B0000</strong><br><span style="color:#555;font-size:11px">沉稳厚重，像紫禁城红墙</span></div>
+  </div>
+
+  <!-- Option B: 中红 -->
+  <div class="phone-wrap opt-b" data-choice="b" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <div class="page-title"><div class="title-bar"></div>探索</div>
+        <div class="carousel">
+          <div class="feat-card f1"><div class="feat-tag">今日精选</div><div><div class="feat-title">汉字闯关</div><div class="feat-sub">每关十字，写对才过关</div></div></div>
+          <div class="feat-card f2"><div class="feat-tag">本周推荐</div><div><div class="feat-title">古诗词</div><div class="feat-sub">三百首经典</div></div></div>
+        </div>
+        <div class="carousel-dots"><div class="cdot on"></div><div class="cdot"></div><div class="cdot"></div></div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🈶</span><span class="cat-name">文字书法</span><span class="cat-count">8个</span></div>
+        <div class="feat-row">
+          <div class="feat-item available"><span class="feat-item-em">🖊</span><span class="feat-item-name">汉字练习</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">📖</span><span class="feat-item-name">古诗词</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">💬</span><span class="feat-item-name">成语接龙</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">✍️</span><span class="feat-item-name">字帖</span><span class="soon-badge">即将</span></div>
+        </div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🏮</span><span class="cat-name">传统文化</span><span class="cat-count">8个</span></div>
+        <div class="feat-row">
+          <div class="feat-item dim"><span class="feat-item-em">🎋</span><span class="feat-item-name">节气日历</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">🎨</span><span class="feat-item-name">传统色彩</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">🧧</span><span class="feat-item-name">传统节日</span><span class="soon-badge">即将</span></div>
+        </div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🧩</span><span class="cat-name">益智游戏</span><span class="cat-count">5个</span></div>
+        <div class="feat-row">
+          <div class="feat-item dim"><span class="feat-item-em">♟</span><span class="feat-item-name">华容道</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">⭕</span><span class="feat-item-name">五子棋</span><span class="soon-badge">即将</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="label"><strong>B · 中红 #C0392B</strong><br><span style="color:#555;font-size:11px">饱和鲜艳，热烈喜庆感</span></div>
+  </div>
+
+  <!-- Option C: 旗红渐变 -->
+  <div class="phone-wrap opt-c" data-choice="c" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <div class="page-title"><div class="title-bar"></div>探索</div>
+        <div class="carousel">
+          <div class="feat-card f1"><div class="feat-tag">今日精选</div><div><div class="feat-title">汉字闯关</div><div class="feat-sub">每关十字，写对才过关</div></div></div>
+          <div class="feat-card f2"><div class="feat-tag">本周推荐</div><div><div class="feat-title">古诗词</div><div class="feat-sub">三百首经典</div></div></div>
+        </div>
+        <div class="carousel-dots"><div class="cdot on"></div><div class="cdot"></div><div class="cdot"></div></div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🈶</span><span class="cat-name">文字书法</span><span class="cat-count">8个</span></div>
+        <div class="feat-row">
+          <div class="feat-item available"><span class="feat-item-em">🖊</span><span class="feat-item-name">汉字练习</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">📖</span><span class="feat-item-name">古诗词</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">💬</span><span class="feat-item-name">成语接龙</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">✍️</span><span class="feat-item-name">字帖</span><span class="soon-badge">即将</span></div>
+        </div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🏮</span><span class="cat-name">传统文化</span><span class="cat-count">8个</span></div>
+        <div class="feat-row">
+          <div class="feat-item dim"><span class="feat-item-em">🎋</span><span class="feat-item-name">节气日历</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">🎨</span><span class="feat-item-name">传统色彩</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">🧧</span><span class="feat-item-name">传统节日</span><span class="soon-badge">即将</span></div>
+        </div>
+        <div class="hdivider"></div>
+        <div class="cat-header"><span class="cat-em">🧩</span><span class="cat-name">益智游戏</span><span class="cat-count">5个</span></div>
+        <div class="feat-row">
+          <div class="feat-item dim"><span class="feat-item-em">♟</span><span class="feat-item-name">华容道</span><span class="soon-badge">即将</span></div>
+          <div class="feat-item dim"><span class="feat-item-em">⭕</span><span class="feat-item-name">五子棋</span><span class="soon-badge">即将</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="label"><strong>C · 旗红渐变 #DE2910</strong><br><span style="color:#555;font-size:11px">五星红旗正红，从深到亮</span></div>
+  </div>
+
+</div>
+
+<div style="background:#1a0808;border-radius:8px;padding:12px 16px;margin-top:4px;font-size:12px;color:#886060;line-height:1.7;border:1px solid #3a1010;">
+  三种方案背景全部是红色。卡片用半透明黑色叠加，在任何红色背景上都保持对比度和可读性。
+</div>

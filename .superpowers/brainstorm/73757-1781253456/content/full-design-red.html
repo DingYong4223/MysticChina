@@ -1,0 +1,453 @@
+<h2>探索 Tab — 中国红配色方案</h2>
+<p class="subtitle">以「中国红」为主色调，鲜艳热烈，体现传统文化气质</p>
+
+<style>
+/* ===== 中国红色板 =====
+   主红:    #DE2910  (五星红旗红)
+   亮红:    #FF3B2A  (朱砂红，用于强调)
+   暗红背景: #1A0808  (极深红调黑)
+   卡片底:  #220C0C  (深红底)
+   分区标题: #FF4438
+   轮播渐变: 多种中式配色
+   金色点缀: #C8A96E  (保留少量，与红形成古典对比)
+   =============================== */
+
+.layout-row {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.phone {
+  width: 220px;
+  height: 460px;
+  background: #1A0808;
+  border-radius: 32px;
+  border: 2px solid #3A1010;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-shadow: 0 8px 32px rgba(222,41,16,0.25);
+}
+.phone-bar {
+  height: 28px;
+  background: #120606;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.phone-dot { width: 40px; height: 4px; background: #3A1010; border-radius: 2px; }
+.phone-screen {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #130707;
+  scrollbar-width: none;
+}
+.phone-screen::-webkit-scrollbar { display: none; }
+
+/* Page title */
+.page-title {
+  padding: 10px 12px 5px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.title-accent {
+  width: 3px;
+  height: 16px;
+  background: #DE2910;
+  border-radius: 2px;
+}
+
+/* Featured Carousel */
+.carousel {
+  display: flex;
+  gap: 8px;
+  padding: 4px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.feat-card {
+  flex-shrink: 0;
+  width: 155px;
+  height: 84px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 10px;
+  position: relative;
+  overflow: hidden;
+}
+/* 朱红 → 火焰橙 */
+.feat-card.f1 { background: linear-gradient(135deg, #8C0808 0%, #DE2910 55%, #FF6030 100%); }
+/* 靛青 → 孔雀蓝 (传统色对比) */
+.feat-card.f2 { background: linear-gradient(135deg, #0A2A3A 0%, #0E5A7A 60%, #1490B8 100%); }
+/* 墨绿 → 翠绿 */
+.feat-card.f3 { background: linear-gradient(135deg, #0A2A10 0%, #1A6030 60%, #28A050 100%); }
+
+.feat-tag {
+  background: rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.95);
+  font-size: 7px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  width: fit-content;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.feat-title { font-size: 12px; font-weight: bold; color: #fff; letter-spacing: 0.5px; }
+.feat-sub { font-size: 8px; color: rgba(255,255,255,0.65); margin-top: 1px; }
+
+.carousel-dots {
+  display: flex;
+  gap: 4px;
+  padding: 5px 12px 5px;
+  flex-shrink: 0;
+}
+.cdot { width: 4px; height: 4px; border-radius: 2px; background: #3A1010; }
+.cdot.on { background: #DE2910; width: 14px; }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: #220A0A;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Category section */
+.cat-section { margin-bottom: 2px; }
+.cat-header {
+  display: flex;
+  align-items: center;
+  padding: 7px 12px 4px;
+  gap: 5px;
+}
+.cat-em { font-size: 11px; }
+.cat-name {
+  font-size: 9.5px;
+  font-weight: bold;
+  color: #FF4438;
+  letter-spacing: 0.8px;
+  flex: 1;
+}
+.cat-count { font-size: 8px; color: #5A2020; }
+
+/* Horizontal feature row */
+.feat-row {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.feat-row::-webkit-scrollbar { display: none; }
+.feat-item {
+  flex-shrink: 0;
+  width: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px 7px;
+  background: #200C0C;
+  border-radius: 9px;
+  position: relative;
+  border: 1px solid #2E1010;
+}
+.feat-item.available {
+  background: #2A0E0E;
+  border-color: #4A1818;
+  box-shadow: 0 2px 8px rgba(222,41,16,0.15);
+}
+.feat-item.dim { opacity: 0.38; }
+.feat-item-em { font-size: 20px; line-height: 1; }
+.feat-item-name {
+  font-size: 7.5px;
+  color: #E8C0C0;
+  text-align: center;
+  line-height: 1.3;
+}
+.feat-item.available .feat-item-name { color: #FFDADA; }
+.soon-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: #3A1010;
+  color: #8A4040;
+  font-size: 5.5px;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+/* Annotation panel */
+.annotation-panel {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ann-block {
+  background: #1A0808;
+  border-radius: 8px;
+  border-left: 3px solid #DE2910;
+  padding: 10px 12px;
+}
+.ann-title { font-size: 11px; font-weight: bold; color: #FF4438; margin-bottom: 5px; }
+.ann-body { font-size: 11px; color: #886060; line-height: 1.7; }
+.ann-body b { color: #E8C0C0; }
+
+.palette-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.swatch-color {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.swatch-label { font-size: 9px; color: #886060; }
+</style>
+
+<div class="layout-row">
+  <!-- Phone mockup -->
+  <div class="phone">
+    <div class="phone-bar"><div class="phone-dot"></div></div>
+    <div class="phone-screen">
+
+      <div class="page-title">
+        <div class="title-accent"></div>
+        探索
+      </div>
+
+      <!-- Carousel -->
+      <div class="carousel">
+        <div class="feat-card f1">
+          <div class="feat-tag">今日精选</div>
+          <div>
+            <div class="feat-title">汉字闯关</div>
+            <div class="feat-sub">每关十字，写对才能过关</div>
+          </div>
+        </div>
+        <div class="feat-card f2">
+          <div class="feat-tag">本周推荐</div>
+          <div>
+            <div class="feat-title">古诗词背诵</div>
+            <div class="feat-sub">三百首经典，逐句检测</div>
+          </div>
+        </div>
+        <div class="feat-card f3">
+          <div class="feat-tag">即将上线</div>
+          <div>
+            <div class="feat-title">二十四节气</div>
+            <div class="feat-sub">今日芒种，麦黄梅熟</div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <div class="cdot on"></div>
+        <div class="cdot"></div>
+        <div class="cdot"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 文字书法 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🈶</span>
+          <span class="cat-name">文字书法</span>
+          <span class="cat-count">8个</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item available">
+            <span class="feat-item-em">🖊</span>
+            <span class="feat-item-name">汉字练习</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">📖</span>
+            <span class="feat-item-name">古诗词</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">💬</span>
+            <span class="feat-item-name">成语接龙</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎙</span>
+            <span class="feat-item-name">飞花令</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">✍️</span>
+            <span class="feat-item-name">字帖临摹</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 传统文化 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🏮</span>
+          <span class="cat-name">传统文化</span>
+          <span class="cat-count">8个</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎋</span>
+            <span class="feat-item-name">节气日历</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎨</span>
+            <span class="feat-item-name">传统色彩</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🧧</span>
+            <span class="feat-item-name">传统节日</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🗺</span>
+            <span class="feat-item-name">朝代游戏</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 益智游戏 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🧩</span>
+          <span class="cat-name">益智游戏</span>
+          <span class="cat-count">5个</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">♟</span>
+            <span class="feat-item-name">华容道</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">⭕</span>
+            <span class="feat-item-name">五子棋</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🀄</span>
+            <span class="feat-item-name">麻将识牌</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 音乐艺术 -->
+      <div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-em">🎵</span>
+          <span class="cat-name">音乐艺术</span>
+          <span class="cat-count">6个</span>
+        </div>
+        <div class="feat-row">
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎭</span>
+            <span class="feat-item-name">京剧脸谱</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">✂️</span>
+            <span class="feat-item-name">剪纸图案</span>
+            <span class="soon-badge">即将</span>
+          </div>
+          <div class="feat-item dim">
+            <span class="feat-item-em">🎼</span>
+            <span class="feat-item-name">民族乐器</span>
+            <span class="soon-badge">即将</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:16px;flex-shrink:0;"></div>
+    </div>
+  </div>
+
+  <!-- Annotations -->
+  <div class="annotation-panel">
+
+    <div class="ann-block">
+      <div class="ann-title">🎨 中国红色板</div>
+      <div class="palette-row">
+        <div class="swatch"><div class="swatch-color" style="background:#DE2910;"></div><div class="swatch-label">五星红</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#FF4438;"></div><div class="swatch-label">朱砂红</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#8C0808;"></div><div class="swatch-label">深朱红</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#130707;"></div><div class="swatch-label">墨底</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#200C0C;"></div><div class="swatch-label">卡片底</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#C8A96E;"></div><div class="swatch-label">金点缀</div></div>
+      </div>
+    </div>
+
+    <div class="ann-block">
+      <div class="ann-title">轮播配色逻辑</div>
+      <div class="ann-body">
+        卡片1：<b>朱红渐变</b>（深红→亮红→橙）<br>
+        卡片2：<b>靛蓝渐变</b>（与红形成传统对比色）<br>
+        卡片3：<b>墨绿渐变</b>（自然清新，丰富层次）<br>
+        开发者配置时可从预设的「中式配色池」中选取。
+      </div>
+    </div>
+
+    <div class="ann-block">
+      <div class="ann-title">红色主题规则</div>
+      <div class="ann-body">
+        背景：极深红调黑 <b>#130707</b><br>
+        主强调：五星红旗红 <b>#DE2910</b><br>
+        分区标题：朱砂红 <b>#FF4438</b><br>
+        可用卡片：深红底 + 淡红字<br>
+        未上线：统一降至 <b>38% 透明度</b><br>
+        轮播指示点：激活态用主红色
+      </div>
+    </div>
+
+    <div class="ann-block">
+      <div class="ann-title">与当前主题的关系</div>
+      <div class="ann-body">
+        现有 <b>MysticChinaColors</b> 只需新增红色系 token。<br>
+        原金色 (#C8A96E) 保留作为辅助点缀，<br>
+        与红色形成「朱红+金」的传统配色组合。
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,257 @@
+<h2>分区内的功能卡片——布局方式</h2>
+<p class="subtitle">顶部轮播已确定，现在选择各主题分区内部的展示方式</p>
+
+<style>
+.phone-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.phone {
+  width: 195px;
+  height: 390px;
+  background: #1a1a1a;
+  border-radius: 28px;
+  border: 2px solid #333;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.phone-wrap.selected .phone {
+  border-color: #c8a96e;
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.3);
+}
+.phone-bar {
+  height: 26px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.phone-dot { width: 36px; height: 4px; background: #444; border-radius: 2px; }
+.phone-screen {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #0f0f0f;
+}
+.label {
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Shared top carousel */
+.carousel-strip {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px 5px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.car-card {
+  flex-shrink: 0;
+  width: 105px;
+  height: 58px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6px 8px;
+}
+.car-card.c1 { background: linear-gradient(135deg, #1a3a5c, #2d6a9f); }
+.car-card.c2 { background: linear-gradient(135deg, #3a1a1a, #8B3a1a); }
+.car-dots { display:flex; gap:3px; padding:3px 10px 4px; }
+.c-dot { width:4px; height:4px; border-radius:2px; background:#333; }
+.c-dot.on { background:#c8a96e; width:10px; }
+.sec-bar { padding:5px 10px 3px; font-size:8px; font-weight:bold; color:#c8a96e; letter-spacing:0.5px; }
+
+/* === APPROACH 1: Full 2-col grid === */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 0 10px;
+}
+.g-card {
+  background: #1e1e1e;
+  border-radius: 7px;
+  padding: 7px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.g-card.dim { opacity: 0.35; }
+.g-em { font-size: 14px; }
+.g-name { font-size: 8px; color: #ddd; }
+.g-tag { font-size: 6px; color: #888; background: #2a2a2a; padding: 1px 3px; border-radius: 2px; margin-top: 2px; }
+
+/* === APPROACH 2: 2x2 + see all === */
+.grid-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 0 10px;
+}
+.see-all-btn {
+  margin: 3px 10px 2px;
+  padding: 4px 8px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 5px;
+  font-size: 8px;
+  color: #c8a96e;
+  text-align: center;
+}
+
+/* === APPROACH 3: Horizontal scroll row === */
+.hrow {
+  display: flex;
+  gap: 6px;
+  padding: 0 10px;
+  overflow: hidden;
+}
+.hrow-card {
+  flex-shrink: 0;
+  width: 52px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 7px 4px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.hrow-card.dim { opacity: 0.35; }
+.hrow-em { font-size: 16px; }
+.hrow-name { font-size: 7px; color: #aaa; text-align: center; }
+.fade-r {
+  background: linear-gradient(to right, transparent, #0f0f0f);
+  width: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+</style>
+
+<div class="phone-row">
+
+  <!-- Option A: Full expanded grid -->
+  <div class="phone-wrap" data-choice="a" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <div class="carousel-strip">
+          <div class="car-card c1"><div style="font-size:8px;color:#fff;font-weight:bold;">汉字闯关</div><div style="font-size:7px;color:rgba(255,255,255,0.5);">今日精选</div></div>
+          <div class="car-card c2"><div style="font-size:8px;color:#fff;font-weight:bold;">古诗词</div><div style="font-size:7px;color:rgba(255,255,255,0.5);">背诵挑战</div></div>
+        </div>
+        <div class="car-dots"><div class="c-dot on"></div><div class="c-dot"></div><div class="c-dot"></div></div>
+        <div class="sec-bar">🈶 文字书法</div>
+        <div class="grid-2col">
+          <div class="g-card"><span class="g-em">🖊</span><div><div class="g-name">汉字练习</div></div></div>
+          <div class="g-card"><span class="g-em">📖</span><div><div class="g-name">古诗词</div></div></div>
+          <div class="g-card dim"><span class="g-em">💬</span><div><div class="g-name">成语接龙</div><div class="g-tag">即将上线</div></div></div>
+          <div class="g-card dim"><span class="g-em">✍️</span><div><div class="g-name">字帖临摹</div><div class="g-tag">即将上线</div></div></div>
+        </div>
+        <div class="sec-bar">🏮 传统文化</div>
+        <div class="grid-2col">
+          <div class="g-card dim"><span class="g-em">🎋</span><div><div class="g-name">节气日历</div><div class="g-tag">即将上线</div></div></div>
+          <div class="g-card dim"><span class="g-em">🎨</span><div><div class="g-name">传统色彩</div><div class="g-tag">即将上线</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="label"><strong>A · 完全展开网格</strong><br><span style="color:#555;font-size:11px">所有功能直接可见<br>页面较长，需向下滚动</span></div>
+  </div>
+
+  <!-- Option B: 2x2 preview + see all -->
+  <div class="phone-wrap" data-choice="b" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <div class="carousel-strip">
+          <div class="car-card c1"><div style="font-size:8px;color:#fff;font-weight:bold;">汉字闯关</div><div style="font-size:7px;color:rgba(255,255,255,0.5);">今日精选</div></div>
+          <div class="car-card c2"><div style="font-size:8px;color:#fff;font-weight:bold;">古诗词</div><div style="font-size:7px;color:rgba(255,255,255,0.5);">背诵挑战</div></div>
+        </div>
+        <div class="car-dots"><div class="c-dot on"></div><div class="c-dot"></div><div class="c-dot"></div></div>
+        <div class="sec-bar">🈶 文字书法  <span style="color:#555;float:right;font-weight:normal;">8个功能</span></div>
+        <div class="grid-preview">
+          <div class="g-card"><span class="g-em">🖊</span><div><div class="g-name">汉字练习</div></div></div>
+          <div class="g-card"><span class="g-em">📖</span><div><div class="g-name">古诗词</div></div></div>
+          <div class="g-card dim"><span class="g-em">💬</span><div><div class="g-name">成语接龙</div><div class="g-tag">即将上线</div></div></div>
+          <div class="g-card dim"><span class="g-em">✍️</span><div><div class="g-name">字帖临摹</div><div class="g-tag">即将上线</div></div></div>
+        </div>
+        <div class="see-all-btn">查看全部 8 个 →</div>
+        <div class="sec-bar">🏮 传统文化  <span style="color:#555;float:right;font-weight:normal;">8个功能</span></div>
+        <div class="grid-preview">
+          <div class="g-card dim"><span class="g-em">🎋</span><div><div class="g-name">节气日历</div><div class="g-tag">即将上线</div></div></div>
+          <div class="g-card dim"><span class="g-em">🎨</span><div><div class="g-name">传统色彩</div><div class="g-tag">即将上线</div></div></div>
+        </div>
+        <div class="see-all-btn">查看全部 8 个 →</div>
+      </div>
+    </div>
+    <div class="label"><strong>B · 每区展示前4个 + 查看全部</strong><br><span style="color:#555;font-size:11px">页面紧凑，可见多个分区<br>功能多时不撑破布局</span></div>
+  </div>
+
+  <!-- Option C: Horizontal row -->
+  <div class="phone-wrap" data-choice="c" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-bar"><div class="phone-dot"></div></div>
+      <div class="phone-screen">
+        <div class="carousel-strip">
+          <div class="car-card c1"><div style="font-size:8px;color:#fff;font-weight:bold;">汉字闯关</div><div style="font-size:7px;color:rgba(255,255,255,0.5);">今日精选</div></div>
+          <div class="car-card c2"><div style="font-size:8px;color:#fff;font-weight:bold;">古诗词</div><div style="font-size:7px;color:rgba(255,255,255,0.5);">背诵挑战</div></div>
+        </div>
+        <div class="car-dots"><div class="c-dot on"></div><div class="c-dot"></div><div class="c-dot"></div></div>
+        <div class="sec-bar">🈶 文字书法</div>
+        <div style="position:relative;">
+          <div class="hrow">
+            <div class="hrow-card"><span class="hrow-em">🖊</span><span class="hrow-name">汉字练习</span></div>
+            <div class="hrow-card"><span class="hrow-em">📖</span><span class="hrow-name">古诗词</span></div>
+            <div class="hrow-card dim"><span class="hrow-em">💬</span><span class="hrow-name">成语接龙</span></div>
+            <div class="hrow-card dim"><span class="hrow-em">✍️</span><span class="hrow-name">字帖临摹</span></div>
+          </div>
+        </div>
+        <div class="sec-bar">🏮 传统文化</div>
+        <div class="hrow">
+          <div class="hrow-card dim"><span class="hrow-em">🎋</span><span class="hrow-name">节气日历</span></div>
+          <div class="hrow-card dim"><span class="hrow-em">🎨</span><span class="hrow-name">传统色彩</span></div>
+          <div class="hrow-card dim"><span class="hrow-em">🏯</span><span class="hrow-name">景点</span></div>
+          <div class="hrow-card dim"><span class="hrow-em">🧧</span><span class="hrow-name">传统节日</span></div>
+        </div>
+        <div class="sec-bar">🧩 益智游戏</div>
+        <div class="hrow">
+          <div class="hrow-card dim"><span class="hrow-em">♟</span><span class="hrow-name">华容道</span></div>
+          <div class="hrow-card dim"><span class="hrow-em">⭕</span><span class="hrow-name">五子棋</span></div>
+          <div class="hrow-card dim"><span class="hrow-em">🀄</span><span class="hrow-name">麻将识牌</span></div>
+        </div>
+        <div class="sec-bar">🎵 音乐艺术</div>
+        <div class="hrow">
+          <div class="hrow-card dim"><span class="hrow-em">🎭</span><span class="hrow-name">京剧脸谱</span></div>
+          <div class="hrow-card dim"><span class="hrow-em">✂️</span><span class="hrow-name">剪纸</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="label"><strong>C · 每区横向滑动一行</strong><br><span style="color:#555;font-size:11px">多个分区同时在屏幕内<br>横滑发现更多，竖滑切分区</span></div>
+  </div>
+
+</div>
+
+<div style="background:#1a1a1a;border-radius:8px;padding:12px 16px;margin-top:4px;font-size:12px;color:#888;line-height:1.8;">
+  <strong style="color:#c8a96e;">我的推荐：B</strong><br>
+  每区先露出4个（2×2），右下角「查看全部 N 个」。功能少时不空旷，功能多时不撑破。
+  随着版本增加功能，分区自动适应，无需调整布局。
+</div>
