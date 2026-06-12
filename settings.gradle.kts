@@ -44,6 +44,7 @@ val kuiklyBuildFile = "build.2.1.21.gradle.kts"
 include(":core")
 project(":core").apply {
     projectDir = File(kuiklyDir, "core")
+    // build.2.1.21.gradle.kts already excludes js(IR) target; no separate patch file needed
     buildFileName = kuiklyBuildFile
 }
 

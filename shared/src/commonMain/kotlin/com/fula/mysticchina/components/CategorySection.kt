@@ -57,12 +57,13 @@ internal fun ViewContainer<*, *>.CategorySection(ctx: BasePager, category: Featu
             attr {
                 flexDirectionRow()
                 paddingLeft(MysticChinaTheme.Spacing.lg)
-                paddingRight(MysticChinaTheme.Spacing.lg)
                 paddingBottom(MysticChinaTheme.Spacing.md)
             }
             category.items.forEach { item ->
                 FeatureCard(ctx, item)
             }
+            // 末尾留白，防止最后一张卡片被裁切
+            View { attr { width(MysticChinaTheme.Spacing.lg) } }
         }
     }
 }

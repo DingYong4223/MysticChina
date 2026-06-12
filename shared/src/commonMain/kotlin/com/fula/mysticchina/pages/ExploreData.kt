@@ -87,7 +87,7 @@ val EXPLORE_CATEGORIES: List<FeatureCategory> = listOf(
             FeatureItem("🎋", "节气日历", null),
             FeatureItem("🧧", "传统节日", null),
             FeatureItem("🎨", "传统色彩", null),
-            FeatureItem("🗺", "朝代游戏", null),
+            FeatureItem("👑", "朝代游戏", null),
             FeatureItem("📍", "地图竞答", null),
             FeatureItem("👘", "汉服图鉴", null),
             FeatureItem("🏙", "地名由来", null),
@@ -111,7 +111,7 @@ val EXPLORE_CATEGORIES: List<FeatureCategory> = listOf(
             FeatureItem("🎼", "民族乐器", null),
             FeatureItem("🪢", "中国结", null),
             FeatureItem("🖋", "印章篆刻", null),
-            FeatureItem("🎵", "简谱练习", null),
+            FeatureItem("🎶", "简谱练习", null),
         )
     ),
     FeatureCategory(

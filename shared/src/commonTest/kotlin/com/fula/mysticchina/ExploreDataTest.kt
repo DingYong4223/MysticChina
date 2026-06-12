@@ -43,10 +43,10 @@ class ExploreDataTest {
 
     @Test
     fun `coming soon items have null pageName`() {
-        // Currently only HanziPage is live; all other items are coming soon
+        // Assertion: items without a live page use null (never blank string)
+        // Deliberately checks non-blank rather than a specific page name so new
+        // features can be launched without updating this test.
         val allItems = EXPLORE_CATEGORIES.flatMap { it.items }
-        val comingSoonItems = allItems.filter { it.pageName == null }
-        // Every non-null pageName must be non-blank (basic validity)
         val availableItems = allItems.filter { it.pageName != null }
         assertTrue(availableItems.isNotEmpty(), "At least one item should be available")
         availableItems.forEach { item ->
