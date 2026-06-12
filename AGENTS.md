@@ -6,8 +6,11 @@
 
 | 文档 | 用途 |
 |-----|-----|
-| `docs/KUIKLY_GUIDE.md` | 开发指南：编程模型、响应式系统、常见陷阱、最佳实践 |
-| `docs/KUIKLY_API.md` | API 速查：所有视图/属性/模块/动画/指令的完整方法表 |
+| `../aidoc/KUIKLY_GUIDE.md` | 开发指南：编程模型、响应式系统、常见陷阱、最佳实践 |
+| `../aidoc/KUIKLY_API.md` | API 速查：所有视图/属性/模块/动画/指令的完整方法表 |
+| `../aidoc/local.md` | **kuiklyui_wp** — KuiklyUI 源码本地路径，aidoc 无解时直接读源码 |
+
+> **查询优先级：** aidoc 文档（GUIDE + API）优先 → 仍无解时，读 `kuiklyui_wp` 指向的 KuiklyUI 源码查找接口定义和实现细节。
 
 ### 关键开发规则
 

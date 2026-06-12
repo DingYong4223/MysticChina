@@ -112,7 +112,9 @@ Maven repos required: `mirrors.tencent.com/nexus/repository/maven-tencent/` (Kui
 
 ## KuiklyUI 文档参考（源码核实，2026-06-12）
 
-> **开发前必读：** `docs/KUIKLY_GUIDE.md`（开发指南+常见陷阱）、`docs/KUIKLY_API.md`（API 速查）
+> **开发前必读：** `../aidoc/KUIKLY_GUIDE.md`（开发指南+常见陷阱）、`../aidoc/KUIKLY_API.md`（API 速查）
+> **KuiklyUI 源码路径：** `../aidoc/local.md` 中的 `kuiklyui_wp` 变量（如 `/Users/delanding/ProjDoing/TDF/`）
+> **查询顺序：** 先查 aidoc 文档 → 无解时直接读 `kuiklyui_wp` 源码（接口定义、实现细节）
 > 涉及 KuiklyUI API 时，**先查文档**，再写代码。以下修正比 CLAUDE.md 原始内容更准确。
 
 ### ⚠️ 关键纠错
