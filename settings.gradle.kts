@@ -44,13 +44,13 @@ val kuiklyBuildFile = "build.2.1.21.gradle.kts"
 include(":core")
 project(":core").apply {
     projectDir = File(kuiklyDir, "core")
-    buildFileName = "build.kuikly-core.gradle.kts"   // patched: no js(IR) target
+    buildFileName = kuiklyBuildFile
 }
 
 include(":core-annotations")
 project(":core-annotations").apply {
     projectDir = File(kuiklyDir, "core-annotations")
-    buildFileName = "build.kuikly-annotations.gradle.kts"   // patched: no js(IR) target
+    buildFileName = kuiklyBuildFile
 }
 
 include(":core-ksp")
