@@ -9,7 +9,7 @@ import com.fula.exploringchina.theme.YijianColors
 import com.fula.exploringchina.theme.YijianTheme
 
 /**
- * 汉字练习页 — 顶部导航栏 + 原生 WebView（HanziWriter 动画 + 练字 quiz）
+ * 汉字练习页 — 顶部导航栏 + 原生 WebView（加载 game.html 练字测验）
  */
 @Page("HanziPage", supportInLocal = true)
 internal class HanziPage : BasePager() {
@@ -61,8 +61,14 @@ internal class HanziPage : BasePager() {
             View { attr { height(1f); backgroundColor(YijianColors.surfaceLight) } }
 
             // ── 汉字 WebView（占满剩余高度） ─────────────────────
+            // flex(1f) 填充高度；width 显式指定宽度（KuiklyUI 原生 View 不自动 stretch）
+            // src 指定加载 assets/hanzi/ 下的 HTML 文件
             HanziWeb {
-                attr { flex(1f) }
+                attr {
+                    flex(1f)
+                    width(ctx.pagerData.pageViewWidth)
+                    src("game.html")
+                }
             }
         }
     }

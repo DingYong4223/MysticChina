@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 中国红主题色 -->
+    <color name="red_primary">#E8352A</color>    <!-- 中国红 -->
+    <color name="red_dark">#B82820</color>        <!-- 深红 -->
+    <color name="red_light">#FF5A4A</color>       <!-- 亮红 -->
+    <!-- 浅红背景色系 -->
+    <color name="bg_light_red">#FFF0EE</color>    <!-- 最浅红，页面底色 / 状态栏 -->
+    <color name="bg_surface">#FFE4E1</color>      <!-- 卡片/输入框 -->
+    <color name="bg_surface_light">#FFBDB6</color><!-- 分隔线 / 导航栏 -->
+</resources>
