@@ -110,6 +110,44 @@ To add a new native view: (1) implement `IKuiklyRenderViewExport` in `androidApp
 
 Maven repos required: `mirrors.tencent.com/nexus/repository/maven-tencent/` (Kuikly artifacts not on Maven Central).
 
+## KuiklyUI 文档参考（源码核实，2026-06-12）
+
+> **开发前必读：** `docs/KUIKLY_GUIDE.md`（开发指南+常见陷阱）、`docs/KUIKLY_API.md`（API 速查）
+> 涉及 KuiklyUI API 时，**先查文档**，再写代码。以下修正比 CLAUDE.md 原始内容更准确。
+
+### ⚠️ 关键纠错
+
+| 错误写法 | 正确写法 |
+|---------|---------|
+| `event { on("name") { … } }` | `event { registerEvent("name", handler) }` — `on()` 不存在 |
+| `setInterval(scope, 1000L) { }` | `Timer().schedule(0, 1000) { }` — core 无 `setInterval` |
+| `clearInterval(ref)` | `timer.cancel()` |
+| `Animation.spring(d, damp, vel)` | `Animation.springEaseOut(d, damp, vel)` — spring() 不是独立方法 |
+| `observable()` 顶层函数 | `PagerScope.observable()` — 直接在 Pager/ComposeView 内 `by observable(value)` |
+
+### 生命周期顺序
+
+```
+created() → viewWillLoad() → [body()] → viewDidLoad()
+→ [FlexBox layout] → viewDidLayout()
+→ pageDidAppear() ⇄ pageDidDisappear()（多次）
+→ pageWillDestroy() → viewWillUnload() → viewDidUnload() → viewDestroyed()
+```
+
+### Scroller/List 横向滚动 paddingRight 无效
+
+```kotlin
+// ❌ paddingRight 不延伸滚动内容
+Scroller { attr { paddingRight(16f) } }
+
+// ✅ 末尾加空 View
+Scroller {
+    attr { flexDirectionRow() }
+    // ... 内容 ...
+    View { attr { width(16f) } }   // 末尾留白
+}
+```
+
 ## Package & Namespace
 
 - Shared Kotlin package: `com.fula.mysticchina`

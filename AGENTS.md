@@ -1,3 +1,25 @@
+# MysticChina Agent 开发规范
+
+## KuiklyUI 开发参考文档
+
+**涉及 KuiklyUI 的开发工作时，先查以下文档，再写代码：**
+
+| 文档 | 用途 |
+|-----|-----|
+| `docs/KUIKLY_GUIDE.md` | 开发指南：编程模型、响应式系统、常见陷阱、最佳实践 |
+| `docs/KUIKLY_API.md` | API 速查：所有视图/属性/模块/动画/指令的完整方法表 |
+
+### 关键开发规则
+
+1. **`val ctx = this`**：`body()` 返回的 lambda 内，`this` 是 `ViewContainer`，必须在 lambda 外先 `val ctx = this`
+2. **状态声明位置**：所有 `observable` 属性必须在类属性级声明，不能在 `body()` 内
+3. **横向滚动末尾**：`paddingRight` 对滚动容器无效，末尾留白必须加空 `View { attr { width(16f) } }`
+4. **定时器**：重复执行用 `Timer().schedule(delay, period) { }`，不用 `setInterval`（不存在）
+5. **`on()` 不存在**：自定义事件用 `registerEvent("name", handler)`
+6. **`Animation.spring()`** 不存在，用 `Animation.springEaseOut(duration, damping, velocity)`
+
+---
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
