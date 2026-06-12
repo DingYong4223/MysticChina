@@ -38,30 +38,31 @@ include(":shared")
 
 // ── KuiklyUI 源码模块 (提供全平台依赖) ──
 val kuiklyDir = file("../KuiklyUI")
-val kuiklyBuildFile = "build.2.1.21.gradle.kts"
+val commonBuildFile = "build.2.1.21.gradle.kts"
+val coreBuildFile = "build.kuikly-core.gradle.kts"
 
-// :core 使用本地修改版 build 文件（去掉 js(IR) target，避免 duplicate 'clean' task 冲突）
+// :core 使用 build.kuikly-core.gradle.kts（已移除 js(IR) target，
+// 避免 LifecycleBasePlugin 重复注册 'clean' task）
 include(":core")
 project(":core").apply {
     projectDir = File(kuiklyDir, "core")
-    // build.2.1.21.gradle.kts already excludes js(IR) target; no separate patch file needed
-    buildFileName = kuiklyBuildFile
+    buildFileName = coreBuildFile
 }
 
 include(":core-annotations")
 project(":core-annotations").apply {
     projectDir = File(kuiklyDir, "core-annotations")
-    buildFileName = kuiklyBuildFile
+    buildFileName = coreBuildFile
 }
 
 include(":core-ksp")
 project(":core-ksp").apply {
     projectDir = File(kuiklyDir, "core-ksp")
-    buildFileName = kuiklyBuildFile
+    buildFileName = commonBuildFile
 }
 
 include(":core-render-android")
 project(":core-render-android").apply {
     projectDir = File(kuiklyDir, "core-render-android")
-    buildFileName = kuiklyBuildFile
+    buildFileName = commonBuildFile
 }
