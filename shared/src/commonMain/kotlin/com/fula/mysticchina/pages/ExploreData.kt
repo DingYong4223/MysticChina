@@ -78,7 +78,7 @@ val EXPLORE_CATEGORIES: List<FeatureCategory> = listOf(
             FeatureItem("✍️", "字帖临摹", null),
             FeatureItem("🔤", "汉字字源", null),
             FeatureItem("👂", "汉字听写", null),
-            FeatureItem("🧩", "偏旁部首", null),
+            FeatureItem("🔣", "偏旁部首", null),
         )
     ),
     FeatureCategory(
