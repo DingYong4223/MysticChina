@@ -50,6 +50,12 @@ allprojects {
     }
 }
 
-tasks.register("clean", Delete::class) {
+// ── Clean task ───────────────────────────────────────────────
+// Apply LifecycleBasePlugin first so NodeJsRootPlugin (triggered by js(IR){nodejs()})
+// finds 'clean' already registered and skips duplicate registration.
+// This is required because ../KuiklyUI/core/build.kuikly-core.gradle.kts includes
+// js(IR){nodejs()} which applies LifecycleBasePlugin for all projects using that build file.
+apply(plugin = "lifecycle-base")
+tasks.named<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
