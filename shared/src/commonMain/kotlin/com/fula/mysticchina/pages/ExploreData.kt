@@ -8,6 +8,7 @@ data class FeaturedCard(
     val title: String,        // 主标题，如 "汉字闯关"
     val subtitle: String,     // 副标题，如 "每关十字，写对才能过关"
     val pageName: String?,    // 目标页面名；null = 未上线（仍可出现在轮播）
+    val pageParams: String = "{}",
     val gradientStart: Color, // 渐变起始色，使用 GradientPreset
     val gradientEnd: Color,   // 渐变结束色
 )
@@ -17,6 +18,7 @@ data class FeatureItem(
     val emoji: String,
     val name: String,
     val pageName: String?,    // null = 未上线，自动置灰
+    val pageParams: String = "{}",
 )
 
 /** 主题分区 */
@@ -71,14 +73,16 @@ val EXPLORE_CATEGORIES: List<FeatureCategory> = listOf(
     FeatureCategory(
         emoji = "🈶", name = "文字书法",
         items = listOf(
+            FeatureItem(
+                "🆎",
+                "汉字认识",
+                com.fula.mysticchina.protocol.PROTOCOL_PAGE_NAME,
+                com.fula.mysticchina.protocol.protocolPageParams(
+                    com.fula.mysticchina.protocol.DEMO_PROTOCOL_JSON
+                ),
+            ),
             FeatureItem("🖊", "汉字练习", "HanziPage"),
-            FeatureItem("📖", "古诗词背诵", null),
-            FeatureItem("💬", "成语接龙", null),
-            FeatureItem("🎙", "飞花令", null),
-            FeatureItem("✍️", "字帖临摹", null),
-            FeatureItem("🔤", "汉字字源", null),
-            FeatureItem("👂", "汉字听写", null),
-            FeatureItem("🔣", "偏旁部首", null),
+            FeatureItem("✍️", "书写挑战", null),
         )
     ),
     FeatureCategory(

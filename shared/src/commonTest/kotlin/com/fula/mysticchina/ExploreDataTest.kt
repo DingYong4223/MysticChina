@@ -2,6 +2,9 @@ package com.fula.mysticchina
 
 import com.fula.mysticchina.pages.EXPLORE_CATEGORIES
 import com.fula.mysticchina.pages.FEATURED_CARDS
+import com.fula.mysticchina.protocol.PARAM_PROTOCOL_JSON
+import com.fula.mysticchina.protocol.PROTOCOL_PAGE_NAME
+import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -30,10 +33,17 @@ class ExploreDataTest {
     }
 
     @Test
-    fun `first item in 文字书法 points to HanziPage`() {
+    fun `汉字练习 points to HanziPage`() {
         val writingCategory = EXPLORE_CATEGORIES.first()
         assertEquals("文字书法", writingCategory.name)
-        assertEquals("HanziPage", writingCategory.items.first().pageName)
+        assertEquals("HanziPage", writingCategory.items.single { it.name == "汉字练习" }.pageName)
+    }
+
+    @Test
+    fun `汉字认识 points to bundled protocol page`() {
+        val item = EXPLORE_CATEGORIES.first().items.single { it.name == "汉字认识" }
+        assertEquals(PROTOCOL_PAGE_NAME, item.pageName)
+        assertTrue(JSONObject(item.pageParams).optString(PARAM_PROTOCOL_JSON).isNotBlank())
     }
 
     @Test

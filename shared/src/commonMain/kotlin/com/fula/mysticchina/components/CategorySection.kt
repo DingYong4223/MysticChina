@@ -16,7 +16,10 @@ import com.fula.mysticchina.theme.MysticChinaTheme
  */
 internal fun ViewContainer<*, *>.CategorySection(ctx: BasePager, category: FeatureCategory) {
     View {
-        attr { flexDirectionColumn() }
+        attr {
+            flexDirectionColumn()
+            // 显式 height 由子组件确定：标题行(36f) + Scroller(70f)
+        }
 
         // 分区标题行
         View {
@@ -55,6 +58,7 @@ internal fun ViewContainer<*, *>.CategorySection(ctx: BasePager, category: Featu
         // 横向滑动功能卡片行
         Scroller {
             attr {
+                height(140f)  // 固定高度（2x）：卡片纵 padding(16f) + emoji(44f) + margin(8f) + 两行文字(~32f)
                 flexDirectionRow()
                 paddingLeft(MysticChinaTheme.Spacing.lg)
                 paddingBottom(MysticChinaTheme.Spacing.md)
@@ -69,14 +73,14 @@ internal fun ViewContainer<*, *>.CategorySection(ctx: BasePager, category: Featu
 }
 
 /**
- * 单个功能入口卡片（60dp 宽）
+ * 单个功能入口卡片（120dp 宽，2x 大小）
  * 未上线：opacity 0.4 + 右上角「即将」徽章，不响应点击
  */
 private fun ViewContainer<*, *>.FeatureCard(ctx: BasePager, item: FeatureItem) {
     val available = item.pageName != null
     View {
         attr {
-            width(60f)
+            width(170f)
             marginRight(MysticChinaTheme.Spacing.sm)
             flexDirectionColumn()
             alignItemsCenter()
@@ -91,44 +95,44 @@ private fun ViewContainer<*, *>.FeatureCard(ctx: BasePager, item: FeatureItem) {
             if (!available) opacity(0.4f)
         }
         if (available) {
-            event { click { ctx.jumpPage(item.pageName!!) } }
+            event { click { ctx.jumpPage(item.pageName!!, item.pageParams) } }
         }
 
         Text {
             attr {
                 text(item.emoji)
-                fontSize(22f)
-                marginBottom(4f)
+                fontSize(44f)
+                marginBottom(8f)
             }
         }
         Text {
             attr {
                 text(item.name)
-                fontSize(8f)
-                color(MysticChinaColors.textSecondary)
+                fontSize(16f)
+                color(MysticChinaColors.cardText)
                 textAlignCenter()
                 lines(2)
             }
         }
 
-        // 「即将」徽章 — 绝对定位右上角
+        // 「即将」徽章 — 绝对定位右上角（2x 大小）
         if (!available) {
             View {
                 attr {
                     positionAbsolute()
-                    top(2f)
-                    right(2f)
+                    top(4f)
+                    right(4f)
                     backgroundColor(MysticChinaColors.surface)
                     borderRadius(MysticChinaTheme.Radius.sm)
-                    paddingLeft(2f)
-                    paddingRight(2f)
-                    paddingTop(1f)
-                    paddingBottom(1f)
+                    paddingLeft(4f)
+                    paddingRight(4f)
+                    paddingTop(2f)
+                    paddingBottom(2f)
                 }
                 Text {
                     attr {
                         text("即将")
-                        fontSize(6f)
+                        fontSize(12f)
                         color(MysticChinaColors.textDisabled)
                     }
                 }

@@ -11,25 +11,28 @@ import com.fula.mysticchina.components.ExploreTabContent
 import com.fula.mysticchina.model.UserProfile
 import com.fula.mysticchina.theme.MysticChinaColors
 import com.fula.mysticchina.theme.MysticChinaTheme
+import com.fula.mysticchina.theme.ThemeManager
 
-private const val SP_NICKNAME = "mysticchina_nickname"
-private const val SP_BIO      = "mysticchina_bio"
-private const val SP_AVATAR   = "mysticchina_avatar"
+private const val SP_NICKNAME    = "mysticchina_nickname"
+private const val SP_BIO         = "mysticchina_bio"
+private const val SP_AVATAR      = "mysticchina_avatar"
+private const val SP_THEME_INDEX = "theme_index"
 
 private enum class HomeTab(val label: String, val icon: String) {
     EXPLORE("探索", "🧭"),
     LEARN("学习", "📚"),
-    PROFILE("我的", "👤")
+    ABOUT("关于", "ℹ️")
 }
 
 @Page("HomePage", supportInLocal = true)
 internal class HomePage : BasePager() {
 
-    var selectedTab    by observable(0)
-    var userProfile    by observable(UserProfile())
-    var showEditNickname by observable(false)
-    var showEditBio      by observable(false)
-    var editingText      by observable("")
+    var selectedTab       by observable(0)
+    var userProfile       by observable(UserProfile())
+    var showEditNickname  by observable(false)
+    var showEditBio       by observable(false)
+    var editingText       by observable("")
+    var themeVersion      by observable(0)   // 递增触发 UI 主题刷新
 
     private val sp by lazy {
         acquireModule<SharedPreferencesModule>(SharedPreferencesModule.MODULE_NAME)
@@ -37,11 +40,47 @@ internal class HomePage : BasePager() {
 
     override fun created() {
         super.created()
+        // 加载用户信息
         userProfile = UserProfile(
             nickname    = sp.getString(SP_NICKNAME) ?: "文化探索者",
             bio         = sp.getString(SP_BIO)      ?: "探索中华文化之美",
             avatarEmoji = sp.getString(SP_AVATAR)   ?: "🧭",
         )
+        // 加载已保存的主题
+        loadSavedTheme()
+    }
+
+    override fun pageDidAppear() {
+        super.pageDidAppear()
+        // 从 ThemePage 返回时，检测主题是否变化并刷新
+        val savedIndex = sp.getInt(SP_THEME_INDEX) ?: 0
+        if (savedIndex != ThemeManager.currentThemeIndex) {
+            ThemeManager.applyTheme(savedIndex)
+            forceUIUpdate()
+        }
+    }
+
+    private fun loadSavedTheme() {
+        val savedIndex = sp.getInt(SP_THEME_INDEX) ?: 0
+        ThemeManager.applyTheme(savedIndex)
+    }
+
+    /**
+     * 强制 UI 主题更新
+     *
+     * 步骤：
+     * 1. themeVersion = -1 → vif({ themeVersion >= 0 }) 为 false，销毁底栏
+     * 2. selectedTab 切换 → vif({ selectedTab == X }) 为 false，销毁当前 tab
+     * 3. 下一帧：恢复 themeVersion 和 selectedTab → 用新主题重建所有视图
+     */
+    private fun forceUIUpdate() {
+        val currentTab = selectedTab
+        themeVersion = -1
+        selectedTab = (currentTab + 1) % HomeTab.values().size
+        addNextTickTask {
+            themeVersion = 0
+            selectedTab = currentTab
+        }
     }
 
     private fun saveNickname() {
@@ -73,12 +112,14 @@ internal class HomePage : BasePager() {
                 attr { flex(1f); flexDirectionColumn() }
                 vif({ ctx.selectedTab == 0 }) { ExploreTabContent(ctx) }
                 vif({ ctx.selectedTab == 1 }) { LearnTabContent() }
-                vif({ ctx.selectedTab == 2 }) { ProfileTabContent(ctx) }
+                vif({ ctx.selectedTab == 2 }) { AboutTabContent(ctx) }
             }
 
-            View { attr { height(1f); backgroundColor(MysticChinaColors.divider) } }
-
-            BottomTabBar(ctx)
+            // 分隔线 + 底部导航栏 — 包裹在 vif 中以便主题切换时重建
+            vif({ ctx.themeVersion >= 0 }) {
+                View { attr { height(1f); backgroundColor(MysticChinaColors.divider) } }
+                BottomTabBar(ctx)
+            }
 
             vif({ ctx.showEditNickname }) {
                 EditOverlay(
@@ -99,13 +140,13 @@ internal class HomePage : BasePager() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 底部 Tab Bar
+// 底部 Tab Bar（背景跟随主题主背景色）
 // ═══════════════════════════════════════════════════════════
 private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
     View {
         attr {
             height(56f + ctx.pagerData.safeAreaInsets.bottom)
-            backgroundColor(MysticChinaColors.backgroundLight)
+            backgroundColor(MysticChinaColors.background)
             flexDirectionRow()
             alignItemsCenter()
             paddingBottom(ctx.pagerData.safeAreaInsets.bottom)
@@ -154,9 +195,9 @@ private fun ViewContainer<*, *>.LearnTabContent() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 我的 Tab
+// 关于 Tab
 // ═══════════════════════════════════════════════════════════
-private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
+private fun ViewContainer<*, *>.AboutTabContent(ctx: HomePage) {
     Scroller {
         attr { flex(1f); backgroundColor(MysticChinaColors.background); flexDirectionColumn(); paddingTop(MysticChinaTheme.Spacing.xxl) }
         View { attr { allCenter(); flexDirectionColumn() }
@@ -182,23 +223,38 @@ private fun ViewContainer<*, *>.ProfileTabContent(ctx: HomePage) {
                 marginLeft(MysticChinaTheme.Spacing.lg); marginRight(MysticChinaTheme.Spacing.lg); marginBottom(MysticChinaTheme.Spacing.lg)
             }
         }
-        listOf("⚙  设置", "📱  关于神秘中国").forEach { label ->
-            View {
-                attr {
-                    height(52f); paddingLeft(MysticChinaTheme.Spacing.lg); paddingRight(MysticChinaTheme.Spacing.lg)
-                    flexDirectionRow(); alignItemsCenter(); backgroundColor(MysticChinaColors.background)
-                }
-                Text { attr { text(label); fontSize(14f); color(MysticChinaColors.textPrimary); flex(1f) } }
-                Text { attr { text(">"); fontSize(14f); color(MysticChinaColors.textTertiary) } }
-                View {
-                    attr {
-                        absolutePosition(bottom = 0f, left = MysticChinaTheme.Spacing.lg, right = 0f)
-                        height(1f); backgroundColor(MysticChinaColors.divider)
-                    }
-                }
+
+        // ⚙  设置 — 点击跳转主题选择
+        SettingsRow("🎨  主题", ctx) { ctx.jumpPage("ThemePage") }
+        // 分割线
+        View {
+            attr {
+                height(1f); backgroundColor(MysticChinaColors.divider)
+                marginLeft(MysticChinaTheme.Spacing.lg); marginRight(MysticChinaTheme.Spacing.lg)
             }
         }
+        SettingsRow("📱  关于神秘中国", ctx)
+
         View { attr { height(MysticChinaTheme.Spacing.xxxl) } }
+    }
+}
+
+/** 设置列表行：图标+文字 / 右箭头 */
+private fun ViewContainer<*, *>.SettingsRow(label: String, ctx: HomePage, onClick: (() -> Unit)? = null) {
+    View {
+        attr {
+            height(52f); paddingLeft(MysticChinaTheme.Spacing.lg); paddingRight(MysticChinaTheme.Spacing.lg)
+            flexDirectionRow(); alignItemsCenter(); backgroundColor(MysticChinaColors.background)
+        }
+        if (onClick != null) { event { click { onClick() } } }
+        Text { attr { text(label); fontSize(14f); color(MysticChinaColors.textPrimary); flex(1f) } }
+        Text { attr { text(">"); fontSize(14f); color(MysticChinaColors.textTertiary) } }
+        View {
+            attr {
+                absolutePosition(bottom = 0f, left = MysticChinaTheme.Spacing.lg, right = 0f)
+                height(1f); backgroundColor(MysticChinaColors.divider)
+            }
+        }
     }
 }
 

@@ -22,44 +22,13 @@ internal fun ViewContainer<*, *>.ExploreTabContent(ctx: BasePager) {
             backgroundColor(MysticChinaColors.background)
         }
 
-        // 顶部标题栏（statusBar + 44dp topBar）
-        View {
-            attr {
-                height(MysticChinaTheme.BarHeight.topBar + ctx.pagerData.statusBarHeight)
-                backgroundColor(MysticChinaColors.backgroundLight)
-                flexDirectionRow()
-                alignItemsCenter()
-                paddingTop(ctx.pagerData.statusBarHeight)
-                paddingLeft(MysticChinaTheme.Spacing.lg)
-                paddingRight(MysticChinaTheme.Spacing.lg)
-            }
-            // 左侧白色竖条装饰
-            View {
-                attr {
-                    width(3f)
-                    height(16f)
-                    borderRadius(2f)
-                    backgroundColor(MysticChinaColors.textPrimary)
-                    opacity(0.6f)
-                    marginRight(MysticChinaTheme.Spacing.sm)
-                }
-            }
-            Text {
-                attr {
-                    text("探索")
-                    fontSize(MysticChinaTheme.FontSize.title)
-                    fontWeightBold()
-                    color(MysticChinaColors.textPrimary)
-                }
-            }
-        }
-
-        // 主内容区（可滚动）
+        // 主内容区（可滚动，顶部留状态栏间距）
         Scroller {
             attr {
                 flex(1f)
                 flexDirectionColumn()
                 backgroundColor(MysticChinaColors.background)
+                paddingTop(ctx.pagerData.statusBarHeight)
             }
 
             // 精选轮播
@@ -67,7 +36,7 @@ internal fun ViewContainer<*, *>.ExploreTabContent(ctx: BasePager) {
 
             // 分区分割线 + 各主题分区
             EXPLORE_CATEGORIES.forEachIndexed { index, category ->
-                // 分割线
+                // 分区分割线
                 View {
                     attr {
                         height(1f)

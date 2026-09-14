@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MysticChina" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:statusBarColor">@color/bg_light_red</item>
-        <item name="android:navigationBarColor">@color/bg_light_red</item>
-        <!-- 浅色背景下使用深色状态栏图标/文字 -->
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <!-- 状态栏导航栏透明 — 由 Kuikly 页面自行控制背景色和 padding -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- 默认深色主题，使用浅色状态栏图标/文字 -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 </resources>

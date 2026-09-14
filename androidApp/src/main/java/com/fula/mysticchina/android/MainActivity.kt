@@ -3,14 +3,21 @@ package com.fula.mysticchina.android
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.fula.mysticchina.android.view.VideoRenderViewImpl
 import com.fula.mysticchina.android.view.HanziWebViewImpl
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.tencent.kuikly.core.render.android.IKuiklyRenderContext
 import com.tencent.kuikly.core.render.android.IKuiklyRenderExport
 import com.tencent.kuikly.core.render.android.adapter.IKRLogAdapter
@@ -43,6 +50,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // ── 沉浸式状态栏 ──────────────────────────────────────
+        // 内容延伸到状态栏和导航栏区域，由 Kuikly 页面自行控制 padding
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+        // 浅色状态栏图标（适配深色主题背景；蓝白主题时需动态切换）
+        WindowInsetsControllerCompat(window, window.decorView)
+            .isAppearanceLightStatusBars = false
+        WindowInsetsControllerCompat(window, window.decorView)
+            .isAppearanceLightNavigationBars = false
 
         // 注册 KuiklyUI 内部日志 → Android logcat
         KuiklyRenderAdapterManager.krLogAdapter = object : IKRLogAdapter {

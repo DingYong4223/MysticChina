@@ -18,11 +18,15 @@ internal fun ViewContainer<*, *>.FeaturedCarousel(ctx: BasePager, cards: List<Fe
     val cardWidth = ctx.pagerData.pageViewWidth * 0.68f
 
     View {
-        attr { flexDirectionColumn() }
+        attr {
+            flexDirectionColumn()
+            // 显式 height 由子组件确定：Scroller(100f) + 圆点指示器(约 20f)
+        }
 
         // 横向滑动卡片区
         Scroller {
             attr {
+                height(100f)  // 固定高度：卡片 88f + paddingTop sm(8f) + paddingBottom xs(4f)
                 flexDirectionRow()
                 paddingLeft(MysticChinaTheme.Spacing.lg)
                 paddingTop(MysticChinaTheme.Spacing.sm)
@@ -87,7 +91,7 @@ private fun ViewContainer<*, *>.FeaturedCarouselCard(
             padding(all = MysticChinaTheme.Spacing.md)
         }
         if (available) {
-            event { click { ctx.jumpPage(card.pageName!!) } }
+            event { click { ctx.jumpPage(card.pageName!!, card.pageParams) } }
         }
 
         // 标签行（左上角半透明背景）
