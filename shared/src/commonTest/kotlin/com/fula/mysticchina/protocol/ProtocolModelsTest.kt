@@ -1,5 +1,6 @@
 package com.fula.mysticchina.protocol
 
+import com.fula.mysticchina.pages.firstStickyBodyOffset
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -9,6 +10,25 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class ProtocolModelsTest {
+
+    @Test
+    fun `reference modes open distinct protocol layouts`() {
+        assertEquals(11, LEGO_SAMPLE_MODES.size)
+        val pages = LEGO_SAMPLE_MODES.map { parseProtocolResponse(JSONObject(it.protocolJson)) }
+        assertEquals(listOf(19, 37, 19, 19, 19, 19, 19, 20, 19, 21, 19), pages.map { it.body.size })
+        assertEquals("fixed", pages[2].headerScrollMode)
+        assertEquals("linked", pages[3].headerScrollMode)
+        assertTrue(pages[5].header.any { it.layout.mode == "overlay" })
+        assertTrue(pages[6].header.any { it.sticky })
+        assertTrue(pages[7].header.isEmpty())
+        assertEquals("image", pages[8].background?.optString("type"))
+        assertTrue(pages[9].body.any { it.sticky })
+        val stickyOffset = firstStickyBodyOffset(pages[9].body, 360f, 24f)
+        assertTrue(stickyOffset != null && stickyOffset > 48f)
+        assertEquals(null, firstStickyBodyOffset(pages[8].body, 360f, 24f))
+        assertTrue(pages[10].footer.isNotEmpty())
+        assertTrue(pages.all { it.body.isNotEmpty() })
+    }
 
     @Test
     fun `bundled demo parses`() {

@@ -45,6 +45,20 @@ private const val TAG = "ProtocolPage"
 
 private enum class ProtocolPagePhase { LOADING, CONTENT, EMPTY, ERROR }
 
+internal fun firstStickyBodyOffset(
+    components: List<ProtocolComponent>,
+    pageWidth: Float,
+    statusBarHeight: Float,
+    headerSpacer: Float = 0f,
+): Float? {
+    val index = components.indexOfFirst { it.sticky }
+    if (index < 0) return null
+    // ponytail: sample cards have approximate heights; switch to measured frames for arbitrary dynamic cards.
+    return 48f + headerSpacer + components.take(index).sumOf {
+        estimatedComponentHeight(it, pageWidth, statusBarHeight).toDouble()
+    }.toFloat()
+}
+
 @Page(PROTOCOL_PAGE_NAME, supportInLocal = true)
 internal class ProtocolPage : BasePager() {
 
@@ -294,14 +308,27 @@ internal class ProtocolPage : BasePager() {
                         vif({ ctx.headerMode == "linked" && ctx.headerHeight > 0f }) {
                             View { attr { height(ctx.headerHeight) } }
                         }
-                        vforLazy({ ctx.bodyComponents }, maxLoadItem = 24) { component, _, _ ->
-                            ProtocolComponentView(component, ctx)
+                        vforLazy({ ctx.bodyComponents }, maxLoadItem = 24) { component, index, _ ->
+                            ProtocolComponentView(component, ctx, index)
                         }
                         FooterRefresh {
                             ref { ctx.footerRefreshRef = it }
                             attr { height(52f); allCenter(); preloadDistance(120f) }
                             event { refreshStateDidChange { if (it == FooterRefreshState.REFRESHING) ctx.loadPage(replace = false) } }
                             Text { attr { text(if (ctx.loadingMore) "加载更多…" else if (ctx.hasMore && ctx.protocolJson.isEmpty()) "上拉加载更多" else "没有更多了"); fontSize(12f); color(Color(0xFF999999)) } }
+                        }
+                    }
+                    vif({
+                        firstStickyBodyOffset(
+                            ctx.body, ctx.pagerData.pageViewWidth, ctx.pagerData.statusBarHeight,
+                            if (ctx.headerMode == "linked") ctx.headerHeight else 0f,
+                        )?.let { ctx.scrollOffset >= it } == true
+                    }) {
+                        ctx.body.firstOrNull { it.sticky }?.let { component ->
+                            View {
+                                attr { absolutePosition(top = 0f, left = 0f, right = 0f) }
+                                ProtocolComponentView(component, ctx)
+                            }
                         }
                     }
                 }

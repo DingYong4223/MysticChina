@@ -5,9 +5,9 @@ import com.tencent.kuikly.core.base.*
 import com.tencent.kuikly.core.directives.vif
 import com.tencent.kuikly.core.module.SharedPreferencesModule
 import com.tencent.kuikly.core.reactive.handler.observable
+import com.tencent.kuikly.core.timer.setTimeout
 import com.tencent.kuikly.core.views.*
 import com.fula.mysticchina.base.BasePager
-import com.fula.mysticchina.components.ExploreTabContent
 import com.fula.mysticchina.model.UserProfile
 import com.fula.mysticchina.theme.MysticChinaColors
 import com.fula.mysticchina.theme.MysticChinaTheme
@@ -27,7 +27,7 @@ private enum class HomeTab(val label: String, val icon: String) {
 @Page("HomePage", supportInLocal = true)
 internal class HomePage : BasePager() {
 
-    var selectedTab       by observable(0)
+    var selectedTab       by observable(2)
     var userProfile       by observable(UserProfile())
     var showEditNickname  by observable(false)
     var showEditBio       by observable(false)
@@ -53,7 +53,7 @@ internal class HomePage : BasePager() {
     override fun pageDidAppear() {
         super.pageDidAppear()
         // 从 ThemePage 返回时，检测主题是否变化并刷新
-        val savedIndex = sp.getInt(SP_THEME_INDEX) ?: 0
+        val savedIndex = sp.getInt(SP_THEME_INDEX) ?: ThemeManager.defaultThemeIndex
         if (savedIndex != ThemeManager.currentThemeIndex) {
             ThemeManager.applyTheme(savedIndex)
             forceUIUpdate()
@@ -61,7 +61,7 @@ internal class HomePage : BasePager() {
     }
 
     private fun loadSavedTheme() {
-        val savedIndex = sp.getInt(SP_THEME_INDEX) ?: 0
+        val savedIndex = sp.getInt(SP_THEME_INDEX) ?: ThemeManager.defaultThemeIndex
         ThemeManager.applyTheme(savedIndex)
     }
 
@@ -77,7 +77,7 @@ internal class HomePage : BasePager() {
         val currentTab = selectedTab
         themeVersion = -1
         selectedTab = (currentTab + 1) % HomeTab.values().size
-        addNextTickTask {
+        setTimeout(0) {
             themeVersion = 0
             selectedTab = currentTab
         }
@@ -110,8 +110,6 @@ internal class HomePage : BasePager() {
 
             View {
                 attr { flex(1f); flexDirectionColumn() }
-                vif({ ctx.selectedTab == 0 }) { ExploreTabContent(ctx) }
-                vif({ ctx.selectedTab == 1 }) { LearnTabContent() }
                 vif({ ctx.selectedTab == 2 }) { AboutTabContent(ctx) }
             }
 
@@ -152,45 +150,32 @@ private fun ViewContainer<*, *>.BottomTabBar(ctx: HomePage) {
             paddingBottom(ctx.pagerData.safeAreaInsets.bottom)
         }
         HomeTab.values().forEachIndexed { index, tab ->
-            val selected = ctx.selectedTab == index
             View {
                 attr { flex(1f); height(56f); flexDirectionColumn(); alignItemsCenter(); justifyContentCenter() }
                 event { click { ctx.selectedTab = index } }
                 View {
                     attr {
                         size(4f, 4f); borderRadius(2f)
-                        backgroundColor(if (selected) MysticChinaColors.primary else Color(0x00000000))
+                        backgroundColor(if (ctx.selectedTab == index) MysticChinaColors.primary else Color(0x00000000))
                         marginBottom(2f)
                     }
                 }
                 Text {
                     attr {
                         text(tab.icon); fontSize(22f)
-                        color(if (selected) MysticChinaColors.primary else MysticChinaColors.textTertiary)
+                        color(if (ctx.selectedTab == index) MysticChinaColors.primary else MysticChinaColors.textTertiary)
                         marginBottom(2f)
                     }
                 }
                 Text {
                     attr {
                         text(tab.label); fontSize(10f)
-                        color(if (selected) MysticChinaColors.primary else MysticChinaColors.textTertiary)
-                        if (selected) fontWeightSemiBold() else fontWeightNormal()
+                        color(if (ctx.selectedTab == index) MysticChinaColors.primary else MysticChinaColors.textTertiary)
+                        if (ctx.selectedTab == index) fontWeightSemiBold() else fontWeightNormal()
                     }
                 }
             }
         }
-    }
-}
-
-// ═══════════════════════════════════════════════════════════
-// 学习 Tab（占位）
-// ═══════════════════════════════════════════════════════════
-private fun ViewContainer<*, *>.LearnTabContent() {
-    View {
-        attr { flex(1f); backgroundColor(MysticChinaColors.background); allCenter(); flexDirectionColumn() }
-        Text { attr { text("📚"); fontSize(48f); marginBottom(16f) } }
-        Text { attr { text("即将上线"); fontSize(16f); color(MysticChinaColors.textPrimary); marginBottom(8f) } }
-        Text { attr { text("学习内容正在精心准备中..."); fontSize(12f); color(MysticChinaColors.textSecondary) } }
     }
 }
 
@@ -224,6 +209,7 @@ private fun ViewContainer<*, *>.AboutTabContent(ctx: HomePage) {
             }
         }
 
+        SettingsRow("乐高二级页统一框架", ctx) { ctx.jumpPage("LegoPageModesPage") }
         // ⚙  设置 — 点击跳转主题选择
         SettingsRow("🎨  主题", ctx) { ctx.jumpPage("ThemePage") }
         // 分割线

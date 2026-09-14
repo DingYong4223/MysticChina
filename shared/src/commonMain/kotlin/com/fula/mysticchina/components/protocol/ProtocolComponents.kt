@@ -5,6 +5,7 @@ import com.fula.mysticchina.protocol.ProtocolAction
 import com.fula.mysticchina.protocol.ProtocolComponent
 import com.fula.mysticchina.protocol.objects
 import com.fula.mysticchina.protocol.protocolAction
+import com.fula.mysticchina.sharedcard.BigPicShopCard
 import com.tencent.kuikly.core.base.Color
 import com.tencent.kuikly.core.base.ViewContainer
 import com.tencent.kuikly.core.base.attr.AccessibilityRole
@@ -18,6 +19,7 @@ import com.tencent.kuikly.core.views.View
 internal fun ViewContainer<*, *>.ProtocolComponentView(
     component: ProtocolComponent,
     page: ProtocolPage,
+    bodyIndex: Int = -1,
 ) {
     View {
         attr {
@@ -33,10 +35,27 @@ internal fun ViewContainer<*, *>.ProtocolComponentView(
         }
         when (component.componentId to component.renderType) {
             "mach_pro_sailor_c_channel_list_nav_sub" to "custom", "common_page_guide_bar" to "custom" -> GuideBar(component.jsonData, page)
-            "mach_pro_sailor_c_channel_list_header_image_sub" to "custom", "common_page_bg_pic" to "custom" -> BackgroundPicture(component.jsonData, page)
+            "mach_pro_sailor_c_channel_list_header_image_sub" to "custom", "common_page_bg_pic" to "custom",
+            "mach_pro_sailor_c_channel_list_header_image_sub" to "Native" -> BackgroundPicture(component.jsonData, page)
             "mach_pro_sailor_c_common_filter_bar_sub" to "sub", "pickup_filter" to "custom" -> FilterBar(component.jsonData, page)
-            "mach_pro_sailor_c_feed_common_big_pic_card_v3" to "custom", "common_big_pic_shop_card_v3" to "custom" -> ContentCard(component.jsonData, page)
-            else -> UnsupportedComponent("${component.componentId}/${component.renderType}")
+            "mach_pro_sailor_c_feed_common_big_pic_card_v3" to "custom" -> {
+                if (bodyIndex in 0..4 && component.jsonData.optJSONArray("pictures") != null)
+                    BigPicShopCard(component.jsonData, page.pagerData.pageViewWidth)
+                else ContentCard(component.jsonData, page)
+            }
+            "common_big_pic_shop_card_v3" to "custom" -> ContentCard(component.jsonData, page)
+            "kflexbox_sailor_c_home_page_feeds_card_golden" to "Flexbox",
+            "kflexbox_sailor_ad_cpm_card_with_single_dish" to "ADFlexbox" -> ContentCard(component.jsonData, page)
+            "kflexbox_sailor_c_navigation_bar" to "Flexbox" -> SampleNavigation(component.jsonData, page)
+            "native_sailor_c_sample_header_text" to "Native",
+            "native_sailor_c_sample_header_overlay" to "Native",
+            "native_sailor_c_sample_navigation_placeholder" to "Native" -> SampleTextBar(component.jsonData)
+            "native_sailor_c_sample_tabs" to "Native" -> SampleTextBar(component.jsonData)
+            "kflexbox_sailor_mkt_resources_vertical_banner_v2" to "Flexbox",
+            "kflexbox_sailor_mkt_resources_banner" to "Flexbox" -> SampleBanner(component.jsonData)
+            else -> if (component.renderType == "Flexbox" && component.jsonData.optString("title").isNotEmpty())
+                ContentCard(component.jsonData, page)
+            else UnsupportedComponent("${component.componentId}/${component.renderType}")
         }
     }
 }
@@ -50,7 +69,7 @@ internal fun estimatedComponentHeight(
         "common_page_guide_bar" -> 52f + statusBarHeight
         "common_page_bg_pic" -> pageWidth / parseAspectRatio(component.jsonData.optString("aspectRatio", "16:9"))
         "pickup_filter" -> 58f
-        "common_big_pic_shop_card_v3" -> pageWidth * 0.56f + 118f
+        "common_big_pic_shop_card_v3", "common_shop_card_3.0" -> pageWidth * 0.56f + 118f
         else -> 52f
     }
     return component.layout.marginTop + component.layout.paddingTop + contentHeight +
@@ -226,6 +245,47 @@ private fun ViewContainer<*, *>.ContentCard(data: JSONObject, page: ProtocolPage
                 }
             }
         }
+    }
+}
+
+private fun ViewContainer<*, *>.SampleNavigation(data: JSONObject, page: ProtocolPage) {
+    View {
+        attr {
+            height(52f + page.pagerData.statusBarHeight)
+            paddingTop(page.pagerData.statusBarHeight)
+            paddingLeft(12f)
+            backgroundColor(Color.WHITE)
+            flexDirectionRow()
+            alignItemsCenter()
+        }
+        View {
+            attr { size(40f, 40f); allCenter(); accessibility("返回") }
+            event { click { page.dispatch(ProtocolAction.Back) } }
+            Text { attr { text("‹"); fontSize(30f); color(Color.BLACK) } }
+        }
+        Text { attr { text(data.optString("title", "LEGO 二级页")); fontSize(17f); color(Color.BLACK); fontWeightSemiBold(); flex(1f) } }
+    }
+}
+
+private fun ViewContainer<*, *>.SampleTextBar(data: JSONObject) {
+    val labels = data.optJSONArray("texts") ?: data.optJSONArray("tabs")
+    View {
+        attr { height(52f); backgroundColor(Color.WHITE); flexDirectionRow(); alignItemsCenter(); paddingLeft(12f) }
+        if (labels != null) {
+            for (i in 0 until labels.length()) {
+                Text { attr { text(labels.optString(i).orEmpty()); fontSize(14f); color(Color.BLACK); marginRight(18f) } }
+            }
+        } else {
+            Text { attr { text(data.optString("title", "专题")); fontSize(14f); color(Color.BLACK) } }
+        }
+    }
+}
+
+private fun ViewContainer<*, *>.SampleBanner(data: JSONObject) {
+    val url = data.optString("imageUrl")
+    View {
+        attr { height(120f); marginLeft(16f); marginRight(16f); backgroundColor(Color(0xFFF2F2F2)) }
+        if (url.isNotEmpty()) Image { attr { absolutePositionAllZero(); src(url); resizeCover() } }
     }
 }
 

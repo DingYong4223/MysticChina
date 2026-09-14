@@ -18,7 +18,7 @@ class ImmersiveContainerVC: UIViewController {
     // 属性覆盖 — 必须在 viewDidLoad 之前生效
     override var edgesForExtendedLayout: UIRectEdge { .all }
     override var extendedLayoutIncludesOpaqueBars: Bool { true }
-    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    override var preferredStatusBarStyle: UIStatusBarStyle { .default }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

@@ -99,6 +99,8 @@ internal val THEME_OPTIONS: List<ThemeOption> = listOf(
         bgColor = 0xFFE8F0F8L, accentColor = 0xFF264D7CL, cardColor = 0xFFFFFFFFL),
     ThemeOption("水墨灰", "🎨", "水墨丹青，淡雅写意",
         bgColor = 0xFF2C2C2CL, accentColor = 0xFF8B8B8BL, cardColor = 0xFF3E3E3EL),
+    ThemeOption("黑白", "◐", "默认黑白配色",
+        bgColor = 0xFFFFFFFFL, accentColor = 0xFF000000L, cardColor = 0xFFF2F2F2L),
 )
 
 // ═══════════════════════════════════════════════════════════
@@ -106,11 +108,11 @@ internal val THEME_OPTIONS: List<ThemeOption> = listOf(
 // ═══════════════════════════════════════════════════════════
 
 private fun textColorForBg(bgColor: Long): Color {
-    return if (bgColor == 0xFFE8F0F8L) Color(0xFF333333) else Color(0xFFFFFFFF)
+    return if (bgColor == 0xFFE8F0F8L || bgColor == 0xFFFFFFFFL) Color(0xFF333333) else Color(0xFFFFFFFF)
 }
 
 private fun textSecondaryForBg(bgColor: Long): Color {
-    return if (bgColor == 0xFFE8F0F8L) Color(0xCC333333.toLong()) else Color(0xCCFFFFFF.toLong())
+    return if (bgColor == 0xFFE8F0F8L || bgColor == 0xFFFFFFFFL) Color(0xCC333333.toLong()) else Color(0xCCFFFFFF.toLong())
 }
 
 /** 可点击选中的主题卡片 */

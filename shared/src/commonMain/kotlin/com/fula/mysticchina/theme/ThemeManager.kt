@@ -179,8 +179,24 @@ internal object ThemePresets {
         progressThumb   = Color(0xFF8B8B8B),
     )
 
+    /** 默认黑白主题；追加在末尾以保留已保存主题的索引。 */
+    val BLACK_WHITE = ThemeColors(
+        name = "黑白", emoji = "◐",
+        background = Color.WHITE, backgroundLight = Color.WHITE,
+        surface = Color(0xFFF2F2F2), surfaceLight = Color(0xFFE8E8E8),
+        primary = Color.BLACK, primaryDark = Color(0xFF333333), primaryLight = Color(0xFF555555),
+        gradientStart = Color.BLACK, gradientEnd = Color(0xFF444444),
+        textPrimary = Color.BLACK, textSecondary = Color(0xFF555555),
+        cardText = Color.BLACK, textTertiary = Color(0xFF777777), textDisabled = Color(0xFFAAAAAA),
+        dotActive = Color.BLACK, dotInactive = Color(0xFFCCCCCC), divider = Color(0xFFE5E5E5),
+        error = Color(0xFF333333), warning = Color(0xFF555555), success = Color.BLACK,
+        overlay = Color(0x80000000L), overlayLight = Color(0x40000000L),
+        controlBarBg = Color.WHITE, progressTrack = Color(0xFFDDDDDD),
+        progressFill = Color.BLACK, progressThumb = Color.BLACK,
+    )
+
     /** 所有预设列表，索引与 ThemePage 中一致 */
-    val ALL: List<ThemeColors> = listOf(CHINA_RED, INK_BLACK, BLUE_PORCELAIN, INK_GRAY)
+    val ALL: List<ThemeColors> = listOf(CHINA_RED, INK_BLACK, BLUE_PORCELAIN, INK_GRAY, BLACK_WHITE)
 }
 
 /**
@@ -189,14 +205,14 @@ internal object ThemePresets {
  */
 internal object ThemeManager {
     private const val SP_KEY_THEME_INDEX = "theme_index"
-    private const val DEFAULT_INDEX = 0
+    const val defaultThemeIndex = 2
 
     /** 当前主题索引 */
-    var currentThemeIndex: Int = DEFAULT_INDEX
+    var currentThemeIndex: Int = defaultThemeIndex
 
     /** 获取当前主题色 */
     val currentTheme: ThemeColors
-        get() = ThemePresets.ALL.getOrElse(currentThemeIndex) { ThemePresets.CHINA_RED }
+        get() = ThemePresets.ALL.getOrElse(currentThemeIndex) { ThemePresets.BLUE_PORCELAIN }
 
     /** 切换到指定主题 */
     fun applyTheme(index: Int) {

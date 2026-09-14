@@ -47,4 +47,5 @@ project(":core-render-android").buildFileName = kuiklyBuildFileName
 
 // ── MysticChina 模块 ────────────────────────────
 include(":shared")
+include(":sharedCard")
 include(":androidApp")

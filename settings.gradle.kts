@@ -35,14 +35,14 @@ dependencyResolutionManagement {
 rootProject.name = "mysticchina"
 include(":androidApp")
 include(":shared")
+include(":sharedCard")
 
 // ── KuiklyUI 源码模块 (提供全平台依赖) ──
 val kuiklyDir = file("../KuiklyUI")
 val commonBuildFile = "build.2.1.21.gradle.kts"
-val coreBuildFile = "build.kuikly-core.gradle.kts"
+val coreBuildFile = "build.2.1.21.gradle.kts"
 
-// :core 使用 build.kuikly-core.gradle.kts（已移除 js(IR) target，
-// 避免 LifecycleBasePlugin 重复注册 'clean' task）
+// :core 和 :core-annotations 使用 KuiklyUI 提供的 Kotlin 2.1.21 构建脚本
 include(":core")
 project(":core").apply {
     projectDir = File(kuiklyDir, "core")

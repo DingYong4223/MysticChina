@@ -56,11 +56,11 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
-        // 浅色状态栏图标（适配深色主题背景；蓝白主题时需动态切换）
+        // 默认黑白主题使用白底，系统栏图标需为深色。
         WindowInsetsControllerCompat(window, window.decorView)
-            .isAppearanceLightStatusBars = false
+            .isAppearanceLightStatusBars = true
         WindowInsetsControllerCompat(window, window.decorView)
-            .isAppearanceLightNavigationBars = false
+            .isAppearanceLightNavigationBars = true
 
         // 注册 KuiklyUI 内部日志 → Android logcat
         KuiklyRenderAdapterManager.krLogAdapter = object : IKRLogAdapter {
