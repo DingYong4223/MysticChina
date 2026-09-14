@@ -2,6 +2,7 @@ package com.fula.mysticchina.protocol
 
 import com.tencent.kuikly.core.nvi.serialization.json.JSONArray
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
+import com.tencent.kuikly.core.log.KLog
 
 internal const val PROTOCOL_PAGE_NAME = "ProtocolPage"
 internal const val PARAM_PROTOCOL_URL = "protocolUrl"
@@ -10,6 +11,7 @@ internal const val PARAM_PROTOCOL_JSON = "protocolJson"
 internal enum class ProtocolSection { HEADER, BODY, FOOTER, FLOAT }
 
 internal data class ProtocolLayout(
+    val mode: String = "flow",
     val marginTop: Float = 0f,
     val marginBottom: Float = 0f,
     val marginLeft: Float = 0f,
@@ -22,7 +24,10 @@ internal data class ProtocolLayout(
 
 internal data class ProtocolComponent(
     val dataId: String,
+    val componentId: String,
     val componentCode: String,
+    val renderType: String,
+    val overlayRole: String,
     val jsonData: JSONObject,
     val layout: ProtocolLayout,
     val section: ProtocolSection,
@@ -36,9 +41,10 @@ internal data class ProtocolPageData(
     val floating: List<ProtocolComponent>,
     val pageNo: Int,
     val hasMore: Boolean,
+    val headerScrollMode: String = "",
+    val background: JSONObject? = null,
 ) {
-    val flow: List<ProtocolComponent> get() = header + body + footer
-    val isEmpty: Boolean get() = flow.isEmpty() && floating.isEmpty()
+    val isEmpty: Boolean get() = header.isEmpty() && body.isEmpty() && footer.isEmpty() && floating.isEmpty()
 }
 
 internal sealed class ProtocolAction {
@@ -75,6 +81,24 @@ internal fun parseProtocolResponse(root: JSONObject): ProtocolPageData {
     val body = parseSection(bodyModule, ProtocolSection.BODY, seenIds)
     val footer = parseSection(data.optJSONObject("module_footer"), ProtocolSection.FOOTER, seenIds)
     val floating = parseSection(data.optJSONObject("module_float"), ProtocolSection.FLOAT, seenIds)
+    val headerScrollMode = data.optJSONObject("module_header")?.optJSONObject("extra_data")
+        ?.optString("scroll_mode").orEmpty()
+    require(header.isEmpty() || headerScrollMode == "fixed" || headerScrollMode == "linked") {
+        "Header requires scroll_mode=fixed or linked"
+    }
+    var background = data.optJSONObject("extra_data")?.optJSONObject("background")
+    if (background != null) {
+        val valid = when (background.optString("type")) {
+            "color" -> Regex("^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$").matches(background.optString("color"))
+            "image" -> background.optString("image_url").startsWith("https://")
+            else -> false
+        }
+        // Invalid backgrounds degrade to white; the rest of the response remains usable.
+        if (!valid) {
+            KLog.e("Puzzle", "Invalid page background; using white")
+            background = null
+        }
+    }
     val pagination = bodyModule?.optJSONObject("module_data")?.optJSONObject("pagination")
     return ProtocolPageData(
         header = header,
@@ -83,6 +107,8 @@ internal fun parseProtocolResponse(root: JSONObject): ProtocolPageData {
         floating = floating,
         pageNo = pagination?.optInt("page_no", 0) ?: 0,
         hasMore = pagination?.optBoolean("has_more_page", false) ?: false,
+        headerScrollMode = headerScrollMode,
+        background = background,
     )
 }
 
@@ -96,17 +122,29 @@ private fun parseSection(
         for (index in 0 until items.length()) {
             val item = items.optJSONObject(index) ?: continue
             val dataId = item.optString("data_id").trim()
+            val componentId = item.optString("component_id").trim()
             val componentCode = item.optString("component_code").trim()
             require(dataId.isNotEmpty()) { "$section component[$index] is missing data_id" }
             require(seenIds.add(dataId)) { "Duplicate protocol data_id: $dataId" }
-            require(componentCode.isNotEmpty()) { "$section component[$index] is missing component_code" }
+            require(componentId.isNotEmpty()) { "$section component[$index] is missing component_id" }
             val properties = item.optJSONObject("component_properties")
+            val layout = parseLayout(item.optJSONObject("layout_info"))
+            if ((section == ProtocolSection.BODY && layout.mode == "overlay") ||
+                (layout.mode == "overlay" && properties?.optInt("stick_type", 0) == 1) ||
+                (section in listOf(ProtocolSection.FLOAT, ProtocolSection.FOOTER) && properties?.optInt("stick_type", 0) == 1)
+            ) {
+                KLog.e("Puzzle", "Skipping invalid $section component_id=$componentId")
+                continue
+            }
             add(
                 ProtocolComponent(
                     dataId = dataId,
+                    componentId = componentId,
                     componentCode = componentCode,
+                    renderType = properties?.optString("render_type", "custom") ?: "custom",
+                    overlayRole = properties?.optString("overlay_role").orEmpty(),
                     jsonData = item.optJSONObject("json_data") ?: JSONObject(),
-                    layout = parseLayout(item.optJSONObject("layout_info")),
+                    layout = layout,
                     section = section,
                     sticky = properties?.optInt("stick_type", 0) == 1,
                 )
@@ -116,9 +154,12 @@ private fun parseSection(
 }
 
 private fun parseLayout(json: JSONObject?): ProtocolLayout {
+    val mode = json?.optString("layout_mode", "flow") ?: "flow"
+    require(mode == "flow" || mode == "overlay") { "Invalid layout_mode: $mode" }
     fun margin(name: String) = (json?.optInt(name, 0) ?: 0).coerceIn(-64, 64).toFloat()
     fun padding(name: String) = (json?.optInt(name, 0) ?: 0).coerceIn(0, 64).toFloat()
     return ProtocolLayout(
+        mode = mode,
         marginTop = margin("margin_top"),
         marginBottom = margin("margin_bottom"),
         marginLeft = margin("margin_left"),
@@ -145,22 +186,17 @@ internal val DEMO_PROTOCOL_JSON = """
       "message": "success",
       "data": {
         "module_header": {
+          "extra_data": { "scroll_mode": "linked" },
           "component_list": [
             {
-              "data_id": "demo-guide",
-              "component_code": "common_page_guide_bar",
-              "component_properties": { "stick_type": 1 },
-              "json_data": { "title": "中华文化专题", "titleColor": "#222222", "stickBgColor": "#ffffff" }
-            },
-            {
-              "data_id": "demo-picture",
+              "data_id": "demo-picture", "component_id": "mach_pro_sailor_c_channel_list_header_image_sub",
               "component_code": "common_page_bg_pic",
               "json_data": { "aspectRatio": "16:7" }
             },
             {
-              "data_id": "demo-filter",
+              "data_id": "demo-filter", "component_id": "mach_pro_sailor_c_common_filter_bar_sub",
+              "component_properties": { "render_type": "sub", "stick_type": 1 },
               "component_code": "pickup_filter",
-              "component_properties": { "stick_type": 1 },
               "json_data": {
                 "filterOptions": [
                   { "filterOptionText": "推荐", "filterOptionId": "recommend" },
@@ -174,7 +210,7 @@ internal val DEMO_PROTOCOL_JSON = """
         "module_body": {
           "component_list": [
             {
-              "data_id": "demo-hanzi",
+              "data_id": "demo-hanzi", "component_id": "mach_pro_sailor_c_feed_common_big_pic_card_v3",
               "component_code": "common_big_pic_shop_card_v3",
               "json_data": {
                 "title": "汉字书写挑战",
@@ -183,13 +219,19 @@ internal val DEMO_PROTOCOL_JSON = """
               }
             },
             {
-              "data_id": "demo-festival",
+              "data_id": "demo-festival", "component_id": "mach_pro_sailor_c_feed_common_big_pic_card_v3",
               "component_code": "common_big_pic_shop_card_v3",
               "json_data": { "title": "传统节日", "subtitle": "了解节日背后的历史与礼俗" }
             }
           ],
           "module_data": { "pagination": { "page_no": 0, "has_more_page": false } }
-        }
+        },
+        "module_float": { "component_list": [{
+          "data_id": "demo-guide", "component_id": "mach_pro_sailor_c_channel_list_nav_sub", "component_code": "common_page_guide_bar",
+          "layout_info": { "layout_mode": "overlay" },
+          "component_properties": { "render_type": "custom", "overlay_role": "TOP_STICKY" },
+          "json_data": { "title": "中华文化专题", "titleColor": "#222222", "stickBgColor": "#ffffff" }
+        }] }
       }
     }
 """.trimIndent()

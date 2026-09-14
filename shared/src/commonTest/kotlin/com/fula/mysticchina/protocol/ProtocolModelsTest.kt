@@ -14,9 +14,12 @@ class ProtocolModelsTest {
     fun `bundled demo parses`() {
         val page = parseProtocolResponse(JSONObject(DEMO_PROTOCOL_JSON))
 
-        assertEquals(3, page.header.size)
+        assertEquals(2, page.header.size)
         assertEquals(2, page.body.size)
-        assertEquals(5, page.flow.size)
+        assertEquals(1, page.floating.size)
+        assertEquals("linked", page.headerScrollMode)
+        assertEquals("overlay", page.floating.single().layout.mode)
+        assertEquals("TOP_STICKY", page.floating.single().overlayRole)
         assertEquals(0, page.pageNo)
         assertFalse(page.hasMore)
     }
@@ -25,11 +28,11 @@ class ProtocolModelsTest {
     fun `sections pagination layout and action parse`() {
         val page = parseProtocolResponse(JSONObject(fourSectionJson()))
 
-        assertEquals(listOf("h", "b", "f"), page.flow.map { it.dataId })
+        assertEquals(listOf("h", "b", "f"), (page.header + page.body + page.footer).map { it.dataId })
         assertEquals("x", page.floating.single().dataId)
         assertEquals(
             listOf(ProtocolSection.HEADER, ProtocolSection.BODY, ProtocolSection.FOOTER),
-            page.flow.map { it.section },
+            (page.header + page.body + page.footer).map { it.section },
         )
         assertEquals(7, page.pageNo)
         assertTrue(page.hasMore)
@@ -53,25 +56,36 @@ class ProtocolModelsTest {
         }
     }
 
+    @Test
+    fun `target contract rejects unpartitioned header and body overlay`() {
+        assertFailsWith<IllegalArgumentException> {
+            parseProtocolResponse(JSONObject(fourSectionJson().replace("\"scroll_mode\":\"linked\"", "\"scroll_mode\":\"natural\"")))
+        }
+        val page = parseProtocolResponse(JSONObject(fourSectionJson().replace(
+            "\"data_id\":\"b\"", "\"data_id\":\"b\",\"layout_info\":{\"layout_mode\":\"overlay\"}",
+        )))
+        assertTrue(page.body.isEmpty())
+    }
+
     private fun fourSectionJson() = """
         {
           "code": 0,
           "unknown_root_field": true,
           "data": {
-            "module_header": {"component_list":[{
-              "data_id":"h", "component_code":"common_page_guide_bar",
+            "module_header": {"extra_data":{"scroll_mode":"linked"},"component_list":[{
+              "data_id":"h", "component_id":"mach_pro_sailor_c_channel_list_header_image_sub", "component_code":"common_page_bg_pic",
               "layout_info":{"padding_top":999,"margin_top":-999},
               "unknown_component_field":"ignored"
             }]},
             "module_body": {
               "component_list":[{
-                "data_id":"b", "component_code":"common_big_pic_shop_card_v3",
+                "data_id":"b", "component_id":"mach_pro_sailor_c_feed_common_big_pic_card_v3", "component_code":"common_big_pic_shop_card_v3",
                 "json_data":{"action":{"type":"open_page","page_name":"HanziPage","params":{"source":"demo"}}}
               }],
               "module_data":{"pagination":{"page_no":7,"has_more_page":true}}
             },
-            "module_footer": {"component_list":[{"data_id":"f","component_code":"footer"}]},
-            "module_float": {"component_list":[{"data_id":"x","component_code":"float"}]}
+            "module_footer": {"component_list":[{"data_id":"f","component_id":"footer"}]},
+            "module_float": {"component_list":[{"data_id":"x","component_id":"float"}]}
           }
         }
     """.trimIndent()

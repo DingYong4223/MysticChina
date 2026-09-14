@@ -31,12 +31,12 @@ internal fun ViewContainer<*, *>.ProtocolComponentView(
             paddingLeft(component.layout.paddingLeft)
             paddingRight(component.layout.paddingRight)
         }
-        when (component.componentCode) {
-            "common_page_guide_bar" -> GuideBar(component.jsonData, page)
-            "common_page_bg_pic" -> BackgroundPicture(component.jsonData, page)
-            "pickup_filter" -> FilterBar(component.jsonData, page)
-            "common_big_pic_shop_card_v3" -> ContentCard(component.jsonData, page)
-            else -> UnsupportedComponent(component.componentCode)
+        when (component.componentId to component.renderType) {
+            "mach_pro_sailor_c_channel_list_nav_sub" to "custom", "common_page_guide_bar" to "custom" -> GuideBar(component.jsonData, page)
+            "mach_pro_sailor_c_channel_list_header_image_sub" to "custom", "common_page_bg_pic" to "custom" -> BackgroundPicture(component.jsonData, page)
+            "mach_pro_sailor_c_common_filter_bar_sub" to "sub", "pickup_filter" to "custom" -> FilterBar(component.jsonData, page)
+            "mach_pro_sailor_c_feed_common_big_pic_card_v3" to "custom", "common_big_pic_shop_card_v3" to "custom" -> ContentCard(component.jsonData, page)
+            else -> UnsupportedComponent("${component.componentId}/${component.renderType}")
         }
     }
 }
@@ -66,7 +66,10 @@ private fun ViewContainer<*, *>.GuideBar(data: JSONObject, page: ProtocolPage) {
             paddingRight(16f)
             flexDirectionRow()
             alignItemsCenter()
-            backgroundColor(parseColor(data.optString("stickBgColor"), Color.WHITE))
+                backgroundColor(parseColor(
+                    data.optString(if (page.scrollOffset > 0f) "stickBgColor" else "unStickBgColor"),
+                    Color.WHITE,
+                ))
         }
         View {
             attr {
@@ -258,14 +261,17 @@ private fun parseAspectRatio(value: String): Float {
     return if (width > 0f && height > 0f) width / height else 16f / 9f
 }
 
-private fun parseColor(value: String, fallback: Color): Color = try {
-    val hex = value.removePrefix("#")
-    val argb = when (hex.length) {
-        6 -> 0xFF000000L or hex.toLong(16)
-        8 -> hex.toLong(16)
-        else -> return fallback
+private fun parseColor(value: String, fallback: Color): Color {
+    if (value == "transparent") return Color.TRANSPARENT
+    return try {
+        val hex = value.removePrefix("#")
+        val argb = when (hex.length) {
+            6 -> 0xFF000000L or hex.toLong(16)
+            8 -> hex.toLong(16)
+            else -> return fallback
+        }
+        Color(argb)
+    } catch (_: Throwable) {
+        fallback
     }
-    Color(argb)
-} catch (_: Throwable) {
-    fallback
 }

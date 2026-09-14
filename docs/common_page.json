@@ -2,45 +2,11 @@
   "code": 0,
   "message": "success",
   "data": {
+    "extra_data": {
+      "background": { "type": "color", "color": "#FFFFFF" }
+    },
     "module_header": {
       "component_list": [
-        {
-          "data_id": "NRXNg0M9NCi3EcTDOZwU",
-          "builder_id": "specialCommonGuideBarBuilder_535_1_169_1",
-          "component_id": "mach_pro_sailor_c_channel_list_nav_sub",
-          "json_data": {
-            "titleColor": "#222222",
-            "stickBgColor": "#ffffff",
-            "templateId": "ccdc34d1-2f42-4de3-abc1-d4f5b4c7850f",
-            "title": "Popular brands",
-            "backImageUrl": "https://img-ap-hongkong.mykeeta.net/picturesupload/4ad14fc6cc3a3097c244c2034b186bb62150.png",
-            "unStickBgColor": "transparent",
-            "resourceUuid": "175fbf37-8902-4d16-80ea-17af1e52768c"
-          },
-          "layout_info": {
-            "margin_top": 0,
-            "margin_bottom": 0,
-            "margin_left": 0,
-            "margin_right": 0,
-            "padding_top": 0,
-            "padding_bottom": 0,
-            "padding_left": 0,
-            "padding_right": 0
-          },
-          "component_properties": {
-            "render_type": "custom",
-            "stick_type": 1,
-            "top_type": 0,
-            "footer_type": 0,
-            "grid_info": null
-          },
-          "log_info": {
-            "cid": "c_sailor_c_1qpj1n1h",
-            "material_name": "unknown_material",
-            "module_id": "169"
-          },
-          "component_code": "common_page_guide_bar"
-        },
         {
           "data_id": "cUrp44Fq2uSQcO3eu7Zk",
           "builder_id": "specialCommonBgPicBuilder_535_1_168_1",
@@ -1358,7 +1324,7 @@
         "pagination": null,
         "module_bg_color": null
       },
-      "extra_data": null
+      "extra_data": { "scroll_mode": "linked" }
     },
     "module_body": {
       "component_list": [
@@ -7772,6 +7738,50 @@
         "discountExpFlag": null,
         "useType": "v2"
       }
+    },
+    "module_float": {
+      "component_list": [
+        {
+          "data_id": "NRXNg0M9NCi3EcTDOZwU",
+          "builder_id": "specialCommonGuideBarBuilder_535_1_169_1",
+          "component_id": "mach_pro_sailor_c_channel_list_nav_sub",
+          "json_data": {
+            "titleColor": "#222222",
+            "stickBgColor": "#ffffff",
+            "templateId": "ccdc34d1-2f42-4de3-abc1-d4f5b4c7850f",
+            "title": "Popular brands",
+            "backImageUrl": "https://img-ap-hongkong.mykeeta.net/picturesupload/4ad14fc6cc3a3097c244c2034b186bb62150.png",
+            "unStickBgColor": "transparent",
+            "resourceUuid": "175fbf37-8902-4d16-80ea-17af1e52768c"
+          },
+          "layout_info": {
+            "layout_mode": "overlay",
+            "margin_top": 0,
+            "margin_bottom": 0,
+            "margin_left": 0,
+            "margin_right": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "component_properties": {
+            "render_type": "custom",
+            "overlay_role": "TOP_STICKY",
+            "stick_type": 0,
+            "top_type": 0,
+            "footer_type": 0,
+            "grid_info": null
+          },
+          "log_info": {
+            "cid": "c_sailor_c_1qpj1n1h",
+            "material_name": "unknown_material",
+            "module_id": "169"
+          },
+          "component_code": "common_page_guide_bar"
+        }
+      ],
+      "extra_data": null
     },
     "module_footer": {
       "component_list": [],
