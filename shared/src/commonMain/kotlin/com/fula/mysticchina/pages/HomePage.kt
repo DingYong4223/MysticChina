@@ -9,9 +9,12 @@ import com.tencent.kuikly.core.timer.setTimeout
 import com.tencent.kuikly.core.views.*
 import com.fula.mysticchina.base.BasePager
 import com.fula.mysticchina.model.UserProfile
+import com.fula.mysticchina.protocol.PARAM_PROTOCOL_SAMPLE
+import com.fula.mysticchina.protocol.PROTOCOL_PAGE_NAME
 import com.fula.mysticchina.theme.MysticChinaColors
 import com.fula.mysticchina.theme.MysticChinaTheme
 import com.fula.mysticchina.theme.ThemeManager
+import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 
 private const val SP_NICKNAME    = "mysticchina_nickname"
 private const val SP_BIO         = "mysticchina_bio"
@@ -210,6 +213,11 @@ private fun ViewContainer<*, *>.AboutTabContent(ctx: HomePage) {
         }
 
         SettingsRow("乐高二级页统一框架", ctx) { ctx.jumpPage("LegoPageModesPage") }
+        SettingsRow("Flexbox组件样式", ctx) {
+            ctx.jumpPage(PROTOCOL_PAGE_NAME, JSONObject().apply {
+                put(PARAM_PROTOCOL_SAMPLE, "flexbox")
+            }.toString())
+        }
         // ⚙  设置 — 点击跳转主题选择
         SettingsRow("🎨  主题", ctx) { ctx.jumpPage("ThemePage") }
         // 分割线

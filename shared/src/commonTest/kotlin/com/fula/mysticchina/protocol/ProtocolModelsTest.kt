@@ -1,6 +1,6 @@
 package com.fula.mysticchina.protocol
 
-import com.fula.mysticchina.pages.firstStickyBodyOffset
+import com.fula.mysticchina.pages.bodyStickyPlacement
 import com.fula.mysticchina.pages.linkedRefreshPullDistance
 import com.fula.mysticchina.pages.protocolNavigationProgress
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
@@ -32,21 +32,40 @@ class ProtocolModelsTest {
 
     @Test
     fun `reference modes open distinct protocol layouts`() {
-        assertEquals(11, LEGO_SAMPLE_MODES.size)
+        assertEquals(9, LEGO_SAMPLE_MODES.size)
+        assertFalse(LEGO_SAMPLE_MODES.any { it.name == "一人食（联动吸顶）" })
+        assertFalse(LEGO_SAMPLE_MODES.any { it.name == "Flexbox组件样式" })
         val pages = LEGO_SAMPLE_MODES.map { parseProtocolResponse(JSONObject(it.protocolJson)) }
-        assertEquals(listOf(19, 37, 19, 19, 19, 19, 19, 20, 19, 21, 19), pages.map { it.body.size })
-        assertEquals("fixed", pages[2].headerScrollMode)
-        assertEquals("linked", pages[3].headerScrollMode)
-        assertTrue(pages[5].header.any { it.layout.mode == "overlay" })
-        assertTrue(pages[6].header.any { it.sticky })
-        assertTrue(pages[7].header.isEmpty())
-        assertEquals("image", pages[8].background?.optString("type"))
-        assertTrue(pages[9].body.any { it.sticky })
-        val stickyOffset = firstStickyBodyOffset(pages[9].body, 360f, 24f)
-        assertTrue(stickyOffset != null && stickyOffset > 48f)
-        assertEquals(null, firstStickyBodyOffset(pages[8].body, 360f, 24f))
-        assertTrue(pages[10].footer.isNotEmpty())
+        assertEquals(listOf(19, 19, 19, 19, 19, 20, 19, 21, 19), pages.map { it.body.size })
+        assertEquals("fixed", pages[0].headerScrollMode)
+        assertEquals("linked", pages[1].headerScrollMode)
+        assertTrue(pages[3].header.any { it.layout.mode == "overlay" })
+        assertTrue(pages[4].header.any { it.sticky })
+        assertTrue(pages[5].header.isEmpty())
+        assertEquals("image", pages[6].background?.optString("type"))
+        assertTrue(pages[7].body.any { it.sticky })
+        val body = pages[7].body
+        val frames = mapOf(body[2].dataId to (250f to 52f), body[5].dataId to (650f to 52f))
+        assertEquals(null, bodyStickyPlacement(body, frames, 100f, 76f))
+        assertEquals(body[2] to 76f, bodyStickyPlacement(body, frames, 200f, 76f))
+        assertEquals(body[2] to 68f, bodyStickyPlacement(body, frames, 530f, 76f))
+        assertEquals(body[5] to 76f, bodyStickyPlacement(body, frames, 600f, 76f))
+        assertEquals(null, bodyStickyPlacement(pages[6].body, frames, 600f, 76f))
+        val noHeaderSticky = pages[5].body.first { it.sticky }
+        assertEquals(noHeaderSticky to 76f, bodyStickyPlacement(
+            pages[5].body, mapOf(noHeaderSticky.dataId to (100f to 52f)), 30f, 76f,
+        ))
+        assertTrue(pages[8].footer.isNotEmpty())
         assertTrue(pages.all { it.body.isNotEmpty() })
+    }
+
+    @Test
+    fun `flexbox sample uses a short route key without changing other protocols`() {
+        assertEquals(198858, FLEXBOX_SAMPLE_PROTOCOL_JSON.length)
+        val route = JSONObject().apply { put(PARAM_PROTOCOL_SAMPLE, "flexbox") }.toString()
+        assertTrue(route.length < 64)
+        assertEquals(37, parseProtocolResponse(JSONObject(resolveProtocolJson(JSONObject(route)))).body.size)
+        assertEquals(DEMO_PROTOCOL_JSON, resolveProtocolJson(JSONObject(protocolPageParams(DEMO_PROTOCOL_JSON))))
     }
 
     @Test

@@ -3,18 +3,19 @@ package com.fula.mysticchina.pages
 import com.fula.mysticchina.base.BasePager
 import com.fula.mysticchina.components.protocol.ProtocolComponentView
 import com.fula.mysticchina.components.protocol.estimatedComponentHeight
-import com.fula.mysticchina.protocol.PARAM_PROTOCOL_JSON
 import com.fula.mysticchina.protocol.PARAM_PROTOCOL_URL
 import com.fula.mysticchina.protocol.PROTOCOL_PAGE_NAME
 import com.fula.mysticchina.protocol.ProtocolAction
 import com.fula.mysticchina.protocol.ProtocolComponent
 import com.fula.mysticchina.protocol.ProtocolPageData
 import com.fula.mysticchina.protocol.parseProtocolResponse
+import com.fula.mysticchina.protocol.resolveProtocolJson
 import com.tencent.kuikly.core.annotations.Page
 import com.tencent.kuikly.core.base.Color
 import com.tencent.kuikly.core.base.Translate
 import com.tencent.kuikly.core.base.ViewBuilder
 import com.tencent.kuikly.core.base.ViewRef
+import com.tencent.kuikly.core.base.event.layoutFrameDidChange
 import com.tencent.kuikly.core.directives.velse
 import com.tencent.kuikly.core.directives.velseif
 import com.tencent.kuikly.core.directives.vfor
@@ -45,18 +46,17 @@ private const val TAG = "ProtocolPage"
 
 private enum class ProtocolPagePhase { LOADING, CONTENT, EMPTY, ERROR }
 
-internal fun firstStickyBodyOffset(
+internal fun bodyStickyPlacement(
     components: List<ProtocolComponent>,
-    pageWidth: Float,
-    statusBarHeight: Float,
-    headerSpacer: Float = 0f,
-): Float? {
-    val index = components.indexOfFirst { it.sticky }
-    if (index < 0) return null
-    // ponytail: sample cards have approximate heights; switch to measured frames for arbitrary dynamic cards.
-    return 48f + headerSpacer + components.take(index).sumOf {
-        estimatedComponentHeight(it, pageWidth, statusBarHeight).toDouble()
-    }.toFloat()
+    frames: Map<String, Pair<Float, Float>>,
+    scrollOffset: Float,
+    anchor: Float,
+): Pair<ProtocolComponent, Float>? {
+    val sticky = components.filter { it.sticky && frames.containsKey(it.dataId) }
+    val current = sticky.lastOrNull { frames.getValue(it.dataId).first - scrollOffset <= anchor } ?: return null
+    val next = sticky.getOrNull(sticky.indexOf(current) + 1)
+    val nextTop = next?.let { frames.getValue(it.dataId).first - scrollOffset }
+    return current to if (nextTop == null) anchor else minOf(anchor, nextTop - frames.getValue(current.dataId).second)
 }
 
 internal fun protocolNavigationProgress(
@@ -90,6 +90,9 @@ internal class ProtocolPage : BasePager() {
     private var floatingComponents: ObservableList<ProtocolComponent> by observableList()
     private var headerHeight by observable(0f)
     internal var scrollOffset by observable(0f)
+    private var stickyBodyFrames = emptyMap<String, Pair<Float, Float>>()
+    private var stickyBodyOverlay: ObservableList<ProtocolComponent> by observableList()
+    private var stickyBodyTop by observable(0f)
     private var headerMode by observable("")
     private var refreshState by observable(RefreshViewState.IDLE)
     private var backgroundColor by observable(Color.WHITE)
@@ -114,7 +117,7 @@ internal class ProtocolPage : BasePager() {
     override fun created() {
         super.created()
         protocolUrl = pageData.params.optString(PARAM_PROTOCOL_URL).trim()
-        protocolJson = pageData.params.optString(PARAM_PROTOCOL_JSON).trim()
+        protocolJson = resolveProtocolJson(pageData.params)
         loadPage(replace = true)
     }
 
@@ -173,7 +176,8 @@ internal class ProtocolPage : BasePager() {
     private fun applyRawResponse(raw: String, replace: Boolean, version: Int) {
         val root = try {
             JSONObject(raw)
-        } catch (_: Throwable) {
+        } catch (error: Throwable) {
+            KLog.e(TAG, "Protocol JSON parse failed (length=${raw.length}): ${error::class.simpleName}: ${error.message}")
             fail("协议 JSON 格式错误", replace, version)
             return
         }
@@ -242,9 +246,39 @@ internal class ProtocolPage : BasePager() {
     }
 
     private fun syncBody() {
+        stickyBodyFrames = emptyMap()
+        stickyBodyOverlay.clear()
         bodyComponents.clear()
         bodyComponents.addAll(body)
         rebuildStickyThresholds(header)
+    }
+
+    private fun recordBodyStickyFrame(id: String, top: Float, height: Float) {
+        if (height <= 0f || body.none { it.dataId == id && it.sticky }) return
+        val frame = top to height
+        if (stickyBodyFrames[id] != frame) {
+            stickyBodyFrames = stickyBodyFrames + (id to frame)
+            updateBodySticky()
+        }
+    }
+
+    private fun updateBodySticky() {
+        if (body.none { it.sticky }) return
+        val placement = bodyStickyPlacement(body, stickyBodyFrames, scrollOffset, bodyStickyAnchor())
+        val component = placement?.first
+        if (stickyBodyOverlay.firstOrNull()?.dataId != component?.dataId) {
+            stickyBodyOverlay.clear()
+            if (component != null) stickyBodyOverlay.add(component)
+        }
+        stickyBodyTop = placement?.second ?: 0f
+    }
+
+    private fun bodyStickyAnchor(): Float {
+        val listTop = if (headerMode == "fixed") headerHeight else 0f
+        val headerStickyHeight = if (headerMode == "linked") header.filter {
+            it.sticky && it.layout.mode == "flow" && scrollOffset >= (headerPositions[it.dataId] ?: Float.MAX_VALUE) - navigationBarHeight()
+        }.sumOf { estimatedComponentHeight(it, pagerData.pageViewWidth, pagerData.statusBarHeight).toDouble() }.toFloat() else 0f
+        return max(navigationBarHeight() - listTop, 0f) + headerStickyHeight
     }
 
     private fun rebuildStickyThresholds(components: List<ProtocolComponent>) {
@@ -337,7 +371,10 @@ internal class ProtocolPage : BasePager() {
                 vif({ ctx.phase == ProtocolPagePhase.CONTENT }) {
                     List {
                         attr { flex(1f); showScrollerIndicator(false) }
-                        event { scroll { ctx.scrollOffset = it.offsetY.toFloat() } }
+                        event { scroll {
+                            ctx.scrollOffset = it.offsetY.toFloat()
+                            ctx.updateBodySticky()
+                        } }
                         Refresh {
                             ref { ctx.refreshRef = it }
                             attr {
@@ -356,7 +393,12 @@ internal class ProtocolPage : BasePager() {
                             View { attr { height(ctx.headerHeight) } }
                         }
                         vforLazy({ ctx.bodyComponents }, maxLoadItem = 24) { component, index, _ ->
-                            ProtocolComponentView(component, ctx, index)
+                            if (component.sticky) {
+                                View {
+                                    event { layoutFrameDidChange { frame -> ctx.recordBodyStickyFrame(component.dataId, frame.y, frame.height) } }
+                                    ProtocolComponentView(component, ctx, index)
+                                }
+                            } else ProtocolComponentView(component, ctx, index)
                         }
                         FooterRefresh {
                             ref { ctx.footerRefreshRef = it }
@@ -365,17 +407,10 @@ internal class ProtocolPage : BasePager() {
                             Text { attr { text(if (ctx.loadingMore) "加载更多…" else if (ctx.hasMore && ctx.protocolJson.isEmpty()) "上拉加载更多" else "没有更多了"); fontSize(12f); color(Color(0xFF999999)) } }
                         }
                     }
-                    vif({
-                        firstStickyBodyOffset(
-                            ctx.body, ctx.pagerData.pageViewWidth, ctx.pagerData.statusBarHeight,
-                            if (ctx.headerMode == "linked") ctx.headerHeight else 0f,
-                        )?.let { ctx.scrollOffset >= it } == true
-                    }) {
-                        ctx.body.firstOrNull { it.sticky }?.let { component ->
-                            View {
-                                attr { absolutePosition(top = 0f, left = 0f, right = 0f) }
-                                ProtocolComponentView(component, ctx)
-                            }
+                    vfor({ ctx.stickyBodyOverlay }) { component ->
+                        View {
+                            attr { absolutePosition(top = ctx.stickyBodyTop, left = 0f, right = 0f) }
+                            ProtocolComponentView(component, ctx)
                         }
                     }
                 }

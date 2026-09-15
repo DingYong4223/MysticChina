@@ -7,6 +7,7 @@ import com.tencent.kuikly.core.log.KLog
 internal const val PROTOCOL_PAGE_NAME = "ProtocolPage"
 internal const val PARAM_PROTOCOL_URL = "protocolUrl"
 internal const val PARAM_PROTOCOL_JSON = "protocolJson"
+internal const val PARAM_PROTOCOL_SAMPLE = "protocolSample"
 
 internal enum class ProtocolSection { HEADER, BODY, FOOTER, FLOAT }
 
@@ -174,6 +175,10 @@ private fun parseLayout(json: JSONObject?): ProtocolLayout {
 internal fun protocolPageParams(protocolJson: String): String = JSONObject().apply {
     put(PARAM_PROTOCOL_JSON, protocolJson)
 }.toString()
+
+internal fun resolveProtocolJson(params: JSONObject): String =
+    if (params.optString(PARAM_PROTOCOL_SAMPLE) == "flexbox") FLEXBOX_SAMPLE_PROTOCOL_JSON
+    else params.optString(PARAM_PROTOCOL_JSON).trim()
 
 internal fun JSONArray.objects(): List<JSONObject> = buildList {
     for (index in 0 until length()) optJSONObject(index)?.let(::add)
