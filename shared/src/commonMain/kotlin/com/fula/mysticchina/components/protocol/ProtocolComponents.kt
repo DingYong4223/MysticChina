@@ -10,6 +10,7 @@ import com.fula.mysticchina.sharedcard.ReferenceFlexboxCard
 import com.tencent.kuikly.core.base.Color
 import com.tencent.kuikly.core.base.ViewContainer
 import com.tencent.kuikly.core.base.attr.AccessibilityRole
+import com.tencent.kuikly.core.base.attr.ImageUri
 import com.tencent.kuikly.core.nvi.serialization.json.JSONArray
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import com.tencent.kuikly.core.views.Image
@@ -292,15 +293,13 @@ private fun ViewContainer<*, *>.SampleTextBar(data: JSONObject) {
 }
 
 private fun ViewContainer<*, *>.SampleHeaderOverlay() {
-    View {
-        attr { size(60f, 180f); alignSelfFlexEnd(); allCenter(); touchEnable(false) }
-        Text {
-            attr {
-                text("Overlay")
-                fontSize(12f)
-                color(Color.WHITE)
-                textShadow(0f, 1f, 3f, Color.BLACK)
-            }
+    Image {
+        attr {
+            size(60f, 180f)
+            alignSelfFlexEnd()
+            src(ImageUri.commonAssets("zgj_swing.gif"))
+            resizeContain()
+            touchEnable(false)
         }
     }
 }
