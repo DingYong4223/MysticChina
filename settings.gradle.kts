@@ -21,6 +21,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
         maven {
@@ -35,7 +36,6 @@ dependencyResolutionManagement {
 rootProject.name = "mysticchina"
 include(":androidApp")
 include(":shared")
-include(":sharedCard")
 
 // ── KuiklyUI 源码模块 (提供全平台依赖) ──
 val kuiklyDir = file("../KuiklyUI")

@@ -28,6 +28,7 @@ allprojects {
     }
 
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
         maven {

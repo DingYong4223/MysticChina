@@ -69,7 +69,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":sharedCard"))
+                implementation("com.fula:fula-card:1.0.0")
                 implementation("com.tencent.kuikly-open:core:2.0.0")
                 implementation("com.tencent.kuikly-open:core-annotations:2.0.0")
             }
