@@ -1,13 +1,13 @@
 import SwiftUI
 import UIKit
+import OpenKuiklyIOSRender
 
 // ═══════════════════════════════════════════════════════════
 // 沉浸式容器 — 将 Kuikly 渲染视图延伸到状态栏区域
 // ═══════════════════════════════════════════════════════════
-class ImmersiveContainerVC: UIViewController {
+class ImmersiveContainerVC: UIViewController, KuiklyViewBaseDelegate {
 
-    private var kuiklyVC: UIViewController?
-    private var isKuiklyEmbedded = false
+    private var kuiklyView: KuiklyBaseView?
     private let kuiklyPageName = "MainPage"
 
     override func viewDidLoad() {
@@ -15,29 +15,40 @@ class ImmersiveContainerVC: UIViewController {
         view.backgroundColor = .clear
     }
 
-    // 属性覆盖 — 必须在 viewDidLoad 之前生效
-    override var edgesForExtendedLayout: UIRectEdge { .all }
-    override var extendedLayoutIncludesOpaqueBars: Bool { true }
+    // 布局属性在首次加载视图前由 makeUIViewController 设置
     override var preferredStatusBarStyle: UIStatusBarStyle { .default }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if isKuiklyEmbedded, let vc = kuiklyVC {
-            // 每次布局时更新 Kuikly 视图帧，确保覆盖整个屏幕（含状态栏区域）
-            vc.view.frame = view.bounds
+        if let kuiklyView {
+            kuiklyView.frame = view.bounds
+        } else if view.bounds.width > 0 && view.bounds.height > 0 {
+            let renderView = KuiklyBaseView(frame: view.bounds, pageName: kuiklyPageName,
+                                            pageData: [:], delegate: self, frameworkName: "shared")
+            renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            view.addSubview(renderView)
+            kuiklyView = renderView
         }
     }
 
-    func embedKuiklyPager() {
-        guard let vc = KuiklyPagerManager.shared.startPager(pageName: kuiklyPageName) else { return }
-        kuiklyVC = vc
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        kuiklyView?.viewWillAppear()
+    }
 
-        addChild(vc)
-        vc.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        vc.view.frame = view.bounds  // 初始帧，viewDidLayoutSubviews 会修正
-        view.addSubview(vc.view)
-        vc.didMove(toParent: self)
-        isKuiklyEmbedded = true
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        kuiklyView?.viewDidAppear()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        kuiklyView?.viewWillDisappear()
+        super.viewWillDisappear(animated)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        kuiklyView?.viewDidDisappear()
+        super.viewDidDisappear(animated)
     }
 }
 
@@ -58,7 +69,8 @@ struct KuiklyViewController: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UIViewController {
         let container = ImmersiveContainerVC()
-        container.embedKuiklyPager()
+        container.edgesForExtendedLayout = .all
+        container.extendedLayoutIncludesOpaqueBars = true
         return container
     }
 

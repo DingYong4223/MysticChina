@@ -1,0 +1,23 @@
+PODS:
+  - OpenKuiklyIOSRender (2.27.0)
+  - shared (1.0)
+
+DEPENDENCIES:
+  - OpenKuiklyIOSRender
+  - shared (from `../shared`)
+
+SPEC REPOS:
+  trunk:
+    - OpenKuiklyIOSRender
+
+EXTERNAL SOURCES:
+  shared:
+    :path: "../shared"
+
+SPEC CHECKSUMS:
+  OpenKuiklyIOSRender: bcfc028d5c3e40311db742909d4cf15019b9ce41
+  shared: c85b658cc22717987c2634f2513fb2c04ab1f80b
+
+PODFILE CHECKSUM: da97c3ff35914d86049a205a89351d3de4d7af2c
+
+COCOAPODS: 1.16.2

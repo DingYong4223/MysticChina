@@ -2,7 +2,7 @@ source 'https://cdn.cocoapods.org/'
 
 target 'iosApp' do
   platform :ios, '14.1'
-  pod 'OpenKuiklyIOSRender'
+  pod 'OpenKuiklyIOSRender', :modular_headers => true
   pod 'shared', :path => '../shared'
 end
 
