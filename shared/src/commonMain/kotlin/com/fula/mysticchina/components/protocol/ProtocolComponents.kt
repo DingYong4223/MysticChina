@@ -6,6 +6,7 @@ import com.fula.mysticchina.protocol.ProtocolComponent
 import com.fula.mysticchina.protocol.objects
 import com.fula.mysticchina.protocol.protocolAction
 import com.fula.mysticchina.sharedcard.BigPicShopCard
+import com.fula.mysticchina.sharedcard.ReferenceFlexboxCard
 import com.tencent.kuikly.core.base.Color
 import com.tencent.kuikly.core.base.ViewContainer
 import com.tencent.kuikly.core.base.attr.AccessibilityRole
@@ -44,16 +45,14 @@ internal fun ViewContainer<*, *>.ProtocolComponentView(
                 else ContentCard(component.jsonData, page)
             }
             "common_big_pic_shop_card_v3" to "custom" -> ContentCard(component.jsonData, page)
-            "kflexbox_sailor_c_home_page_feeds_card_golden" to "Flexbox",
-            "kflexbox_sailor_ad_cpm_card_with_single_dish" to "ADFlexbox" -> ContentCard(component.jsonData, page)
             "kflexbox_sailor_c_navigation_bar" to "Flexbox" -> SampleNavigation(component.jsonData, page)
             "native_sailor_c_sample_header_text" to "Native",
             "native_sailor_c_sample_header_overlay" to "Native",
             "native_sailor_c_sample_navigation_placeholder" to "Native" -> SampleTextBar(component.jsonData)
             "native_sailor_c_sample_tabs" to "Native" -> SampleTextBar(component.jsonData)
-            "kflexbox_sailor_mkt_resources_vertical_banner_v2" to "Flexbox",
-            "kflexbox_sailor_mkt_resources_banner" to "Flexbox" -> SampleBanner(component.jsonData)
-            else -> if (component.renderType == "Flexbox" && component.jsonData.optString("title").isNotEmpty())
+            else -> if (component.renderType in listOf("Flexbox", "ADFlexbox") &&
+                ReferenceFlexboxCard(component.componentId, component.jsonData, page.pagerData.pageViewWidth)) Unit
+            else if (component.renderType == "Flexbox" && component.jsonData.optString("title").isNotEmpty())
                 ContentCard(component.jsonData, page)
             else UnsupportedComponent("${component.componentId}/${component.renderType}")
         }
