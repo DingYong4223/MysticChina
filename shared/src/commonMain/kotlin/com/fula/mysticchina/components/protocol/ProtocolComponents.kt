@@ -46,8 +46,8 @@ internal fun ViewContainer<*, *>.ProtocolComponentView(
             }
             "common_big_pic_shop_card_v3" to "custom" -> ContentCard(component.jsonData, page)
             "kflexbox_sailor_c_navigation_bar" to "Flexbox" -> SampleNavigation(component.jsonData, page)
+            "native_sailor_c_sample_header_overlay" to "Native" -> SampleHeaderOverlay()
             "native_sailor_c_sample_header_text" to "Native",
-            "native_sailor_c_sample_header_overlay" to "Native",
             "native_sailor_c_sample_navigation_placeholder" to "Native" -> SampleTextBar(component.jsonData)
             "native_sailor_c_sample_tabs" to "Native" -> SampleTextBar(component.jsonData)
             else -> if (component.renderType in listOf("Flexbox", "ADFlexbox") &&
@@ -76,18 +76,17 @@ internal fun estimatedComponentHeight(
 }
 
 private fun ViewContainer<*, *>.GuideBar(data: JSONObject, page: ProtocolPage) {
+    val background = parseColor(data.optString("stickBgColor"), Color.WHITE)
     View {
         attr {
+            val progress = page.navigationProgress()
             height(52f + page.pagerData.statusBarHeight)
             paddingTop(page.pagerData.statusBarHeight)
             paddingLeft(8f)
             paddingRight(16f)
             flexDirectionRow()
             alignItemsCenter()
-                backgroundColor(parseColor(
-                    data.optString(if (page.scrollOffset > 0f) "stickBgColor" else "unStickBgColor"),
-                    Color.WHITE,
-                ))
+            backgroundColor(background.opacity(progress))
         }
         View {
             attr {
@@ -113,6 +112,7 @@ private fun ViewContainer<*, *>.GuideBar(data: JSONObject, page: ProtocolPage) {
                 fontWeightSemiBold()
                 lines(1)
                 textOverFlowTail()
+                opacity(page.navigationProgress())
             }
         }
     }
@@ -251,10 +251,11 @@ private fun ViewContainer<*, *>.SampleNavigation(data: JSONObject, page: Protoco
     val background = parseColor(data.optString("stickBgColor"), Color.WHITE)
     View {
         attr {
+            val progress = page.navigationProgress()
             height(52f + page.pagerData.statusBarHeight)
             paddingTop(page.pagerData.statusBarHeight)
             paddingLeft(12f)
-            backgroundColor(background.opacity((page.scrollOffset / 52f).coerceIn(0f, 1f)))
+            backgroundColor(background.opacity(progress))
             flexDirectionRow()
             alignItemsCenter()
         }
@@ -269,7 +270,7 @@ private fun ViewContainer<*, *>.SampleNavigation(data: JSONObject, page: Protoco
                 fontSize(17f)
                 color(Color.BLACK)
                 fontWeightSemiBold()
-                opacity((page.scrollOffset / 52f).coerceIn(0f, 1f))
+                opacity(page.navigationProgress())
                 flex(1f)
             }
         }
@@ -286,6 +287,20 @@ private fun ViewContainer<*, *>.SampleTextBar(data: JSONObject) {
             }
         } else {
             Text { attr { text(data.optString("title", "专题")); fontSize(14f); color(Color.BLACK) } }
+        }
+    }
+}
+
+private fun ViewContainer<*, *>.SampleHeaderOverlay() {
+    View {
+        attr { size(60f, 180f); alignSelfFlexEnd(); allCenter(); touchEnable(false) }
+        Text {
+            attr {
+                text("Overlay")
+                fontSize(12f)
+                color(Color.WHITE)
+                textShadow(0f, 1f, 3f, Color.BLACK)
+            }
         }
     }
 }

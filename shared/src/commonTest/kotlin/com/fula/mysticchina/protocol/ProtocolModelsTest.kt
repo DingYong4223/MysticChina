@@ -1,7 +1,10 @@
 package com.fula.mysticchina.protocol
 
 import com.fula.mysticchina.pages.firstStickyBodyOffset
+import com.fula.mysticchina.pages.linkedRefreshPullDistance
+import com.fula.mysticchina.pages.protocolNavigationProgress
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
+import com.tencent.kuikly.core.views.RefreshViewState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -10,6 +13,22 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class ProtocolModelsTest {
+
+    @Test
+    fun `linked refresh indicator follows the pull distance`() {
+        assertEquals(0f, linkedRefreshPullDistance(0f, RefreshViewState.IDLE))
+        assertEquals(12f, linkedRefreshPullDistance(-12f, RefreshViewState.IDLE))
+        assertEquals(64f, linkedRefreshPullDistance(-64f, RefreshViewState.PULLING))
+        assertEquals(48f, linkedRefreshPullDistance(0f, RefreshViewState.REFRESHING))
+    }
+
+    @Test
+    fun `navigation progress follows header collapse or body scroll`() {
+        assertEquals(0f, protocolNavigationProgress(-24f, "linked", 300f, 52f, 76f))
+        assertEquals(0.5f, protocolNavigationProgress(86f, "linked", 300f, 52f, 76f))
+        assertEquals(0.5f, protocolNavigationProgress(26f, "", 0f, 0f, 0f))
+        assertEquals(0f, protocolNavigationProgress(100f, "fixed", 300f, 0f, 76f))
+    }
 
     @Test
     fun `reference modes open distinct protocol layouts`() {

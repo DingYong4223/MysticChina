@@ -59,6 +59,24 @@ internal fun firstStickyBodyOffset(
     }.toFloat()
 }
 
+internal fun protocolNavigationProgress(
+    scrollOffset: Float,
+    headerMode: String,
+    headerHeight: Float,
+    stickyHeaderHeight: Float,
+    navigationHeight: Float,
+): Float {
+    val distance = when {
+        headerHeight <= 0f -> 52f
+        headerMode == "linked" -> max(headerHeight - stickyHeaderHeight - navigationHeight, 1f)
+        else -> return 0f
+    }
+    return (max(scrollOffset, 0f) / distance).coerceIn(0f, 1f)
+}
+
+internal fun linkedRefreshPullDistance(scrollOffset: Float, state: RefreshViewState): Float =
+    max(max(-scrollOffset, 0f), if (state == RefreshViewState.REFRESHING) 48f else 0f)
+
 @Page(PROTOCOL_PAGE_NAME, supportInLocal = true)
 internal class ProtocolPage : BasePager() {
 
@@ -73,6 +91,7 @@ internal class ProtocolPage : BasePager() {
     private var headerHeight by observable(0f)
     internal var scrollOffset by observable(0f)
     private var headerMode by observable("")
+    private var refreshState by observable(RefreshViewState.IDLE)
     private var backgroundColor by observable(Color.WHITE)
     private var backgroundImageUrl by observable("")
     private var backgroundImageHeight by observable(0f)
@@ -247,14 +266,32 @@ internal class ProtocolPage : BasePager() {
 
     private fun headerOffset(component: ProtocolComponent): Float {
         if (headerMode != "linked") return 0f
-        val naturalTop = headerPositions[component.dataId] ?: return -scrollOffset
-        if (!component.sticky) return -scrollOffset
+        val effectiveOffset = max(scrollOffset, 0f)
+        val naturalTop = headerPositions[component.dataId] ?: return -effectiveOffset
+        if (!component.sticky) return -effectiveOffset
         // ponytail: these four bundled renderers have deterministic heights; measure frames before adding dynamic-height cards.
-        val pinnedBefore = header.filter { it.sticky && (headerPositions[it.dataId] ?: 0f) < naturalTop && scrollOffset >= (headerPositions[it.dataId] ?: 0f) }
+        val pinnedBefore = header.filter { it.sticky && (headerPositions[it.dataId] ?: 0f) < naturalTop && effectiveOffset >= (headerPositions[it.dataId] ?: 0f) }
             .sumOf { estimatedComponentHeight(it, pagerData.pageViewWidth, pagerData.statusBarHeight).toDouble() }.toFloat()
-        val navigationBottom = if (floatingComponents.any { it.componentId == "kflexbox_sailor_c_navigation_bar" })
-            pagerData.statusBarHeight + 52f else 0f
-        return max(-scrollOffset, navigationBottom + pinnedBefore - naturalTop)
+        return max(-effectiveOffset, navigationBarHeight() + pinnedBefore - naturalTop)
+    }
+
+    internal fun navigationProgress(): Float {
+        val stickyHeight = header.filter { it.sticky && it.layout.mode == "flow" }
+            .sumOf { estimatedComponentHeight(it, pagerData.pageViewWidth, pagerData.statusBarHeight).toDouble() }.toFloat()
+        return protocolNavigationProgress(
+            scrollOffset,
+            headerMode,
+            headerHeight,
+            stickyHeight,
+            navigationBarHeight(),
+        )
+    }
+
+    private fun navigationBarHeight(): Float {
+        return if (floatingComponents.any {
+                it.componentId == "kflexbox_sailor_c_navigation_bar" ||
+                    it.componentCode == "common_page_guide_bar"
+            }) pagerData.statusBarHeight + 52f else 0f
     }
 
     private fun fail(message: String, replace: Boolean, version: Int) {
@@ -303,8 +340,16 @@ internal class ProtocolPage : BasePager() {
                         event { scroll { ctx.scrollOffset = it.offsetY.toFloat() } }
                         Refresh {
                             ref { ctx.refreshRef = it }
-                            attr { height(48f); allCenter() }
-                            event { refreshStateDidChange { if (it == RefreshViewState.REFRESHING) ctx.loadPage(replace = true) } }
+                            attr {
+                                height(48f)
+                                top(if (ctx.headerMode == "linked") ctx.headerHeight else 0f)
+                                allCenter()
+                                opacity(if (ctx.headerMode == "linked") 0f else 1f)
+                            }
+                            event { refreshStateDidChange {
+                                ctx.refreshState = it
+                                if (it == RefreshViewState.REFRESHING) ctx.loadPage(replace = true)
+                            } }
                             Text { attr { text("下拉刷新"); fontSize(12f); color(Color(0xFF888888)) } }
                         }
                         vif({ ctx.headerMode == "linked" && ctx.headerHeight > 0f }) {
@@ -356,6 +401,26 @@ internal class ProtocolPage : BasePager() {
                             transform(Translate(0f, offsetY = ctx.headerOffset(component)))
                         }
                         ProtocolComponentView(component, ctx)
+                    }
+                }
+            }
+            vif({ ctx.headerMode == "linked" && ctx.phase == ProtocolPagePhase.CONTENT }) {
+                View {
+                    attr {
+                        absolutePosition(top = ctx.topBarHeight() + ctx.headerHeight, left = 0f, right = 0f)
+                        height(linkedRefreshPullDistance(ctx.scrollOffset, ctx.refreshState))
+                        overflow(true)
+                        touchEnable(false)
+                    }
+                    View {
+                        attr {
+                            absolutePosition(top = linkedRefreshPullDistance(ctx.scrollOffset, ctx.refreshState) - 48f,
+                                left = 0f, right = 0f)
+                            height(48f)
+                            allCenter()
+                            touchEnable(false)
+                        }
+                        Text { attr { text("下拉刷新"); fontSize(12f); color(Color(0xFF888888)) } }
                     }
                 }
             }
