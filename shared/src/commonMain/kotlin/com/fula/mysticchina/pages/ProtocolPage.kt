@@ -359,9 +359,9 @@ internal class ProtocolPage : BasePager() {
                 }
             }
             View {
-                attr { absolutePositionAllZero(); touchEnable(false); allCenter() }
+                attr { absolutePositionAllZero(); touchEnable(false) }
                 vif({ ctx.phase == ProtocolPagePhase.LOADING }) {
-                    Text { attr { text("◌"); fontSize(32f); color(Color(0xFF999999)) } }
+                    ProtocolSkeleton(ctx)
                 }
             }
             View {
@@ -499,5 +499,126 @@ private fun com.tencent.kuikly.core.base.ViewContainer<*, *>.PageMessage(message
     View {
         attr { flex(1f); allCenter() }
         Text { attr { text(message); fontSize(14f); color(Color(0xFF777777)) } }
+    }
+}
+
+/**
+ * 首屏协议请求和解析期间展示的全页骨架，视觉结构对齐 LEGO 全页骨架：导航栏、
+ * 顶部快捷入口、Banner、筛选栏和内容卡片。它只在 LOADING 阶段挂载，成功或失败后
+ * 随 phase 响应式移除，不参与真实协议组件布局。
+ */
+private fun com.tencent.kuikly.core.base.ViewContainer<*, *>.ProtocolSkeleton(page: ProtocolPage) {
+    View {
+        attr {
+            absolutePositionAllZero()
+            flexDirectionColumn()
+            paddingTop(page.pagerData.statusBarHeight)
+            backgroundColor(Color(0xFFF5F6FA))
+        }
+
+        // 导航栏占位
+        View {
+            attr { height(52f); paddingLeft(16f); paddingRight(16f); flexDirectionRow(); alignItemsCenter() }
+            View { attr { size(24f, 24f); borderRadius(12f); backgroundColor(Color(0xFFE4E6EC)) } }
+            View {
+                attr { width(120f); height(18f); marginLeft(16f); borderRadius(9f); backgroundColor(Color(0xFFE4E6EC)) }
+            }
+            View {
+                attr { width(24f); height(24f); marginLeft(16f); borderRadius(12f); backgroundColor(Color(0xFFE4E6EC)) }
+            }
+        }
+
+        // 顶部入口占位
+        View {
+            attr {
+                height(106f)
+                paddingLeft(16f)
+                paddingRight(16f)
+                paddingTop(20f)
+                paddingBottom(20f)
+                flexDirectionRow()
+            }
+            repeat(6) { index ->
+                View {
+                    attr {
+                        flex(1f)
+                        height(66f)
+                        if (index < 5) marginRight(12f)
+                        borderRadius(9f)
+                        backgroundColor(Color(0xFFFCFDFF))
+                    }
+                }
+            }
+        }
+
+        // Banner 占位
+        View {
+            attr {
+                height(page.pagerData.pageViewWidth * 0.33f)
+                marginLeft(16f)
+                marginRight(16f)
+                marginBottom(16f)
+                borderRadius(12f)
+                backgroundColor(Color(0xFFFCFDFF))
+            }
+        }
+
+        // 筛选栏占位
+        View {
+            attr {
+                height(58f)
+                paddingLeft(16f)
+                paddingRight(16f)
+                flexDirectionRow()
+                alignItemsCenter()
+                backgroundColor(Color.WHITE)
+            }
+            repeat(4) { index ->
+                View {
+                    attr {
+                        width(if (index == 0) 64f else 76f)
+                        height(34f)
+                        if (index < 3) marginRight(8f)
+                        borderRadius(17f)
+                        backgroundColor(Color(0xFFE9EBF0))
+                    }
+                }
+            }
+        }
+
+        // 内容卡片占位
+        repeat(4) {
+            View {
+                attr {
+                    height(116f)
+                    marginLeft(16f)
+                    marginRight(16f)
+                    marginTop(12f)
+                    padding(all = 10f)
+                    flexDirectionRow()
+                    borderRadius(12f)
+                    backgroundColor(Color.WHITE)
+                }
+                View {
+                    attr {
+                        width(108f)
+                        height(96f)
+                        borderRadius(8f)
+                        backgroundColor(Color(0xFFF7F8FC))
+                    }
+                }
+                View {
+                    attr {
+                        flex(1f)
+                        marginLeft(12f)
+                        paddingTop(8f)
+                        flexDirectionColumn()
+                    }
+                    View { attr { width(132f); height(14f); borderRadius(7f); backgroundColor(Color(0xFFE9EBF0)) } }
+                    View { attr { width(92f); height(12f); marginTop(12f); borderRadius(6f); backgroundColor(Color(0xFFF0F1F5)) } }
+                    View { attr { width(64f); height(12f); marginTop(12f); borderRadius(6f); backgroundColor(Color(0xFFF0F1F5)) } }
+                }
+            }
+        }
     }
 }
