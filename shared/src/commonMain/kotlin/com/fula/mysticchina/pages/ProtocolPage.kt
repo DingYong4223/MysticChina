@@ -252,7 +252,9 @@ internal class ProtocolPage : BasePager() {
         // ponytail: these four bundled renderers have deterministic heights; measure frames before adding dynamic-height cards.
         val pinnedBefore = header.filter { it.sticky && (headerPositions[it.dataId] ?: 0f) < naturalTop && scrollOffset >= (headerPositions[it.dataId] ?: 0f) }
             .sumOf { estimatedComponentHeight(it, pagerData.pageViewWidth, pagerData.statusBarHeight).toDouble() }.toFloat()
-        return max(-scrollOffset, pinnedBefore - naturalTop)
+        val navigationBottom = if (floatingComponents.any { it.componentId == "kflexbox_sailor_c_navigation_bar" })
+            pagerData.statusBarHeight + 52f else 0f
+        return max(-scrollOffset, navigationBottom + pinnedBefore - naturalTop)
     }
 
     private fun fail(message: String, replace: Boolean, version: Int) {
