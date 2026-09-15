@@ -248,12 +248,13 @@ private fun ViewContainer<*, *>.ContentCard(data: JSONObject, page: ProtocolPage
 }
 
 private fun ViewContainer<*, *>.SampleNavigation(data: JSONObject, page: ProtocolPage) {
+    val background = parseColor(data.optString("stickBgColor"), Color.WHITE)
     View {
         attr {
             height(52f + page.pagerData.statusBarHeight)
             paddingTop(page.pagerData.statusBarHeight)
             paddingLeft(12f)
-            backgroundColor(Color.WHITE)
+            backgroundColor(background.opacity((page.scrollOffset / 52f).coerceIn(0f, 1f)))
             flexDirectionRow()
             alignItemsCenter()
         }
@@ -262,7 +263,16 @@ private fun ViewContainer<*, *>.SampleNavigation(data: JSONObject, page: Protoco
             event { click { page.dispatch(ProtocolAction.Back) } }
             Text { attr { text("‹"); fontSize(30f); color(Color.BLACK) } }
         }
-        Text { attr { text(data.optString("title", "LEGO 二级页")); fontSize(17f); color(Color.BLACK); fontWeightSemiBold(); flex(1f) } }
+        Text {
+            attr {
+                text(data.optString("title", "LEGO 二级页"))
+                fontSize(17f)
+                color(Color.BLACK)
+                fontWeightSemiBold()
+                opacity((page.scrollOffset / 52f).coerceIn(0f, 1f))
+                flex(1f)
+            }
+        }
     }
 }
 

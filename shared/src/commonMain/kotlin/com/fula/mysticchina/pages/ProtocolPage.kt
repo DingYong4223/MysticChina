@@ -361,7 +361,11 @@ internal class ProtocolPage : BasePager() {
                 attr { absolutePosition(top = 0f, left = 0f, right = 0f); flexDirectionColumn() }
                 vfor({ ctx.floatingComponents }) { component ->
                     View {
-                        attr { if (component.layout.mode == "overlay") absolutePosition(top = 0f, left = 0f, right = 0f) }
+                        attr {
+                            if (component.layout.mode == "overlay" || component.overlayRole == "TOP_STICKY") {
+                                absolutePosition(top = 0f, left = 0f, right = 0f)
+                            }
+                        }
                         ProtocolComponentView(component, ctx)
                     }
                 }
@@ -378,9 +382,7 @@ internal class ProtocolPage : BasePager() {
         }
     }
 
-    // ponytail: the bundled guide bar is fixed-height; read real overlay bounds when additional top-bar renderers arrive.
-    private fun topBarHeight(): Float = if (floatingComponents.any { it.overlayRole == "TOP_STICKY" })
-        52f + pagerData.statusBarHeight else 0f
+    private fun topBarHeight(): Float = 0f
 
     private companion object {
         val SAFE_PAGE_NAME = Regex("^[A-Za-z][A-Za-z0-9_]{0,63}$")
