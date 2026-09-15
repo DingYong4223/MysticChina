@@ -70,6 +70,10 @@ class MainActivity : AppCompatActivity() {
             override fun e(tag: String, msg: String) { Log.e("Kuikly/$tag", msg) }
         }
 
+        if (KuiklyRenderAdapterManager.krImageAdapter == null) {
+            KuiklyRenderAdapterManager.krImageAdapter = KuiklyImageAdapter(applicationContext)
+        }
+
         // 路由适配器 — 处理 RouterModule.openPage / closePage 的 Android 导航
         // openPage: 开启新 Activity（相当于 push），pageName 作为 Intent extra
         // closePage: finish 当前 Activity（相当于 pop）

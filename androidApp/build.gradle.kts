@@ -43,4 +43,5 @@ dependencies {
     implementation(project(":shared"))
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.core:core-ktx:1.10.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
