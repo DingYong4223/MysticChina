@@ -77,6 +77,13 @@ internal fun protocolNavigationProgress(
 internal fun linkedRefreshPullDistance(scrollOffset: Float, state: RefreshViewState): Float =
     max(max(-scrollOffset, 0f), if (state == RefreshViewState.REFRESHING) 48f else 0f)
 
+internal fun protocolHeaderHeight(
+    hasFlowComponents: Boolean,
+    flowHeight: Float,
+    minContentHeight: Float,
+    statusBarHeight: Float,
+): Float = if (hasFlowComponents || minContentHeight <= 0f) flowHeight else statusBarHeight + minContentHeight
+
 @Page(PROTOCOL_PAGE_NAME, supportInLocal = true)
 internal class ProtocolPage : BasePager() {
 
@@ -104,6 +111,7 @@ internal class ProtocolPage : BasePager() {
     private var body = emptyList<ProtocolComponent>()
     private var footer = emptyList<ProtocolComponent>()
     private var headerPositions = emptyMap<String, Float>()
+    private var headerMinContentHeight = 0f
     private var hasMore = false
     private var nextPage = 0
     private var requestVersion = 0
@@ -217,6 +225,7 @@ internal class ProtocolPage : BasePager() {
         body = result.body
         footer = result.footer
         headerMode = result.headerScrollMode
+        headerMinContentHeight = result.headerMinContentHeight
         if (!backgroundInitialized) {
             backgroundInitialized = true
             backgroundImageUrl = if (result.background?.optString("type") == "image") result.background.optString("image_url") else ""
@@ -295,7 +304,12 @@ internal class ProtocolPage : BasePager() {
                 }
             }
         }
-        headerHeight = offset
+        headerHeight = protocolHeaderHeight(
+            components.any { it.layout.mode == "flow" },
+            offset,
+            headerMinContentHeight,
+            pagerData.statusBarHeight,
+        )
     }
 
     private fun headerOffset(component: ProtocolComponent): Float {

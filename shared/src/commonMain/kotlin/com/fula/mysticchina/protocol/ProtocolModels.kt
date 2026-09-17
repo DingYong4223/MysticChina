@@ -43,6 +43,7 @@ internal data class ProtocolPageData(
     val pageNo: Int,
     val hasMore: Boolean,
     val headerScrollMode: String = "",
+    val headerMinContentHeight: Float = 0f,
     val background: JSONObject? = null,
 ) {
     val isEmpty: Boolean get() = header.isEmpty() && body.isEmpty() && footer.isEmpty() && floating.isEmpty()
@@ -82,11 +83,13 @@ internal fun parseProtocolResponse(root: JSONObject): ProtocolPageData {
     val body = parseSection(bodyModule, ProtocolSection.BODY, seenIds)
     val footer = parseSection(data.optJSONObject("module_footer"), ProtocolSection.FOOTER, seenIds)
     val floating = parseSection(data.optJSONObject("module_float"), ProtocolSection.FLOAT, seenIds)
-    val headerScrollMode = data.optJSONObject("module_header")?.optJSONObject("extra_data")
-        ?.optString("scroll_mode").orEmpty()
+    val headerExtra = data.optJSONObject("module_header")?.optJSONObject("extra_data")
+    val headerScrollMode = headerExtra?.optString("scroll_mode").orEmpty()
+    val headerMinContentHeight = headerExtra?.optInt("min_content_height_dp", 0) ?: 0
     require(header.isEmpty() || headerScrollMode == "fixed" || headerScrollMode == "linked") {
         "Header requires scroll_mode=fixed or linked"
     }
+    require(headerMinContentHeight >= 0) { "min_content_height_dp must be non-negative" }
     var background = data.optJSONObject("extra_data")?.optJSONObject("background")
     if (background != null) {
         val valid = when (background.optString("type")) {
@@ -109,6 +112,7 @@ internal fun parseProtocolResponse(root: JSONObject): ProtocolPageData {
         pageNo = pagination?.optInt("page_no", 0) ?: 0,
         hasMore = pagination?.optBoolean("has_more_page", false) ?: false,
         headerScrollMode = headerScrollMode,
+        headerMinContentHeight = headerMinContentHeight.toFloat(),
         background = background,
     )
 }

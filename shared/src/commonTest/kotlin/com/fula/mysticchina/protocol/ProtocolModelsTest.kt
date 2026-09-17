@@ -2,6 +2,7 @@ package com.fula.mysticchina.protocol
 
 import com.fula.mysticchina.pages.bodyStickyPlacement
 import com.fula.mysticchina.pages.linkedRefreshPullDistance
+import com.fula.mysticchina.pages.protocolHeaderHeight
 import com.fula.mysticchina.pages.protocolNavigationProgress
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
 import com.tencent.kuikly.core.views.RefreshViewState
@@ -57,6 +58,15 @@ class ProtocolModelsTest {
         ))
         assertTrue(pages[8].footer.isNotEmpty())
         assertTrue(pages.all { it.body.isNotEmpty() })
+
+        val doubleTab = LEGO_SAMPLE_MODES.first { it.name == "双Tab页(仿榜单页)" }
+        val doubleTabPage = parseProtocolResponse(JSONObject(doubleTab.protocolJson))
+        assertTrue(doubleTabPage.header.isEmpty())
+        assertEquals(120f, doubleTabPage.headerMinContentHeight)
+        assertFalse(doubleTab.protocolJson.contains("native_sailor_c_sample_navigation_placeholder"))
+        assertEquals(144f, protocolHeaderHeight(false, 0f, doubleTabPage.headerMinContentHeight, 24f))
+        assertEquals(80f, protocolHeaderHeight(true, 80f, doubleTabPage.headerMinContentHeight, 24f))
+        assertEquals(0f, protocolHeaderHeight(false, 0f, 0f, 24f))
     }
 
     @Test
@@ -123,6 +133,12 @@ class ProtocolModelsTest {
             "\"data_id\":\"b\"", "\"data_id\":\"b\",\"layout_info\":{\"layout_mode\":\"overlay\"}",
         )))
         assertTrue(page.body.isEmpty())
+        assertFailsWith<IllegalArgumentException> {
+            parseProtocolResponse(JSONObject(fourSectionJson().replace(
+                "\"scroll_mode\":\"linked\"",
+                "\"scroll_mode\":\"linked\",\"min_content_height_dp\":-1",
+            )))
+        }
     }
 
     private fun fourSectionJson() = """
