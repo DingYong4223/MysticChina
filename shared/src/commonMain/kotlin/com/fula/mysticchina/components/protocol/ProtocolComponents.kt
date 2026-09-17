@@ -50,7 +50,7 @@ internal fun ViewContainer<*, *>.ProtocolComponentView(
             "native_sailor_c_sample_header_overlay" to "Native" -> SampleHeaderOverlay()
             "native_sailor_c_sample_header_text" to "Native",
             "native_sailor_c_sample_navigation_placeholder" to "Native" -> SampleTextBar(component.jsonData)
-            "native_sailor_c_sample_tabs" to "Native" -> SampleTextBar(component.jsonData)
+            "native_sailor_c_sample_tabs" to "Native" -> SampleTextBar(component.jsonData, isTabs = true)
             else -> if (component.renderType in listOf("Flexbox", "ADFlexbox") &&
                 ReferenceFlexboxCard(component.componentId, component.jsonData, page.pagerData.pageViewWidth)) Unit
             else if (component.renderType == "Flexbox" && component.jsonData.optString("title").isNotEmpty())
@@ -278,10 +278,16 @@ private fun ViewContainer<*, *>.SampleNavigation(data: JSONObject, page: Protoco
     }
 }
 
-private fun ViewContainer<*, *>.SampleTextBar(data: JSONObject) {
+private fun ViewContainer<*, *>.SampleTextBar(data: JSONObject, isTabs: Boolean = false) {
     val labels = data.optJSONArray("texts") ?: data.optJSONArray("tabs")
     View {
-        attr { height(52f); backgroundColor(Color.WHITE); flexDirectionRow(); alignItemsCenter(); paddingLeft(12f) }
+        attr {
+            height(52f)
+            backgroundColor(if (isTabs) Color.TRANSPARENT else Color.WHITE)
+            flexDirectionRow()
+            alignItemsCenter()
+            paddingLeft(if (isTabs) 28f else 12f)
+        }
         if (labels != null) {
             for (i in 0 until labels.length()) {
                 Text { attr { text(labels.optString(i).orEmpty()); fontSize(14f); color(Color.BLACK); marginRight(18f) } }
