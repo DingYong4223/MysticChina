@@ -286,7 +286,7 @@ private fun ViewContainer<*, *>.SampleTextBar(data: JSONObject, isTabs: Boolean 
             backgroundColor(if (isTabs) Color.TRANSPARENT else Color.WHITE)
             flexDirectionRow()
             alignItemsCenter()
-            paddingLeft(if (isTabs) 28f else 12f)
+            paddingLeft(if (isTabs) 78f else 12f)
         }
         if (labels != null) {
             for (i in 0 until labels.length()) {
