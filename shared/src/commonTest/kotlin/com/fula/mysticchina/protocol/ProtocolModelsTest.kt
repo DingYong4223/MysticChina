@@ -2,6 +2,7 @@ package com.fula.mysticchina.protocol
 
 import com.fula.mysticchina.pages.bodyStickyPlacement
 import com.fula.mysticchina.pages.linkedRefreshPullDistance
+import com.fula.mysticchina.pages.protocolFloatTopInset
 import com.fula.mysticchina.pages.protocolHeaderHeight
 import com.fula.mysticchina.pages.protocolNavigationProgress
 import com.tencent.kuikly.core.nvi.serialization.json.JSONObject
@@ -67,6 +68,8 @@ class ProtocolModelsTest {
         assertEquals(144f, protocolHeaderHeight(false, 0f, doubleTabPage.headerMinContentHeight, 24f))
         assertEquals(80f, protocolHeaderHeight(true, 80f, doubleTabPage.headerMinContentHeight, 24f))
         assertEquals(0f, protocolHeaderHeight(false, 0f, 0f, 24f))
+        assertEquals(0f, protocolFloatTopInset(doubleTabPage.floating[0], 24f))
+        assertEquals(24f, protocolFloatTopInset(doubleTabPage.floating[1], 24f))
     }
 
     @Test

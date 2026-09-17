@@ -84,6 +84,11 @@ internal fun protocolHeaderHeight(
     statusBarHeight: Float,
 ): Float = if (hasFlowComponents || minContentHeight <= 0f) flowHeight else statusBarHeight + minContentHeight
 
+internal fun protocolFloatTopInset(component: ProtocolComponent, statusBarHeight: Float): Float =
+    if (component.componentId == "kflexbox_sailor_c_navigation_bar" ||
+        component.componentCode == "common_page_guide_bar"
+    ) 0f else statusBarHeight
+
 @Page(PROTOCOL_PAGE_NAME, supportInLocal = true)
 internal class ProtocolPage : BasePager() {
 
@@ -478,6 +483,7 @@ internal class ProtocolPage : BasePager() {
                 vfor({ ctx.floatingComponents }) { component ->
                     View {
                         attr {
+                            paddingTop(protocolFloatTopInset(component, ctx.pagerData.statusBarHeight))
                             if (component.layout.mode == "overlay" || component.overlayRole == "TOP_STICKY") {
                                 absolutePosition(top = 0f, left = 0f, right = 0f)
                             }
