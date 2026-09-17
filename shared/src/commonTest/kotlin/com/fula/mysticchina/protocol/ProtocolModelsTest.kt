@@ -63,9 +63,9 @@ class ProtocolModelsTest {
         val doubleTab = LEGO_SAMPLE_MODES.first { it.name == "双Tab页(仿榜单页)" }
         val doubleTabPage = parseProtocolResponse(JSONObject(doubleTab.protocolJson))
         assertTrue(doubleTabPage.header.isEmpty())
-        assertEquals(120f, doubleTabPage.headerMinContentHeight)
+        assertEquals(48f, doubleTabPage.headerMinContentHeight)
         assertFalse(doubleTab.protocolJson.contains("native_sailor_c_sample_navigation_placeholder"))
-        assertEquals(144f, protocolHeaderHeight(false, 0f, doubleTabPage.headerMinContentHeight, 24f))
+        assertEquals(72f, protocolHeaderHeight(false, 0f, doubleTabPage.headerMinContentHeight, 24f))
         assertEquals(80f, protocolHeaderHeight(true, 80f, doubleTabPage.headerMinContentHeight, 24f))
         assertEquals(0f, protocolHeaderHeight(false, 0f, 0f, 24f))
         assertEquals(0f, protocolFloatTopInset(doubleTabPage.floating[0], 24f))
