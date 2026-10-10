@@ -1,0 +1,67 @@
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "extra_data": {
+      "enabled_pullrefresh": false,
+      "background": {
+        "type": "color",
+        "color": "#E8F0F8"
+      }
+    },
+    "module_header": {
+      "extra_data": {
+        "scroll_mode": "fixed"
+      },
+      "component_list": [
+        {
+          "data_id": "learn:header",
+          "component_id": "fula_merchant_text_card",
+          "component_properties": {
+            "fitsSystemWindows": true
+          },
+          "json_data": {
+            "title": "神秘中国",
+            "title_size": 18
+          }
+        }
+      ]
+    },
+    "module_body": {
+      "component_list": [
+        {
+          "data_id": "learn:intro",
+          "component_id": "fula_merchant_text_card",
+          "component_properties": {},
+          "json_data": {
+            "title": "学习",
+            "text": "观察笔顺，跟随提示完成文字书写练习。",
+            "title_size": 24
+          }
+        },
+        {
+          "data_id": "learn:guide",
+          "component_id": "fula_merchant_text_card",
+          "component_properties": {},
+          "json_data": {
+            "title": "练习方法",
+            "text": "进入游戏后，按照页面提示书写汉字；游戏保留原有的笔顺演示、书写测验和练习流程。"
+          }
+        },
+        {
+          "data_id": "learn:hanzi",
+          "component_id": "fula_merchant_entry_card",
+          "component_properties": {},
+          "json_data": {
+            "title": "文字书写游戏",
+            "subtitle": "汉字练习 · 笔顺演示 · 书写测验",
+            "bold": true,
+            "height": 92,
+            "clickable": true,
+            "pageID": "mysticchina_hanzi"
+          }
+        }
+      ]
+    }
+  }
+}

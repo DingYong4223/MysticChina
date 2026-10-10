@@ -17,11 +17,6 @@ repositories {
     }
 }
 
-// ── 检测是否使用 KuiklyUI 源码构建 ──
-// settings.full.gradle.kts 中 include 了 KuiklyUI 源码项目 (:core-annotations 等)，
-// 此时可用本地源码替代已发布 AAR/Framework，支持 macOS 等未发布平台
-val isSourceBuild = rootProject.findProject(":core-annotations") != null
-
 kotlin {
     // ── Android ──────────────────────────────────────────
     androidTarget {
@@ -37,16 +32,12 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    // ── macOS — 仅在源码构建模式下启用 ──────────────────
-    // 已发布的 com.tencent.kuikly-open:* 不含 macOS artifact，
-    // 必须使用 KuiklyUI 源码构建 (settings.full.gradle.kts)
-    if (isSourceBuild) {
-        macosX64()
-        macosArm64()
+    // KuiklyUI 2.28.0 provides macOS in both source and Maven modes.
+    macosX64()
+    macosArm64()
 
-        // ── JS / Web — 源码构建时可选启用 ──────────────────
-        // js(IR) { browser(); binaries.executable() }
-    }
+    // ── JS / Web — 源码构建时可选启用 ──────────────────
+    // js(IR) { browser(); binaries.executable() }
 
     // ── CocoaPods ────────────────────────────────────────
     cocoapods {
@@ -54,9 +45,7 @@ kotlin {
         homepage = "https://github.com/DingYong4223/MysticChina"
         version = "1.0"
         ios.deploymentTarget = "14.1"
-        if (isSourceBuild) {
-            osx.deploymentTarget = "10.13"
-        }
+        osx.deploymentTarget = "10.13"
         framework {
             baseName = "shared"
             isStatic = true
@@ -69,9 +58,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.fula:fula-card:1.0.0")
+                // 源码联调由 debug_aar_config.json 替换同一 Maven 依赖。
+                implementation("com.fula:fula-page:1.0.0")
                 implementation("com.tencent.kuikly-open:core:2.0.0")
                 implementation("com.tencent.kuikly-open:core-annotations:2.0.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-KBA-001")
             }
         }
         val commonTest by getting {
@@ -84,6 +75,9 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api("com.tencent.kuikly-open:core-render-android:2.0.0")
+                implementation("com.tencent.kuiklyx-open:coroutines:1.5.0-2.0.21") {
+                    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+                }
             }
         }
 
@@ -96,6 +90,11 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation("com.tencent.kuiklyx-open:coroutines:1.5.0-2.0.21") {
+                    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+                }
+            }
         }
 
         // appleMain: shared between iOS & macOS (always declared, used by targets that exist)
@@ -104,14 +103,18 @@ kotlin {
             iosMain.dependsOn(this)
         }
 
-        // macOS source sets — 仅源码构建模式下存在
-        if (isSourceBuild) {
-            val macosX64Main by getting {
-                dependsOn(appleMain)
-            }
-            val macosArm64Main by getting {
-                dependsOn(appleMain)
-            }
+        // macOS source sets
+        val macosX64Main by getting {
+            dependsOn(appleMain)
+        }
+        val macosArm64Main by getting {
+            dependsOn(appleMain)
+        }
+        val macosMain by creating {
+            dependsOn(appleMain)
+            macosX64Main.dependsOn(this)
+            macosArm64Main.dependsOn(this)
+            dependencies { implementation("org.jetbrains.kotlinx:atomicfu:0.23.2") }
         }
 
         // JS / Web source set — 需启用 js(IR) target 后取消注释
@@ -127,14 +130,12 @@ kotlin {
             iosArm64Test.dependsOn(this)
             iosSimulatorArm64Test.dependsOn(this)
         }
-        if (isSourceBuild) {
-            val macosX64Test by getting
-            val macosArm64Test by getting
-            val macosTest by creating {
-                dependsOn(commonTest)
-                macosX64Test.dependsOn(this)
-                macosArm64Test.dependsOn(this)
-            }
+        val macosX64Test by getting
+        val macosArm64Test by getting
+        val macosTest by creating {
+            dependsOn(commonTest)
+            macosX64Test.dependsOn(this)
+            macosArm64Test.dependsOn(this)
         }
     }
 
@@ -150,16 +151,26 @@ kotlin {
 }
 
 // ── KSP 配置 ─────────────────────────────────────────────
+// shared 是 Kuikly 主模块，负责汇总自己与子模块（:fula-page，moduleId = fulaPage）的 @Page 注册。
+// fula-page 声明为子模块（isMainModule = false），自身不生成
+// com.tencent.kuikly.core.android.KuiklyCoreEntry，只生成 KuiklyCoreEntry_fulaPage 与
+// KuiklyPages_fulaPage；主模块汇总后，子模块的 ProtocolPage 才会被注册。
+// 详见 KuiklyUI docs/DevGuide/multi_module.md。
+ksp {
+    arg("enableMultiModule", "true")
+    arg("isMainModule", "true")
+    arg("moduleId", "shared")
+    arg("subModules", "fulaPage")
+}
+
 dependencies {
     compileOnly("com.tencent.kuikly-open:core-ksp:2.0.0") {
         add("kspAndroid", this)
         add("kspIosArm64", this)
         add("kspIosX64", this)
         add("kspIosSimulatorArm64", this)
-        if (isSourceBuild) {
-            add("kspMacosArm64", this)
-            add("kspMacosX64", this)
-        }
+        add("kspMacosArm64", this)
+        add("kspMacosX64", this)
     }
 }
 

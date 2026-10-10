@@ -8,6 +8,7 @@ plugins {
     kotlin("android").version("2.1.21").apply(false)
     kotlin("multiplatform").version("2.1.21").apply(false)
     id("com.google.devtools.ksp").version("2.1.21-2.0.1").apply(false)
+    id("com.squareup.wire").version("5.5.1").apply(false)
 }
 
 buildscript {
@@ -23,6 +24,13 @@ buildscript {
 }
 
 allprojects {
+    if (path in listOf(":core", ":core-annotations")) {
+        plugins.withId("org.jetbrains.kotlin.native.cocoapods") {
+            val kotlin = extensions.getByType<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension>()
+            (kotlin as org.gradle.api.plugins.ExtensionAware).extensions
+                .getByType<org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension>().noPodspec()
+        }
+    }
     if (version == Project.DEFAULT_VERSION) {
         version = "1.0.0"
     }
@@ -33,19 +41,6 @@ allprojects {
         mavenCentral()
         maven {
             url = uri("https://mirrors.tencent.com/nexus/repository/maven-tencent/")
-        }
-    }
-    configurations.all {
-        resolutionStrategy.dependencySubstitution {
-            substitute(module("com.tencent.kuikly-open:core"))
-                .using(project(":core"))
-                .because("Use local KuiklyUI source for all-platform support")
-            substitute(module("com.tencent.kuikly-open:core-annotations"))
-                .using(project(":core-annotations"))
-            substitute(module("com.tencent.kuikly-open:core-ksp"))
-                .using(project(":core-ksp"))
-            substitute(module("com.tencent.kuikly-open:core-render-android"))
-                .using(project(":core-render-android"))
         }
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {

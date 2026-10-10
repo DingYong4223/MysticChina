@@ -1,0 +1,56 @@
+import groovy.json.JsonSlurper
+
+def configFile = file('debug_aar_config.json')
+def config = configFile.isFile() ? new JsonSlurper().parse(configFile) : [debug: false]
+def modules = []
+[config, config.kuiklyui].findAll { it != null }.each { group ->
+    if (!(group.debug instanceof Boolean)) {
+        throw new GradleException('debug_aar_config.json: debug must be a boolean')
+    }
+    if (group.debug) {
+        if (!(group.modules instanceof List) || group.modules.isEmpty()) {
+            throw new GradleException('debug_aar_config.json: modules must be a nonempty array')
+        }
+        modules.addAll(group.modules)
+    }
+}
+def kuiklyVersion = config.kuiklyui?.containsKey('published_version') ?
+    config.kuiklyui.published_version : '2.28.0-2.1.21'
+if (!(kuiklyVersion instanceof String) || kuiklyVersion.isBlank()) {
+    throw new GradleException('debug_aar_config.json: published_version must be a nonempty string')
+}
+
+modules.each { entry ->
+    if (!(entry.module_name instanceof String) || !entry.module_name.startsWith(':') ||
+        !(entry.source_dir instanceof String) || entry.source_dir.isBlank() ||
+        !(entry.dependence_name instanceof String) || !(entry.dependence_name ==~ /[^:]+:[^:]+/)) {
+        throw new GradleException("Invalid local dependency entry: $entry")
+    }
+    def sourceDir = file(entry.source_dir)
+    def buildFile = entry.build_file ?: 'build.gradle.kts'
+    if (!(buildFile instanceof String) || !new File(sourceDir, buildFile).isFile()) {
+        throw new GradleException("Local dependency source not found: $sourceDir")
+    }
+    include(entry.module_name)
+    project(entry.module_name).projectDir = sourceDir
+    project(entry.module_name).buildFileName = buildFile
+    println("[debug-aar] ${entry.dependence_name} -> ${sourceDir}")
+}
+
+gradle.beforeProject { target ->
+    target.configurations.configureEach { configuration ->
+        if (kuiklyVersion) {
+            configuration.resolutionStrategy.eachDependency { dependency ->
+                if (dependency.requested.group == 'com.tencent.kuikly-open' &&
+                    dependency.requested.name in ['core', 'core-annotations', 'core-ksp', 'core-render-android']) {
+                    dependency.useVersion(kuiklyVersion)
+                }
+            }
+        }
+        configuration.resolutionStrategy.dependencySubstitution {
+            modules.each { entry ->
+                substitute(module(entry.dependence_name)).using(project(entry.module_name))
+            }
+        }
+    }
+}

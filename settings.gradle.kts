@@ -37,32 +37,4 @@ rootProject.name = "mysticchina"
 include(":androidApp")
 include(":shared")
 
-// ── KuiklyUI 源码模块 (提供全平台依赖) ──
-val kuiklyDir = file("../KuiklyUI")
-val commonBuildFile = "build.2.1.21.gradle.kts"
-val coreBuildFile = "build.2.1.21.gradle.kts"
-
-// :core 和 :core-annotations 使用 KuiklyUI 提供的 Kotlin 2.1.21 构建脚本
-include(":core")
-project(":core").apply {
-    projectDir = File(kuiklyDir, "core")
-    buildFileName = coreBuildFile
-}
-
-include(":core-annotations")
-project(":core-annotations").apply {
-    projectDir = File(kuiklyDir, "core-annotations")
-    buildFileName = coreBuildFile
-}
-
-include(":core-ksp")
-project(":core-ksp").apply {
-    projectDir = File(kuiklyDir, "core-ksp")
-    buildFileName = commonBuildFile
-}
-
-include(":core-render-android")
-project(":core-render-android").apply {
-    projectDir = File(kuiklyDir, "core-render-android")
-    buildFileName = commonBuildFile
-}
+apply(from = "debug_aar.gradle")

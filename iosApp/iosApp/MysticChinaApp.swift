@@ -1,5 +1,7 @@
 import SwiftUI
 import UIKit
+import shared
+import WebKit
 import OpenKuiklyIOSRender
 
 private final class MysticChinaImageLoader: NSObject, KuiklyRenderComponentExpandProtocol {
@@ -49,8 +51,7 @@ class ImmersiveContainerVC: UIViewController, KuiklyViewBaseDelegate, KRRouterPr
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let topInset = kuiklyPageName == "HomePage" ? view.safeAreaInsets.top : 0
-        let contentFrame = view.bounds.inset(by: UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0))
+        let contentFrame = view.bounds
         if let kuiklyView {
             kuiklyView.frame = contentFrame
         } else if contentFrame.width > 0 && contentFrame.height > 0 {
@@ -84,7 +85,7 @@ class ImmersiveContainerVC: UIViewController, KuiklyViewBaseDelegate, KRRouterPr
 
     func openPage(withName pageName: String, pageData: [AnyHashable: Any]?, controller: UIViewController) {
         let next = ImmersiveContainerVC()
-        next.kuiklyPageName = pageName
+        next.kuiklyPageName = App.shared.resolvePageName(pageName: pageName, pageID: pageData?["pageID"] as? String ?? "")
         next.kuiklyPageData = pageData ?? [:]
         next.edgesForExtendedLayout = .all
         next.extendedLayoutIncludesOpaqueBars = true
@@ -102,7 +103,7 @@ class ImmersiveContainerVC: UIViewController, KuiklyViewBaseDelegate, KRRouterPr
 // SwiftUI 入口
 // ═══════════════════════════════════════════════════════════
 @main
-struct MysticChinaApp: App {
+struct MysticChinaApp: SwiftUI.App {
     var body: some Scene {
         WindowGroup {
             KuiklyViewController()
@@ -125,5 +126,41 @@ struct KuiklyViewController: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    }
+}
+
+@objc(HanziWebView)
+final class HanziWebView: UIView, KuiklyRenderViewExportProtocol {
+    private let webView = WKWebView(frame: .zero)
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        webView.isOpaque = false
+        webView.backgroundColor = .clear
+        addSubview(webView)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        webView.frame = bounds
+    }
+
+    func hrv_setProp(withKey propKey: String, propValue: Any) {
+        if propKey != "src" {
+            _ = css_setProp(withKey: propKey, value: propValue)
+            return
+        }
+        guard let filename = propValue as? String,
+              !filename.contains("/"), !filename.contains(".."),
+              let root = Bundle.main.resourceURL?.appendingPathComponent("hanzi"),
+              FileManager.default.fileExists(atPath: root.appendingPathComponent(filename).path) else { return }
+        webView.loadFileURL(root.appendingPathComponent(filename), allowingReadAccessTo: root)
+    }
+
+    override func hrv_removeFromSuperview() {
+        webView.stopLoading()
+        removeFromSuperview()
     }
 }

@@ -4,21 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
-import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.fula.mysticchina.android.view.VideoRenderViewImpl
 import com.fula.mysticchina.android.view.HanziWebViewImpl
 import android.widget.FrameLayout
-import com.tencent.kuikly.core.render.android.IKuiklyRenderContext
 import com.tencent.kuikly.core.render.android.IKuiklyRenderExport
 import com.tencent.kuikly.core.render.android.adapter.IKRLogAdapter
 import com.tencent.kuikly.core.render.android.adapter.IKRRouterAdapter
@@ -27,29 +20,25 @@ import com.tencent.kuikly.core.render.android.context.KuiklyRenderCoreExecuteMod
 import com.tencent.kuikly.core.render.android.exception.ErrorReason
 import com.tencent.kuikly.core.render.android.expand.KuiklyRenderViewBaseDelegator
 import com.tencent.kuikly.core.render.android.expand.KuiklyRenderViewBaseDelegatorDelegate
-import com.tencent.kuikly.core.render.android.export.IKuiklyRenderModuleExport
-import com.tencent.kuikly.core.render.android.export.KuiklyRenderCallback
 import com.tencent.kuikly.core.render.android.performace.KRMonitorType
 import com.tencent.kuikly.core.render.android.performace.KRPerformanceData
 import com.tencent.kuikly.core.render.android.performace.launch.KRLaunchData
-import com.fula.mysticchina.module.GalleryModule
+import com.fula.mysticchina.App
+import com.fula.mysticchina.data.MockAssets
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var containerView: FrameLayout
     private lateinit var delegator: KuiklyRenderViewBaseDelegator
-    private var pendingCallback: KuiklyRenderCallback? = null
 
     companion object {
-        private const val TAG = "YijianMain"
-        private const val REQUEST_CODE_PICK_VIDEO = 1001
+        private const val TAG = "MysticChinaMain"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MockAssets.initialize(applicationContext)
 
         // ── 沉浸式状态栏 ──────────────────────────────────────
         // 内容延伸到状态栏和导航栏区域，由 Kuikly 页面自行控制 padding
@@ -81,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             KuiklyRenderAdapterManager.krRouterAdapter = object : IKRRouterAdapter {
                 override fun openPage(context: Context, pageName: String, pageData: JSONObject) {
                     val intent = Intent(context, MainActivity::class.java).apply {
-                        putExtra("pageName", pageName)
+                        putExtra("pageName", App.resolvePageName(pageName, pageData.optString("pageID")))
                         putExtra("pageData", pageData.toString())
                     }
                     context.startActivity(intent)
@@ -99,14 +88,9 @@ class MainActivity : AppCompatActivity() {
         // 标准委托模式：自动注册所有内置 native view 工厂 + module
         delegator = KuiklyRenderViewBaseDelegator(object : KuiklyRenderViewBaseDelegatorDelegate {
             override fun registerExternalRenderView(export: IKuiklyRenderExport) {
-                export.renderViewExport("VideoRenderView", { VideoRenderViewImpl(it) }, null)
                 export.renderViewExport("HanziWebView", { HanziWebViewImpl(it) }, null)
             }
-            override fun registerExternalModule(export: IKuiklyRenderExport) {
-                export.moduleExport(GalleryModule.MODULE_NAME) {
-                    GalleryModuleExport()
-                }
-            }
+            override fun registerExternalModule(export: IKuiklyRenderExport) {}
             override fun registerTDFModule(export: IKuiklyRenderExport) {}
             override fun registerViewExternalPropHandler(export: IKuiklyRenderExport) {}
             override fun coreExecuteModeX() = KuiklyRenderCoreExecuteModeBase.JVM
@@ -131,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             override fun debugLogEnable() = true
         })
 
-        val pageName = intent?.getStringExtra("pageName") ?: "HomePage"
+        val pageName = intent?.getStringExtra("pageName") ?: App.START_PAGE
         val pageDataStr = intent?.getStringExtra("pageData") ?: "{}"
         val pageData: Map<String, Any> = try {
             val json = JSONObject(pageDataStr)
@@ -140,56 +124,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onAttach pageName='$pageName'")
         // contextCode: JVM 模式传 ""；size: null 让框架自行测量
         delegator.onAttach(containerView, "", pageName, pageData, null, null)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_CODE_PICK_VIDEO) return
-        val cb = pendingCallback ?: return
-        pendingCallback = null
-        if (resultCode != RESULT_OK || data?.data == null) {
-            cb.invoke("""{"cancelled":true}""")
-            return
-        }
-        try {
-            val uri: Uri = data.data!!
-            val fileName = getFileName(uri) ?: "video_${System.currentTimeMillis()}.mp4"
-            val cacheFile = File(cacheDir, fileName)
-            contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(cacheFile).use { output -> input.copyTo(output) }
-            }
-            cb.invoke("""{"path":"${cacheFile.absolutePath}","name":"$fileName","size":${cacheFile.length()}}""")
-        } catch (e: Exception) {
-            cb.invoke("""{"cancelled":true,"error":"${e.message}"}""")
-        }
-    }
-
-    private fun getFileName(uri: Uri): String? {
-        var name: String? = null
-        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (idx >= 0) name = cursor.getString(idx)
-            }
-        }
-        return name
-    }
-
-    /** GalleryModule 的 Android 实现 */
-    inner class GalleryModuleExport : IKuiklyRenderModuleExport {
-        override var kuiklyRenderContext: IKuiklyRenderContext? = null
-        override val activity: Activity? get() = this@MainActivity
-
-        override fun call(method: String, params: String?, callback: KuiklyRenderCallback?): Any? {
-            if (method != GalleryModule.METHOD_PICK_VIDEO) return null
-            pendingCallback = callback
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "video/*"
-            }
-            startActivityForResult(intent, REQUEST_CODE_PICK_VIDEO)
-            return null
-        }
     }
 
     override fun onResume() { super.onResume(); delegator.onResume() }

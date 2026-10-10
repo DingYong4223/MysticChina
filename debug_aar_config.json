@@ -1,0 +1,50 @@
+{
+  "debug": true,
+  "modules": [
+    {
+      "module_name": ":fula-component",
+      "source_dir": "../FulaCard/fula-component",
+      "dependence_name": "com.fula:fula-component"
+    },
+    {
+      "module_name": ":fula-card",
+      "source_dir": "../FulaCard/fula-card",
+      "dependence_name": "com.fula:fula-card"
+    },
+    {
+      "module_name": ":fula-page",
+      "source_dir": "../FulaCard/fula-page",
+      "dependence_name": "com.fula:fula-page"
+    }
+  ],
+  "kuiklyui": {
+    "debug": true,
+    "published_version": "2.28.0-2.1.21",
+    "modules": [
+      {
+        "module_name": ":core",
+        "source_dir": "../KuiklyUI/core",
+        "dependence_name": "com.tencent.kuikly-open:core",
+        "build_file": "build.2.1.21.gradle.kts"
+      },
+      {
+        "module_name": ":core-annotations",
+        "source_dir": "../KuiklyUI/core-annotations",
+        "dependence_name": "com.tencent.kuikly-open:core-annotations",
+        "build_file": "build.2.1.21.gradle.kts"
+      },
+      {
+        "module_name": ":core-ksp",
+        "source_dir": "../KuiklyUI/core-ksp",
+        "dependence_name": "com.tencent.kuikly-open:core-ksp",
+        "build_file": "build.2.1.21.gradle.kts"
+      },
+      {
+        "module_name": ":core-render-android",
+        "source_dir": "../KuiklyUI/core-render-android",
+        "dependence_name": "com.tencent.kuikly-open:core-render-android",
+        "build_file": "build.2.1.21.gradle.kts"
+      }
+    ]
+  }
+}
