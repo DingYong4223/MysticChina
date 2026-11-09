@@ -25,6 +25,7 @@ $RECYCLE.BIN/
 *.ipr
 *.iws
 out/
+tmp/
 
 # VS Code
 .vscode/

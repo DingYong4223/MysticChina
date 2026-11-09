@@ -1,0 +1,357 @@
+{
+  "provider": "KeetAI image MCP",
+  "model": "gpt-image-2",
+  "quality": "auto",
+  "created_date": "2026-11-09",
+  "layout": "2 columns × 3 rows; 6 principal square frames per chapter. Some frames use composite vignettes to condense events. Narration is HTML.",
+  "adaptation": "Original bilingual abridgements; source Chinese novels linked per chapter. AI-assisted illustrations.",
+  "output_note": "Some MCP replies timed out while their files completed locally. Those completed PNG files were inspected and reused; no successful image was regenerated.",
+  "boards": [
+    {
+      "key": "journey-01",
+      "book": "西游记",
+      "chapter": 1,
+      "original_title": "灵根育孕源流出　心性修持大道生",
+      "source_url": "https://zh.wikisource.org/wiki/%E8%A5%BF%E9%81%8A%E8%A8%98%2F%E7%AC%AC001%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218254683351000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/journey-01.jpg",
+      "generation_key": "journey-01",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "石猴出世、水帘洞、求道得名；无紧箍或取经同伴。"
+    },
+    {
+      "key": "journey-02",
+      "book": "西游记",
+      "chapter": 2,
+      "original_title": "悟彻菩提真妙理　断魔归本合元神",
+      "source_url": "https://zh.wikisource.org/wiki/%E8%A5%BF%E9%81%8A%E8%A8%98%2F%E7%AC%AC002%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219494777478000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/journey-02.jpg",
+      "generation_key": "journey-02-fixed",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "已修正示范变化为松树，师门同学为人类。"
+    },
+    {
+      "key": "journey-03",
+      "book": "西游记",
+      "chapter": 3,
+      "original_title": "四海千山皆拱伏　九幽十类尽除名",
+      "source_url": "https://zh.wikisource.org/wiki/%E8%A5%BF%E9%81%8A%E8%A8%98%2F%E7%AC%AC003%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219244713258000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/journey-03.jpg",
+      "generation_key": "journey-03-fixed",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "已修正花果山老猴；本回才取得金箍棒与披挂。"
+    },
+    {
+      "key": "romance-01",
+      "book": "三国演义",
+      "chapter": 1,
+      "original_title": "宴桃园豪杰三结义　斩黄巾英雄首立功",
+      "source_url": "https://zh.wikisource.org/wiki/%E4%B8%89%E5%9C%8B%E6%BC%94%E7%BE%A9%2F%E7%AC%AC001%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218609557577000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/romance-01.jpg",
+      "generation_key": "romance-01",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "刘关张三人形象区分，桃园结义与初战。"
+    },
+    {
+      "key": "romance-02",
+      "book": "三国演义",
+      "chapter": 2,
+      "original_title": "张翼德怒鞭督邮　何国舅谋诛宦竖",
+      "source_url": "https://zh.wikisource.org/wiki/%E4%B8%89%E5%9C%8B%E6%BC%94%E7%BE%A9%2F%E7%AC%AC002%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219105043772000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/romance-02.jpg",
+      "generation_key": "romance-02",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "督邮冲突和宫廷争权；无血腥伤口。"
+    },
+    {
+      "key": "romance-03",
+      "book": "三国演义",
+      "chapter": 3,
+      "original_title": "议温明董卓叱丁原　馈金珠李肃说吕布",
+      "source_url": "https://zh.wikisource.org/wiki/%E4%B8%89%E5%9C%8B%E6%BC%94%E7%BE%A9%2F%E7%AC%AC003%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219901988165000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/romance-03.jpg",
+      "generation_key": "romance-03-fixed",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "止于董卓袁绍对剑；已移除宴会背景误出现的刘关张。"
+    },
+    {
+      "key": "water-01",
+      "book": "水浒传",
+      "chapter": 1,
+      "original_title": "张天师祈禳瘟疫　洪太尉误走妖魔",
+      "source_url": "https://zh.wikisource.org/wiki/%E6%B0%B4%E6%BB%B8%E5%82%B3_(100%E5%9B%9E%E6%9C%AC)%2F%E7%AC%AC001%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218370983583000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/water-01.jpg",
+      "generation_key": "water-01",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "道观、洪信与妖魔走脱；宗教神话语境。"
+    },
+    {
+      "key": "water-02",
+      "book": "水浒传",
+      "chapter": 2,
+      "original_title": "王教头私走延安府　九纹龙大闹史家村",
+      "source_url": "https://zh.wikisource.org/wiki/%E6%B0%B4%E6%BB%B8%E5%82%B3_(100%E5%9B%9E%E6%9C%AC)%2F%E7%AC%AC002%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219747451597000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/water-02.jpg",
+      "generation_key": "water-02",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "王进携母、教史进；止于中秋宴席被官兵包围。"
+    },
+    {
+      "key": "water-03",
+      "book": "水浒传",
+      "chapter": 3,
+      "original_title": "史大郎夜走华阴县　鲁提辖拳打镇关西",
+      "source_url": "https://zh.wikisource.org/wiki/%E6%B0%B4%E6%BB%B8%E5%82%B3_(100%E5%9B%9E%E6%9C%AC)%2F%E7%AC%AC003%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219604769963000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/water-03.jpg",
+      "generation_key": "water-03",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "焚庄突围开始；鲁达仍有发，暴力不表现血腥。"
+    },
+    {
+      "key": "dream-01",
+      "book": "红楼梦",
+      "chapter": 1,
+      "original_title": "甄士隐梦幻识通灵　贾雨村风尘怀闺秀",
+      "source_url": "https://zh.wikisource.org/wiki/%E7%B4%85%E6%A8%93%E5%A4%A2%2F%E7%AC%AC001%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794220307474334000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/dream-01.jpg",
+      "generation_key": "dream-01-fixed",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "已删除英莲失踪后在火灾画面中的错误重现。"
+    },
+    {
+      "key": "dream-02",
+      "book": "红楼梦",
+      "chapter": 2,
+      "original_title": "贾夫人仙逝扬州城　冷子兴演说荣国府",
+      "source_url": "https://zh.wikisource.org/wiki/%E7%B4%85%E6%A8%93%E5%A4%A2%2F%E7%AC%AC002%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794220014067684000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/dream-02.jpg",
+      "generation_key": "dream-02",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "黛玉丧母、冷子兴谈宁荣二府、喜信悬念。"
+    },
+    {
+      "key": "dream-03",
+      "book": "红楼梦",
+      "chapter": 3,
+      "original_title": "金陵城起复贾雨村　荣国府收养林黛玉",
+      "source_url": "https://zh.wikisource.org/wiki/%E7%B4%85%E6%A8%93%E5%A4%A2%2F%E7%AC%AC003%E5%9B%9E",
+      "original_png": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794220165905686000-source.png",
+      "web_jpeg": "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/dream-03.jpg",
+      "generation_key": "dream-03",
+      "frames": 6,
+      "visual_review": "passed",
+      "review_notes": "宝黛为儿童形象，贾母相拥、初见与摔玉。"
+    }
+  ],
+  "iterations": [
+    {
+      "key": "journey-01",
+      "prompt": "JOURNEY TO THE WEST, original chapter 1. Character continuity: Sun Wukong is an expressive golden-brown macaque with an intelligent narrow face, initially a natural monkey, later a simple ochre cloth tunic; NO golden circlet, NO armour, NO staff, NO monk companions. Master Bodhi is an elderly white-bearded Daoist-style sage in pale grey robes. SIX panels in exact order: TOP LEFT a luminous ancient stone on Flower-Fruit Mountain splits and a small stone-born monkey emerges into dawn; TOP RIGHT the agile monkey leaps through a powerful waterfall to discover a hidden stone cave behind it; MIDDLE LEFT he sits on a simple rock throne in the cave while delighted monkeys gather and recognise him as their king; MIDDLE RIGHT an older monkey's frailty makes the thoughtful king realise that life ends, mood reflective, no dead body; BOTTOM LEFT the monkey alone on a small wooden raft sails across a blue sea in search of a teacher; BOTTOM RIGHT in a secluded mountain temple he kneels respectfully before Master Bodhi, who gives him the name Sun Wukong. Each panel a different moment. No later-journey costume.",
+      "reference_image_paths": [],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218254683351000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "journey-01"
+    },
+    {
+      "key": "romance-01",
+      "prompt": "ROMANCE OF THE THREE KINGDOMS, original chapter 1, late Eastern Han China. Stable cast: Liu Bei thin moustache, refined long earlobes, simple muted blue-green robe; Guan Yu long black beard, dignified reddish face, dark green robe; Zhang Fei powerful build, black beard and dark charcoal tunic. No Qing braids, no Japanese armour. SIX panels exact order: TOP LEFT impoverished villagers and yellow-headscarf rebels on a dusty road establish turmoil in the Han realm; TOP RIGHT humble Liu Bei reads a public recruitment notice while the vigorous Zhang Fei approaches him, the notice contains NO readable text; MIDDLE LEFT Guan Yu joins the two men at a rustic tavern table and they discuss helping their country; MIDDLE RIGHT the three kneel side by side at a simple incense altar in a blossoming peach orchard, pledge brotherhood, full view distinct three faces; BOTTOM LEFT the brothers lead local volunteers against yellow-headscarf rebels, sweeping action, no wounds or gore; BOTTOM RIGHT in a military tent a wealthy arrogant Dong Zhuo seated in dark brocade dismisses the three plainly dressed heroes after they have helped rescue his force. Keep the sworn brothers consistent in every scene.",
+      "reference_image_paths": [],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218609557577000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "romance-01"
+    },
+    {
+      "key": "water-01",
+      "prompt": "WATER MARGIN, original chapter 1, Northern Song China. Main character Marshal Hong Xin: middle-aged imperial envoy with short neat moustache, cinnabar official robe and black Song official hat, plus attendants. Daoist priests wear simple grey/blue robes and topknots. SIX panels exact order: TOP LEFT plague-stricken Song city, worried families and physicians, distant imperial court dispatching an envoy, compassionate no graphic illness; TOP RIGHT Hong Xin and attendants arrive at a secluded Daoist monastery on Dragon-Tiger Mountain; MIDDLE LEFT Hong Xin climbs a rocky pine-covered mountain path, startled by a tiger in the distance and a snake crossing the path, no attack; MIDDLE RIGHT a calm cowherd boy on an ox tells the bewildered red-robed envoy that the Celestial Master has already left; BOTTOM LEFT back at the monastery Hong Xin ignores an elderly priest's warning and orders workmen to prise open the sealed floor of a forbidden spirit vault, ancient seals shown as abstract marks without writing; BOTTOM RIGHT a great column of dark mist and many star-like spirits bursts upward from the opened vault toward the sky as the envoy recoils, suggesting the released 108 spirits, atmospheric not horror. Do not include Wu Song, tiger slaying, or later outlaw heroes.",
+      "reference_image_paths": [],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218370983583000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "water-01"
+    },
+    {
+      "key": "dream-01",
+      "prompt": "DREAM OF THE RED CHAMBER, original chapter 1. Delicate classical Chinese ink-and-watercolour lianhuanhua, restrained rose, sage, ivory, indigo. Characters: Zhen Shiyin a gentle middle-aged scholar in pale sage robe; Jia Yucun a poor lean scholar in faded indigo; Yinglian is Zhen's very young daughter in a small pink coat; a ragged Daoist has long wispy beard and grey robes. SIX panels exact order: TOP LEFT a sentient luminous unused stone beneath a mountain peak, approached by one Buddhist monk and one Daoist, mythic dream frame; TOP RIGHT Zhen Shiyin dreams of the monk and Daoist carrying a small shining jade toward the mortal world, ethereal garden and cloud background; MIDDLE LEFT Zhen kindly gives travel money to the poor scholar Jia Yucun at a modest home, the younger scholar bows in thanks; MIDDLE RIGHT at a lantern festival a distracted servant loses sight of tiny Yinglian in the bustling crowd as a shadowy stranger leads her away, convey loss gently, no violence; BOTTOM LEFT a neighbouring temple fire spreads to Zhen's home, family watches safely from the street, no people trapped in flames; BOTTOM RIGHT after losses and poverty, grey-robed Zhen walks away beside a wandering Daoist on a quiet country path. Do not introduce the later Jia mansion family or turn the toddler into an adult.",
+      "reference_image_paths": [],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218492839948000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": null
+    },
+    {
+      "key": "journey-02",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Journey to the West, NOT the scene content. Create a NEW board for original chapter 2: Learning, then returning home. Preserve golden-brown monkey face and ochre tunic from reference. No headband, no Tang monk, no Pigsy. No staff or armour until chapter 3. Master Bodhi is white-bearded grey-robed sage.\nSix scenes in reading order:\n1. Wukong sweeps, carries water and learns how to behave among his fellow students. Years pass before deeper teaching begins.\n2. Bodhi taps him three times and leaves with his hands behind his back. Wukong understands the hint: come through the back door at the third watch of the night.\n3. The master teaches cultivation, seventy-two transformations and cloud somersaulting. Wukong practises and begins to master these extraordinary skills.\n4. When Wukong shows off a transformation, the other students gather to watch. Bodhi rebukes his vanity and sends him away, forbidding him to reveal his teacher’s name.\n5. Back on Flower-Fruit Mountain, he learns that the Demon King of Confusion has raided their home. Wukong uses his new powers to rescue the captured monkeys.\n6. The troop returns to Water-Curtain Cave and welcomes its king. He shares his new surname and name, and the reunited monkeys celebrate.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218254683351000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218823801231000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": null
+    },
+    {
+      "key": "journey-03",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Journey to the West, NOT the scene content. Create a NEW board for original chapter 3: A staff from the dragon palace. Preserve golden-brown monkey face and ochre tunic from reference. No headband, no Tang monk, no Pigsy. No staff or armour until chapter 3. Master Bodhi is white-bearded grey-robed sage.\nSix scenes in reading order:\n1. While training the troop, Wukong finds ordinary weapons unsuitable. Hearing of the dragon palace in the Eastern Sea, he goes below the waves to seek one.\n2. The Dragon King offers weapons, but none satisfies him. Deep in the treasury, an enormous iron pillar shines and catches his attention.\n3. The pillar changes size at his wish, becoming the gold-banded, compliant staff. The dragon kings provide armour, and Wukong returns to the mountain delighted.\n4. After a feast, underworld messengers carry his dreaming spirit away. Refusing the authority of the registers of life and death, he confronts the underworld court.\n5. Demanding the registers, he strikes out his own name and those of the monkeys. Then he returns to Flower-Fruit Mountain.\n6. The dragon and underworld courts complain to Heaven. Following the Gold Star’s advice, the Jade Emperor invites Wukong up. He rises on a cloud with the messenger.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218254683351000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218959234282000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": null
+    },
+    {
+      "key": "romance-02",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Romance of the Three Kingdoms, NOT the scene content. Create a NEW board for original chapter 2: An inspector and a troubled court. Preserve Liu Bei (slim moustache, blue-green robe), Guan Yu (long beard, reddish face, green robe), Zhang Fei (powerful, black beard, charcoal robe). Dong Zhuo stout in dark patterned rich robe. Eastern Han, no modern items.\nSix scenes in reading order:\n1. The brothers leave Dong Zhuo and continue their service. After the campaigns, Liu Bei receives a modest appointment as a county officer in Anxi.\n2. An inspecting official treats Liu Bei with contempt and seeks a bribe. With no money to pay, Liu Bei comes under pressure instead.\n3. Hearing people plead for Liu Bei, Zhang Fei storms into the inspector’s lodging and beats him in anger. The adaptation shows the confrontation without graphic injury.\n4. Liu Bei intervenes, gives up his official seal and leaves with his brothers. He will not cling to the appointment at this cost.\n5. At court, succession and rival factions deepen the crisis. General He Jin and Yuan Shao discuss removing the powerful palace eunuchs.\n6. When the empress dowager refuses, He Jin agrees to summon outside forces to the capital. Chen Lin objects, and Cao Cao speaks up. The danger grows.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218609557577000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219105043772000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "romance-02"
+    },
+    {
+      "key": "romance-03",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Romance of the Three Kingdoms, NOT the scene content. Create a NEW board for original chapter 3: Power, gifts and betrayal. Preserve Liu Bei (slim moustache, blue-green robe), Guan Yu (long beard, reddish face, green robe), Zhang Fei (powerful, black beard, charcoal robe). Dong Zhuo stout in dark patterned rich robe. Eastern Han, no modern items.\nSix scenes in reading order:\n1. He Jin ignores the warnings and is killed in the palace. Disorder follows. Dong Zhuo arrives with troops and gains influence over the emperor and capital.\n2. Dong Zhuo proposes changing the ruler. Ding Yuan opposes him, backed by the formidable warrior Lü Bu. Dong Zhuo hesitates to act.\n3. Lü Bu drives Dong Zhuo’s men back in battle. Li Su then offers another approach: a remarkable horse and rich gifts to persuade Lü Bu to change sides.\n4. The Red Hare horse delights Lü Bu. Li Su praises Dong Zhuo and promises wealth and position, shaking the warrior’s loyalty.\n5. That night Lü Bu kills Ding Yuan and joins Dong Zhuo, accepting him as an adoptive father. The adaptation conveys the betrayal without showing the killing.\n6. Stronger than before, Dong Zhuo again announces his plan to replace the emperor. Yuan Shao resists. Both draw their swords at the banquet.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218609557577000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219347399790000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": null
+    },
+    {
+      "key": "water-02",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Water Margin, NOT the scene content. Create a NEW board for original chapter 2: The instructor and Nine Dragons. Reference is STYLE ONLY; use entirely new Song-dynasty characters. Wang Jin: mature lean martial instructor, dark blue clothing, with elderly mother. Shi Jin: athletic young man, topknot, russet robe, nine-dragon tattoos only subtly visible. Gao Qiu: slim court favourite.\nSix scenes in reading order:\n1. Gao Qiu gains Prince Duan’s favour through his skill at cuju, a ball game. After the prince becomes emperor, Gao rises to military power.\n2. Wang Jin’s father once offended Gao Qiu. Fearing revenge, Wang leaves the capital secretly with his mother and heads toward Yan’an.\n3. Taking shelter at the Shi family estate, Wang meets the young martial enthusiast Shi Jin and points out a weakness in his staff technique.\n4. Shi Jin sincerely asks to learn. Wang teaches him carefully for months, then takes leave to continue his journey with his mother.\n5. When Chen Da from Mount Shaohua attacks, Shi Jin captures him. Zhu Wu and Yang Chun plead for their companion. Moved by their loyalty, Shi releases him.\n6. During a Mid-Autumn banquet with the three men from Mount Shaohua, Shi Jin learns that their association has been reported. Soldiers surround his estate. The guests face a crisis.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218370983583000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219747451597000-source.png"
+      ],
+      "mcp_call_status": "timed_out_file_recovered",
+      "mcp_text": "tool call error: tool call failed for `keetai_image/imagegen`\n\nCaused by:\n    timed out awaiting tools/call after 300s",
+      "selected_for": "water-02"
+    },
+    {
+      "key": "dream-02",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Dream of the Red Chamber, NOT the scene content. Create a NEW board for original chapter 2: A household seen from outside. Reference is style and Jia Yucun character reference (thin moustache, indigo robe); no Zhen family fire or lost daughter scenes in this chapter. Daiyu is a CHILD of about 7 in pale lavender; Baoyu a CHILD boy about 8 in red with jade pendant. Adults taller. Do not draw romantic adult screen actors. Qing-inspired household robes.\nSix scenes in reading order:\n1. Jia Yucun gains office but is dismissed for misconduct. He eventually reaches Yangzhou and becomes tutor to Lin Ruhai’s young daughter, Daiyu.\n2. Daiyu’s mother, Jia Min, dies. Frail and grieving, the child stops her lessons for a time. Her father worries about her future.\n3. Walking outside the city, Jia meets his acquaintance Leng Zixing. Over a meal, they discuss Jia Min’s birth family: the Rongguo branch of the Jia household.\n4. Leng explains the Ningguo and Rongguo branches: illustrious ancestors, many descendants and an outward display of immense wealth.\n5. He describes Jia Baoyu, born with a jade in his mouth, unconventional in temperament and cherished by his grandmother. Jia Yucun listens and offers his own interpretation.\n6. Beneath the household’s splendour, Leng sees signs of decline. Someone arrives looking for Jia Yucun with good news. What the news means is left for the next chapter.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218492839948000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794220014067684000-source.png"
+      ],
+      "mcp_call_status": "timed_out_file_recovered",
+      "mcp_text": "tool call error: tool call failed for `keetai_image/imagegen`\n\nCaused by:\n    timed out awaiting tools/call after 300s",
+      "selected_for": "dream-02"
+    },
+    {
+      "key": "dream-03",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is visual style and recurring-character reference for Dream of the Red Chamber, NOT the scene content. Create a NEW board for original chapter 3: Daiyu enters the Jia household. Reference is style and Jia Yucun character reference (thin moustache, indigo robe); no Zhen family fire or lost daughter scenes in this chapter. Daiyu is a CHILD of about 7 in pale lavender; Baoyu a CHILD boy about 8 in red with jade pendant. Adults taller. Do not draw romantic adult screen actors. Qing-inspired household robes.\nSix scenes in reading order:\n1. Lin Ruhai writes to Jia Zheng on Jia Yucun’s behalf and arranges for Daiyu to join her grandmother. She tearfully leaves her father and travels with attendants.\n2. Jia Yucun regains office through Jia Zheng’s help. Meanwhile, Daiyu enters the Rongguo household, carefully observing how to speak and act in unfamiliar surroundings.\n3. Her grandmother draws her into an embrace. Remembering the daughter she has lost, the older woman weeps, and Daiyu weeps with her.\n4. Daiyu meets relatives and the three young cousins Yingchun, Tanchun and Xichun. Wang Xifeng arrives with lively authority and takes charge of her welcome.\n5. Baoyu returns and meets Daiyu. Each feels an uncanny familiarity. In their first conversation, a sense of closeness begins to form between the two children.\n6. Learning that Daiyu has no jade, Baoyu angrily throws down his own. His grandmother calms him, but Daiyu is upset. Their first meeting ends in mixed feelings.\nNarration is context only; render no words. For violence: show non-graphic gestures, fleeing or aftermath; never wounds or dismemberment.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218492839948000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794220165905686000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "dream-03"
+    },
+    {
+      "key": "dream-01-fixed",
+      "prompt": "Edit the supplied six-panel comic board. Keep its exact 2-column by 3-row layout, style, colours, faces and ALL other five panels unchanged. In panel 5 only (BOTTOM LEFT), remove the little pink-clad girl completely and replace that small area with the background street. Preserve the adult man and adult woman in that panel and the temple fire. The toddler has already been lost in panel 4 and MUST NOT appear again in the fire panel. No added people, no text. Reference image 1 is the actual edit target.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218492839948000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794220307474334000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "dream-01"
+    },
+    {
+      "key": "journey-02-fixed",
+      "prompt": "Edit this actual 2-column 3-row comic board, preserving exact panel geometry and style. This is Journey to the West original chapter 2, with Bodhi teaching Sun Wukong. Correct the MIDDLE RIGHT panel: Wukong should transform into a PINE TREE rooted in the courtyard, not a tiger; replace the tiger with a graceful pine, human students gathering surprised, Bodhi at the right scolding. All the fellow students in panel 1 (TOP LEFT) and panel 4 (MIDDLE RIGHT) must be HUMAN young Daoist students with human faces, not monkey faces. Wukong is the ONLY monkey at the school. Preserve main Wukong sweeping in TOP LEFT, preserve Bodhi, preserve all other scenes and colours. No new text, captions, gutters, borders, or extra panels. Reference 1 is the actual edit target.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218823801231000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219494777478000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "journey-02"
+    },
+    {
+      "key": "journey-03-fixed",
+      "prompt": "Edit the supplied 2-column 3-row comic board precisely, preserving all panel geometry, narrative scenes, style and colours. Journey to the West original chapter 3. In TOP LEFT panel only, the white-bearded grey-robed human standing behind Wukong is INCORRECT: replace him with a clearly elderly MONKEY with golden-grey fur, wrinkled simian face and simple grey cloth tunic, counselling Wukong. Bodhi is NOT present on Flower-Fruit Mountain. Keep Wukong inspecting weapons and surrounding monkeys unchanged. In MIDDLE RIGHT and BOTTOM LEFT Wukong may wear plain ochre tunic as the existing dream imagery. Preserve every other panel and no added text. Reference 1 is the actual edit target.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218959234282000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219244713258000-source.png"
+      ],
+      "mcp_call_status": "completed",
+      "selected_for": "journey-03"
+    },
+    {
+      "key": "water-03",
+      "prompt": "Use case: illustration-story / historical-scene. Produce a finished Chinese lianhuanhua sequential comic board, portrait 2:3 canvas, exactly TWO columns and THREE rows of equally sized SQUARE panels, read left-to-right then top-to-bottom. Each panel must fill exactly one sixth of the canvas; a very fine dark dividing line on the exact 50% vertical and 33.333% and 66.667% horizontal positions; NO outer margin, NO gutters, NO title, NO letters, NO numbers, NO captions, NO speech bubbles, NO watermark. These are SIX DIFFERENT SCENES of ONE chapter, not six variants of the same scene. Fine elegant ink pen contours with restrained mineral watercolour washes on ivory paper; Chinese classical book illustration, sophisticated human proportions and expressive faces, detailed historically plausible architecture and robes, not anime, not photoreal, not 3D. Ensure each scene has a clear action and legible silhouettes at mobile panel size. Warm parchment, indigo ink, cinnabar accents, moss green, muted ochre. Keep key action away from the panel dividing edges. Consistent recurring faces and clothing. No graphic violence or nudity. Do not depict dialogue as visible text; all narration is rendered separately by the app.\nReference image 1 is ONLY the visual style reference, not its cast or scene content. Create an entirely NEW board for Water Margin original chapter 3, Song China. Shi Jin is an athletic young man with topknot, russet robe and subtle nine-dragon tattoos. Lu Da is a broad-shouldered sturdy garrison officer with round face, short dark beard, DARK OLIVE robe and black hair in topknot. He is NOT YET a monk: NO bald head, NO Buddhist beads, NO monk robe. Jin Cuilian is a young adult woman in faded pale blue, her father a frail grey-bearded elderly man. Zheng is a stout butcher in brown apron. No Hong Xin or Daoist priests from reference.\nSix scenes in reading order:\n1. Shi Jin and his companions burn the estate and break through the encirclement. He then travels to Weizhou to seek Wang Jin. Instead of his teacher, he meets the garrison officer Lu Da.\n2. Lu Da drinks with Shi Jin and Li Zhong. Hearing weeping, they learn that Jin Cuilian and her father are trapped by the butcher Zheng’s coercion.\n3. Angered by their story, Lu Da contributes money and asks his companions to help. The next morning, he goes to their inn to make sure they can leave.\n4. After father and daughter are safely away, Lu Da visits Zheng’s stall and orders increasingly unreasonable preparations of lean meat, fat and cartilage, provoking a confrontation.\n5. Zheng comes at him with a knife. Lu Da knocks him down, and three punches kill him. An attempt to defend others has become a fatal act.\n6. Realising Zheng is dead, Lu Da makes an excuse to leave, gathers his belongings and flees. He too must abandon his former place in society.\nPanel 1 show Shi Jin and companions fleeing the manor as it burns at night; use this visual for the escape and transition, not the later meeting. Panel 2 establishes Lu Da, Shi Jin and Li Zhong in tavern hearing Jin Cuilian and her father. Panel 5 show Lu Da's defensive punch as Zheng drops his knife and falls, no visible injury, no blood, no glorification. Panel 6 Lu Da leaving city carrying a bundle, still with hair. No words, captions or numbers. Exactly six square frames.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794218370983583000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219604769963000-source.png"
+      ],
+      "mcp_call_status": "timed_out_file_recovered",
+      "mcp_text": "tool call error: tool call failed for `keetai_image/imagegen`\n\nCaused by:\n    timed out awaiting tools/call after 300s",
+      "selected_for": "water-03"
+    },
+    {
+      "key": "romance-03-fixed",
+      "prompt": "Edit this actual six-panel Chinese comic board, keeping the exact 2-column/3-row grid, ink-watercolour style and all scenes. Correct BOTTOM RIGHT panel ONLY: behind the TWO sword-drawing men, three background figures are wrongly recognisable as Guan Yu (green hood and long beard), Liu Bei (blue robe and thin moustache), and Zhang Fei (bushy beard). Those three heroes were NOT at this banquet. Replace those THREE background figures with generic Eastern Han court officials, wearing neutral grey robes and tall black official hats, clean-shaven or short neat moustaches, with clearly different faces. No green hood, no flowing long beard, no blue-robed Liu Bei, no Zhang Fei face. Preserve the two foreground men drawing swords (Yuan Shao at left, Dong Zhuo at right), their gestures, and the banquet objects unchanged. Preserve ALL OTHER FIVE PANELS exactly. No text or new panels. Reference image 1 is the actual edit target.",
+      "reference_image_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219347399790000-source.png"
+      ],
+      "original_output_paths": [
+        "/Users/delanding/ProjDYDoing/gitself/MysticChina/design/mystic-china/assets/classics/keetai-5464-1794219901988165000-source.png"
+      ],
+      "mcp_call_status": "timed_out_file_recovered",
+      "mcp_text": "tool call error: tool call failed for `keetai_image/imagegen`\n\nCaused by:\n    timed out awaiting tools/call after 300s",
+      "selected_for": "romance-03"
+    }
+  ]
+}

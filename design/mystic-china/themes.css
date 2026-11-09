@@ -1,0 +1,125 @@
+/* Theme values are shared by every phone; the neutral review canvas stays consistent. */
+.phone {
+  --blue: var(--theme-primary);
+  --deep: var(--theme-deep);
+  --jade: var(--theme-secondary);
+  --mint: var(--theme-secondary-soft);
+  --paper: var(--theme-paper);
+  --ink: var(--theme-ink);
+  --muted: var(--theme-muted);
+  --line: var(--theme-border);
+  --red: var(--theme-error);
+  --gold: var(--theme-gold);
+  color: var(--ink);
+  color-scheme: light;
+}
+[data-theme='ink-night'] .phone { color-scheme: dark; }
+.phone .home-indicator { background: var(--theme-surface); }
+.phone .home-indicator:after { background: var(--ink); }
+.phone .hero { color: #fff; }
+.phone .hero .tag.light { color: #17365d; }
+.phone .metric-card { color: var(--theme-on-deep); }
+.phone .metric-bottom strong { color: var(--theme-on-deep); }
+.phone .metric-card .button { color: var(--ink); }
+.phone .game-hero .section-kicker { color: var(--theme-on-primary); }
+.phone .tag.green { background: var(--theme-success-soft); color: var(--theme-success); }
+.phone .positive { color: var(--theme-success); }
+.phone .answer.correct, .phone .success-symbol, .phone .step-dot {
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
+  border-color: var(--theme-success);
+}
+.phone .stamp {
+  color: var(--theme-stamp);
+  border-color: var(--theme-stamp);
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--theme-stamp);
+}
+.phone .toast { background: var(--deep); color: var(--theme-on-deep); }
+.phone .sheet-top > span { background: var(--line); }
+.phone .switch.off { background: var(--muted); }
+.phone .switch:after { background: var(--theme-surface); }
+.phone .icon-button:focus-visible, .phone button:focus-visible,
+.phone a:focus-visible, .phone input:focus-visible,
+.phone textarea:focus-visible, .phone select:focus-visible {
+  outline-color: var(--theme-focus);
+}
+[data-theme='china-red'] .phone .status,
+[data-theme='china-red'] .phone .app-header {
+  background: var(--theme-primary);
+  color: var(--theme-on-primary);
+}
+[data-theme='china-red'] .phone .app-header .mini-seal {
+  color: var(--theme-on-primary);
+  border-color: var(--theme-on-primary);
+}
+[data-theme='china-red'] .phone .app-header .location-top,
+[data-theme='china-red'] .phone .app-header .link {
+  color: var(--theme-on-primary);
+}
+[data-theme='china-red'] .phone .app-header .icon-button:hover {
+  background: var(--theme-deep);
+}
+[data-theme='china-red'] .phone .metric-card .balance { color: #f6d998; }
+.theme-studio {
+  background: #f9fbfd;
+  border: 1px solid #d6e0e9;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 0 0 30px;
+}
+.theme-heading { display: flex; align-items: center; justify-content: space-between; gap: 25px; margin-bottom: 18px; }
+.theme-heading h2 { font: 21px/1.5 var(--hanzi); margin-top: 5px; }
+.theme-heading > p { max-width: 365px; font-size: 12px; color: #637587; line-height: 1.85; }
+.theme-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.theme-choice {
+  position: relative;
+  border: 1px solid #d7e0e8;
+  border-radius: 6px;
+  padding: 0;
+  background: #fff;
+  color: #23364b;
+  text-align: left;
+  overflow: hidden;
+  min-width: 0;
+}
+.theme-choice[aria-pressed='true'] { border-color: var(--choice-primary); box-shadow: 0 0 0 1px var(--choice-primary); }
+.theme-sample { position: relative; display: flex; height: 57px; padding: 11px; gap: 5px; background: var(--choice-paper); }
+.theme-sample i { width: 12px; height: 35px; border-radius: 2px; background: var(--choice-primary); }
+.theme-sample i:nth-child(2) { background: var(--choice-secondary); height: 27px; margin-top: 8px; }
+.theme-sample i:nth-child(3) { background: var(--choice-gold); height: 20px; margin-top: 15px; }
+.theme-sample b { position: absolute; right: 10px; top: 2px; color: var(--choice-primary); font: 37px var(--hanzi); }
+.theme-choice-text { display: block; padding: 10px 10px 12px; }
+.theme-choice strong { display: block; font-size: 12px; font-weight: 600; }
+.theme-choice small { display: block; font-size: 9px; color: #647486; margin-top: 2px; }
+.theme-choice em { display: block; font-size: 9px; color: #67788a; font-style: normal; margin-top: 6px; }
+.theme-selection { position: absolute; bottom: 10px; right: 8px; background: var(--choice-primary); color: var(--choice-paper); border-radius: 50%; width: 17px; height: 17px; font-size: 10px; display: none; text-align: center; line-height: 17px; }
+.theme-choice[aria-pressed='true'] .theme-selection { display: block; }
+.theme-foot { display: flex; justify-content: space-between; gap: 14px; font-size: 10px; color: #748494; margin-top: 14px; }
+.phone .theme-options { display: grid; gap: 9px; margin: 16px 0; }
+.phone .theme-choice { background: var(--theme-surface); color: var(--ink); border-color: var(--line); }
+.phone .theme-choice[aria-pressed='true'] { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+.phone .theme-choice.compact { display: grid; grid-template-columns: 77px 1fr; align-items: center; }
+.phone .theme-choice.compact .theme-sample { height: 100%; min-height: 75px; }
+.phone .theme-choice.compact .theme-sample i { width: 7px; }
+.phone .theme-choice.compact .theme-sample b { font-size: 23px; right: 6px; top: 33px; }
+.phone .theme-choice small, .phone .theme-choice em { color: var(--muted); }
+.phone .theme-choice.compact .theme-selection { color: var(--theme-on-primary); background: var(--blue); }
+@media(max-width:1100px) {
+  .theme-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .theme-heading { align-items: start; }
+  .theme-heading > p { max-width: 290px; }
+}
+@media(max-width:700px) {
+  .theme-studio { padding: 15px 12px; margin-bottom: 24px; }
+  .theme-heading { display: block; }
+  .theme-heading h2 { font-size: 20px; }
+  .theme-heading > p { margin-top: 8px; max-width: none; font-size: 11px; }
+  .theme-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .theme-foot { flex-direction: column; gap: 4px; font-size: 9px; }
+}
+.phone .collection-mark { background: var(--theme-primary-soft); }
+.guide-colour { display: inline-block; width: 13px; height: 13px; border: 1px solid #9aa7b5; border-radius: 3px; vertical-align: middle; margin-right: 5px; }
+.guide code { font-size: 10px; white-space: nowrap; }
+@media(max-width:700px) {
+  .guide table { display: block; overflow-x: auto; }
+}
